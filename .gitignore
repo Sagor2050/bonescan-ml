@@ -1,0 +1,43 @@
+# Operating systems
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editors and IDEs
+.idea/
+.vscode/*
+!.vscode/extensions.json
+*.swp
+*~
+
+# Local AI tool settings (shared settings in .claude/settings.json stay tracked)
+.claude/settings.local.json
+
+# Environment files and secrets. Commit .env.example with placeholders instead.
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+
+# Logs
+*.log
+logs/
+
+# Health data: never commit real patient imaging or reports.
+# Local datasets live in /data (ignored). Synthetic or public de-identified
+# test fixtures go under tests/fixtures/, which is exempt below.
+/data/
+*.dcm
+*.dicom
+DICOMDIR
+*.nii
+*.nii.gz
+*.nrrd
+*.mha
+*.mhd
+!tests/fixtures/**
+
+# Add language- and framework-specific entries once the stack is chosen
+# (templates: https://github.com/github/gitignore).
