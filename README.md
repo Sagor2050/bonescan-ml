@@ -61,6 +61,13 @@ sends patients back to them.
 | Printed diagrams         | A picture of the bone    | Not *your* bone, and not how it looked six weeks in        |
 | The doctor's appointment | The real answer          | Fifteen minutes, days after the report, and nothing to take home |
 
+## Project documents
+
+- [Requirements document](docs/requirements.pdf): scope, user stories, and
+  non-functional requirements (version 2).
+- [Project plan](docs/project-plan.pdf): stack, architecture, milestones,
+  and risks (version 1.2).
+
 ## Data and privacy
 
 This repository never contains real patient data. Development uses synthetic
