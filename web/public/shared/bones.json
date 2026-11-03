@@ -1,0 +1,3956 @@
+[
+  {
+    "id": "clavicle_left",
+    "bone": "clavicle",
+    "side": "left",
+    "medical": "clavicle",
+    "everyday": "collarbone",
+    "words": [
+      "clavicle",
+      "clavicular",
+      "collarbone"
+    ],
+    "parts": {
+      "proximal": [
+        0.1301,
+        1.4221,
+        -0.0306
+      ],
+      "shaft": [
+        0.0897,
+        1.4114,
+        -0.0054
+      ],
+      "distal": [
+        0.0179,
+        1.3939,
+        0.0352
+      ]
+    }
+  },
+  {
+    "id": "clavicle_right",
+    "bone": "clavicle",
+    "side": "right",
+    "medical": "clavicle",
+    "everyday": "collarbone",
+    "words": [
+      "clavicle",
+      "clavicular",
+      "collarbone"
+    ],
+    "parts": {
+      "proximal": [
+        -0.1301,
+        1.4221,
+        -0.0306
+      ],
+      "shaft": [
+        -0.0897,
+        1.4114,
+        -0.0054
+      ],
+      "distal": [
+        -0.0179,
+        1.3939,
+        0.0352
+      ]
+    }
+  },
+  {
+    "id": "scapula_left",
+    "bone": "scapula",
+    "side": "left",
+    "medical": "scapula",
+    "everyday": "shoulder blade",
+    "words": [
+      "scapula",
+      "scapular",
+      "shoulder blade",
+      "glenoid",
+      "acromion",
+      "coracoid"
+    ],
+    "parts": {
+      "body": [
+        0.1162,
+        1.3826,
+        -0.0587
+      ],
+      "neck": [
+        0.1162,
+        1.3826,
+        -0.0587
+      ],
+      "glenoid": [
+        0.1162,
+        1.3826,
+        -0.0587
+      ],
+      "acromion": [
+        0.1162,
+        1.3826,
+        -0.0587
+      ]
+    }
+  },
+  {
+    "id": "scapula_right",
+    "bone": "scapula",
+    "side": "right",
+    "medical": "scapula",
+    "everyday": "shoulder blade",
+    "words": [
+      "scapula",
+      "scapular",
+      "shoulder blade",
+      "glenoid",
+      "acromion",
+      "coracoid"
+    ],
+    "parts": {
+      "body": [
+        -0.1162,
+        1.3826,
+        -0.0587
+      ],
+      "neck": [
+        -0.1162,
+        1.3826,
+        -0.0587
+      ],
+      "glenoid": [
+        -0.1162,
+        1.3826,
+        -0.0587
+      ],
+      "acromion": [
+        -0.1162,
+        1.3826,
+        -0.0587
+      ]
+    }
+  },
+  {
+    "id": "humerus_left",
+    "bone": "humerus",
+    "side": "left",
+    "medical": "humerus",
+    "everyday": "upper arm bone",
+    "words": [
+      "humerus",
+      "humeral"
+    ],
+    "parts": {
+      "head": [
+        0.1762,
+        1.3972,
+        -0.0241
+      ],
+      "neck": [
+        0.197,
+        1.2542,
+        -0.0336
+      ],
+      "proximal": [
+        0.1762,
+        1.3972,
+        -0.0241
+      ],
+      "shaft": [
+        0.197,
+        1.2542,
+        -0.0336
+      ],
+      "metaphysis": [
+        0.197,
+        1.2542,
+        -0.0336
+      ],
+      "distal": [
+        0.2147,
+        1.0948,
+        -0.0346
+      ],
+      "condyle": [
+        0.2147,
+        1.0948,
+        -0.0346
+      ]
+    }
+  },
+  {
+    "id": "humerus_right",
+    "bone": "humerus",
+    "side": "right",
+    "medical": "humerus",
+    "everyday": "upper arm bone",
+    "words": [
+      "humerus",
+      "humeral"
+    ],
+    "parts": {
+      "head": [
+        -0.1762,
+        1.3972,
+        -0.0241
+      ],
+      "neck": [
+        -0.197,
+        1.2542,
+        -0.0336
+      ],
+      "proximal": [
+        -0.1762,
+        1.3972,
+        -0.0241
+      ],
+      "shaft": [
+        -0.197,
+        1.2542,
+        -0.0336
+      ],
+      "metaphysis": [
+        -0.197,
+        1.2542,
+        -0.0336
+      ],
+      "distal": [
+        -0.2147,
+        1.0948,
+        -0.0346
+      ],
+      "condyle": [
+        -0.2147,
+        1.0948,
+        -0.0346
+      ]
+    }
+  },
+  {
+    "id": "radius_left",
+    "bone": "radius",
+    "side": "left",
+    "medical": "radius",
+    "everyday": "forearm bone, thumb side",
+    "words": [
+      "radius",
+      "radial"
+    ],
+    "parts": {
+      "head": [
+        0.2387,
+        1.0909,
+        -0.026
+      ],
+      "neck": [
+        0.2585,
+        0.9495,
+        -0.0029
+      ],
+      "proximal": [
+        0.2387,
+        1.0909,
+        -0.026
+      ],
+      "shaft": [
+        0.2585,
+        0.9495,
+        -0.0029
+      ],
+      "metaphysis": [
+        0.2585,
+        0.9495,
+        -0.0029
+      ],
+      "distal": [
+        0.2793,
+        0.8587,
+        0.0142
+      ],
+      "styloid": [
+        0.2793,
+        0.8587,
+        0.0142
+      ]
+    }
+  },
+  {
+    "id": "radius_right",
+    "bone": "radius",
+    "side": "right",
+    "medical": "radius",
+    "everyday": "forearm bone, thumb side",
+    "words": [
+      "radius",
+      "radial"
+    ],
+    "parts": {
+      "head": [
+        -0.2387,
+        1.0909,
+        -0.026
+      ],
+      "neck": [
+        -0.2585,
+        0.9495,
+        -0.0029
+      ],
+      "proximal": [
+        -0.2387,
+        1.0909,
+        -0.026
+      ],
+      "shaft": [
+        -0.2585,
+        0.9495,
+        -0.0029
+      ],
+      "metaphysis": [
+        -0.2585,
+        0.9495,
+        -0.0029
+      ],
+      "distal": [
+        -0.2793,
+        0.8587,
+        0.0142
+      ],
+      "styloid": [
+        -0.2793,
+        0.8587,
+        0.0142
+      ]
+    }
+  },
+  {
+    "id": "ulna_left",
+    "bone": "ulna",
+    "side": "left",
+    "medical": "ulna",
+    "everyday": "forearm bone, little-finger side",
+    "words": [
+      "ulna",
+      "ulnar",
+      "olecranon"
+    ],
+    "parts": {
+      "olecranon": [
+        0.2143,
+        1.1084,
+        -0.047
+      ],
+      "proximal": [
+        0.2143,
+        1.1084,
+        -0.047
+      ],
+      "shaft": [
+        0.2208,
+        1.0714,
+        -0.0353
+      ],
+      "metaphysis": [
+        0.2208,
+        1.0714,
+        -0.0353
+      ],
+      "distal": [
+        0.2462,
+        0.8605,
+        0.0119
+      ],
+      "styloid": [
+        0.2462,
+        0.8605,
+        0.0119
+      ]
+    }
+  },
+  {
+    "id": "ulna_right",
+    "bone": "ulna",
+    "side": "right",
+    "medical": "ulna",
+    "everyday": "forearm bone, little-finger side",
+    "words": [
+      "ulna",
+      "ulnar",
+      "olecranon"
+    ],
+    "parts": {
+      "olecranon": [
+        -0.2143,
+        1.1084,
+        -0.047
+      ],
+      "proximal": [
+        -0.2143,
+        1.1084,
+        -0.047
+      ],
+      "shaft": [
+        -0.2208,
+        1.0714,
+        -0.0353
+      ],
+      "metaphysis": [
+        -0.2208,
+        1.0714,
+        -0.0353
+      ],
+      "distal": [
+        -0.2462,
+        0.8605,
+        0.0119
+      ],
+      "styloid": [
+        -0.2462,
+        0.8605,
+        0.0119
+      ]
+    }
+  },
+  {
+    "id": "scaphoid_left",
+    "bone": "scaphoid",
+    "side": "left",
+    "medical": "scaphoid",
+    "everyday": "wrist bone, thumb side",
+    "words": [
+      "scaphoid",
+      "carpal navicular"
+    ],
+    "parts": {
+      "proximal": [
+        0.2663,
+        0.8612,
+        0.0176
+      ],
+      "waist": [
+        0.2738,
+        0.856,
+        0.0193
+      ],
+      "distal": [
+        0.2754,
+        0.8483,
+        0.0198
+      ]
+    }
+  },
+  {
+    "id": "scaphoid_right",
+    "bone": "scaphoid",
+    "side": "right",
+    "medical": "scaphoid",
+    "everyday": "wrist bone, thumb side",
+    "words": [
+      "scaphoid",
+      "carpal navicular"
+    ],
+    "parts": {
+      "proximal": [
+        -0.2663,
+        0.8612,
+        0.0176
+      ],
+      "waist": [
+        -0.2738,
+        0.856,
+        0.0193
+      ],
+      "distal": [
+        -0.2754,
+        0.8483,
+        0.0198
+      ]
+    }
+  },
+  {
+    "id": "lunate_left",
+    "bone": "lunate",
+    "side": "left",
+    "medical": "lunate",
+    "everyday": "central wrist bone",
+    "words": [
+      "lunate"
+    ],
+    "parts": {
+      "center": [
+        0.2534,
+        0.8534,
+        0.0169
+      ]
+    }
+  },
+  {
+    "id": "lunate_right",
+    "bone": "lunate",
+    "side": "right",
+    "medical": "lunate",
+    "everyday": "central wrist bone",
+    "words": [
+      "lunate"
+    ],
+    "parts": {
+      "center": [
+        -0.2534,
+        0.8534,
+        0.0169
+      ]
+    }
+  },
+  {
+    "id": "triquetrum_left",
+    "bone": "triquetrum",
+    "side": "left",
+    "medical": "triquetrum",
+    "everyday": "wrist bone, little-finger side",
+    "words": [
+      "triquetrum",
+      "triquetral"
+    ],
+    "parts": {
+      "center": [
+        0.2466,
+        0.8455,
+        0.019
+      ]
+    }
+  },
+  {
+    "id": "triquetrum_right",
+    "bone": "triquetrum",
+    "side": "right",
+    "medical": "triquetrum",
+    "everyday": "wrist bone, little-finger side",
+    "words": [
+      "triquetrum",
+      "triquetral"
+    ],
+    "parts": {
+      "center": [
+        -0.2466,
+        0.8455,
+        0.019
+      ]
+    }
+  },
+  {
+    "id": "pisiform_left",
+    "bone": "pisiform",
+    "side": "left",
+    "medical": "pisiform",
+    "everyday": "small palm-side wrist bone",
+    "words": [
+      "pisiform"
+    ],
+    "parts": {
+      "center": [
+        0.2446,
+        0.8447,
+        0.0345
+      ]
+    }
+  },
+  {
+    "id": "pisiform_right",
+    "bone": "pisiform",
+    "side": "right",
+    "medical": "pisiform",
+    "everyday": "small palm-side wrist bone",
+    "words": [
+      "pisiform"
+    ],
+    "parts": {
+      "center": [
+        -0.2446,
+        0.8447,
+        0.0345
+      ]
+    }
+  },
+  {
+    "id": "trapezium_left",
+    "bone": "trapezium",
+    "side": "left",
+    "medical": "trapezium",
+    "everyday": "wrist bone at base of thumb",
+    "words": [
+      "trapezium"
+    ],
+    "parts": {
+      "center": [
+        0.2824,
+        0.8483,
+        0.0282
+      ]
+    }
+  },
+  {
+    "id": "trapezium_right",
+    "bone": "trapezium",
+    "side": "right",
+    "medical": "trapezium",
+    "everyday": "wrist bone at base of thumb",
+    "words": [
+      "trapezium"
+    ],
+    "parts": {
+      "center": [
+        -0.2824,
+        0.8483,
+        0.0282
+      ]
+    }
+  },
+  {
+    "id": "trapezoid_left",
+    "bone": "trapezoid",
+    "side": "left",
+    "medical": "trapezoid",
+    "everyday": "wrist bone at base of index finger",
+    "words": [
+      "trapezoid"
+    ],
+    "parts": {
+      "center": [
+        0.2743,
+        0.8387,
+        0.0204
+      ]
+    }
+  },
+  {
+    "id": "trapezoid_right",
+    "bone": "trapezoid",
+    "side": "right",
+    "medical": "trapezoid",
+    "everyday": "wrist bone at base of index finger",
+    "words": [
+      "trapezoid"
+    ],
+    "parts": {
+      "center": [
+        -0.2743,
+        0.8387,
+        0.0204
+      ]
+    }
+  },
+  {
+    "id": "capitate_left",
+    "bone": "capitate",
+    "side": "left",
+    "medical": "capitate",
+    "everyday": "largest central wrist bone",
+    "words": [
+      "capitate"
+    ],
+    "parts": {
+      "center": [
+        0.2648,
+        0.8442,
+        0.0187
+      ]
+    }
+  },
+  {
+    "id": "capitate_right",
+    "bone": "capitate",
+    "side": "right",
+    "medical": "capitate",
+    "everyday": "largest central wrist bone",
+    "words": [
+      "capitate"
+    ],
+    "parts": {
+      "center": [
+        -0.2648,
+        0.8442,
+        0.0187
+      ]
+    }
+  },
+  {
+    "id": "hamate_left",
+    "bone": "hamate",
+    "side": "left",
+    "medical": "hamate",
+    "everyday": "wrist bone at base of ring and little fingers",
+    "words": [
+      "hamate",
+      "hook of hamate"
+    ],
+    "parts": {
+      "center": [
+        0.2528,
+        0.8392,
+        0.0248
+      ],
+      "hook": [
+        0.2528,
+        0.8392,
+        0.0248
+      ]
+    }
+  },
+  {
+    "id": "hamate_right",
+    "bone": "hamate",
+    "side": "right",
+    "medical": "hamate",
+    "everyday": "wrist bone at base of ring and little fingers",
+    "words": [
+      "hamate",
+      "hook of hamate"
+    ],
+    "parts": {
+      "center": [
+        -0.2528,
+        0.8392,
+        0.0248
+      ],
+      "hook": [
+        -0.2528,
+        0.8392,
+        0.0248
+      ]
+    }
+  },
+  {
+    "id": "metacarpal_1_left",
+    "bone": "metacarpal_1",
+    "side": "left",
+    "medical": "first metacarpal",
+    "everyday": "palm bone of thumb",
+    "words": [
+      "first metacarpal",
+      "1st metacarpal",
+      "thumb metacarpal"
+    ],
+    "parts": {
+      "base": [
+        0.2912,
+        0.8447,
+        0.03
+      ],
+      "proximal": [
+        0.2912,
+        0.8447,
+        0.03
+      ],
+      "shaft": [
+        0.3092,
+        0.8218,
+        0.0447
+      ],
+      "neck": [
+        0.3092,
+        0.8218,
+        0.0447
+      ],
+      "head": [
+        0.2912,
+        0.8447,
+        0.03
+      ],
+      "distal": [
+        0.311,
+        0.8107,
+        0.0431
+      ]
+    }
+  },
+  {
+    "id": "metacarpal_1_right",
+    "bone": "metacarpal_1",
+    "side": "right",
+    "medical": "first metacarpal",
+    "everyday": "palm bone of thumb",
+    "words": [
+      "first metacarpal",
+      "1st metacarpal",
+      "thumb metacarpal"
+    ],
+    "parts": {
+      "base": [
+        -0.2912,
+        0.8447,
+        0.03
+      ],
+      "proximal": [
+        -0.2912,
+        0.8447,
+        0.03
+      ],
+      "shaft": [
+        -0.3092,
+        0.8218,
+        0.0447
+      ],
+      "neck": [
+        -0.3092,
+        0.8218,
+        0.0447
+      ],
+      "head": [
+        -0.2912,
+        0.8447,
+        0.03
+      ],
+      "distal": [
+        -0.311,
+        0.8107,
+        0.0431
+      ]
+    }
+  },
+  {
+    "id": "metacarpal_2_left",
+    "bone": "metacarpal_2",
+    "side": "left",
+    "medical": "second metacarpal",
+    "everyday": "palm bone of index finger",
+    "words": [
+      "second metacarpal",
+      "2nd metacarpal",
+      "index metacarpal"
+    ],
+    "parts": {
+      "base": [
+        0.278,
+        0.8353,
+        0.0244
+      ],
+      "proximal": [
+        0.278,
+        0.8353,
+        0.0244
+      ],
+      "shaft": [
+        0.2873,
+        0.8012,
+        0.0284
+      ],
+      "neck": [
+        0.2873,
+        0.8012,
+        0.0284
+      ],
+      "head": [
+        0.278,
+        0.8353,
+        0.0244
+      ],
+      "distal": [
+        0.2926,
+        0.769,
+        0.0348
+      ]
+    }
+  },
+  {
+    "id": "metacarpal_2_right",
+    "bone": "metacarpal_2",
+    "side": "right",
+    "medical": "second metacarpal",
+    "everyday": "palm bone of index finger",
+    "words": [
+      "second metacarpal",
+      "2nd metacarpal",
+      "index metacarpal"
+    ],
+    "parts": {
+      "base": [
+        -0.278,
+        0.8353,
+        0.0244
+      ],
+      "proximal": [
+        -0.278,
+        0.8353,
+        0.0244
+      ],
+      "shaft": [
+        -0.2873,
+        0.8012,
+        0.0284
+      ],
+      "neck": [
+        -0.2873,
+        0.8012,
+        0.0284
+      ],
+      "head": [
+        -0.278,
+        0.8353,
+        0.0244
+      ],
+      "distal": [
+        -0.2926,
+        0.769,
+        0.0348
+      ]
+    }
+  },
+  {
+    "id": "metacarpal_3_left",
+    "bone": "metacarpal_3",
+    "side": "left",
+    "medical": "third metacarpal",
+    "everyday": "palm bone of middle finger",
+    "words": [
+      "third metacarpal",
+      "3rd metacarpal",
+      "middle metacarpal"
+    ],
+    "parts": {
+      "base": [
+        0.2695,
+        0.8346,
+        0.0179
+      ],
+      "proximal": [
+        0.2695,
+        0.8346,
+        0.0179
+      ],
+      "shaft": [
+        0.2693,
+        0.8102,
+        0.0219
+      ],
+      "neck": [
+        0.2693,
+        0.8102,
+        0.0219
+      ],
+      "head": [
+        0.2695,
+        0.8346,
+        0.0179
+      ],
+      "distal": [
+        0.273,
+        0.7708,
+        0.036
+      ]
+    }
+  },
+  {
+    "id": "metacarpal_3_right",
+    "bone": "metacarpal_3",
+    "side": "right",
+    "medical": "third metacarpal",
+    "everyday": "palm bone of middle finger",
+    "words": [
+      "third metacarpal",
+      "3rd metacarpal",
+      "middle metacarpal"
+    ],
+    "parts": {
+      "base": [
+        -0.2695,
+        0.8346,
+        0.0179
+      ],
+      "proximal": [
+        -0.2695,
+        0.8346,
+        0.0179
+      ],
+      "shaft": [
+        -0.2693,
+        0.8102,
+        0.0219
+      ],
+      "neck": [
+        -0.2693,
+        0.8102,
+        0.0219
+      ],
+      "head": [
+        -0.2695,
+        0.8346,
+        0.0179
+      ],
+      "distal": [
+        -0.273,
+        0.7708,
+        0.036
+      ]
+    }
+  },
+  {
+    "id": "metacarpal_4_left",
+    "bone": "metacarpal_4",
+    "side": "left",
+    "medical": "fourth metacarpal",
+    "everyday": "palm bone of ring finger",
+    "words": [
+      "fourth metacarpal",
+      "4th metacarpal",
+      "ring metacarpal"
+    ],
+    "parts": {
+      "base": [
+        0.2573,
+        0.8334,
+        0.0224
+      ],
+      "proximal": [
+        0.2573,
+        0.8334,
+        0.0224
+      ],
+      "shaft": [
+        0.2568,
+        0.8045,
+        0.0251
+      ],
+      "neck": [
+        0.2568,
+        0.8045,
+        0.0251
+      ],
+      "head": [
+        0.2573,
+        0.8334,
+        0.0224
+      ],
+      "distal": [
+        0.2557,
+        0.7756,
+        0.033
+      ]
+    }
+  },
+  {
+    "id": "metacarpal_4_right",
+    "bone": "metacarpal_4",
+    "side": "right",
+    "medical": "fourth metacarpal",
+    "everyday": "palm bone of ring finger",
+    "words": [
+      "fourth metacarpal",
+      "4th metacarpal",
+      "ring metacarpal"
+    ],
+    "parts": {
+      "base": [
+        -0.2573,
+        0.8334,
+        0.0224
+      ],
+      "proximal": [
+        -0.2573,
+        0.8334,
+        0.0224
+      ],
+      "shaft": [
+        -0.2568,
+        0.8045,
+        0.0251
+      ],
+      "neck": [
+        -0.2568,
+        0.8045,
+        0.0251
+      ],
+      "head": [
+        -0.2573,
+        0.8334,
+        0.0224
+      ],
+      "distal": [
+        -0.2557,
+        0.7756,
+        0.033
+      ]
+    }
+  },
+  {
+    "id": "metacarpal_5_left",
+    "bone": "metacarpal_5",
+    "side": "left",
+    "medical": "fifth metacarpal",
+    "everyday": "palm bone of little finger",
+    "words": [
+      "fifth metacarpal",
+      "5th metacarpal",
+      "little finger metacarpal",
+      "small finger metacarpal"
+    ],
+    "parts": {
+      "base": [
+        0.2461,
+        0.8362,
+        0.027
+      ],
+      "proximal": [
+        0.2461,
+        0.8362,
+        0.027
+      ],
+      "shaft": [
+        0.243,
+        0.8068,
+        0.031
+      ],
+      "neck": [
+        0.243,
+        0.8068,
+        0.031
+      ],
+      "head": [
+        0.2461,
+        0.8362,
+        0.027
+      ],
+      "distal": [
+        0.2394,
+        0.7816,
+        0.0387
+      ]
+    }
+  },
+  {
+    "id": "metacarpal_5_right",
+    "bone": "metacarpal_5",
+    "side": "right",
+    "medical": "fifth metacarpal",
+    "everyday": "palm bone of little finger",
+    "words": [
+      "fifth metacarpal",
+      "5th metacarpal",
+      "little finger metacarpal",
+      "small finger metacarpal"
+    ],
+    "parts": {
+      "base": [
+        -0.2461,
+        0.8362,
+        0.027
+      ],
+      "proximal": [
+        -0.2461,
+        0.8362,
+        0.027
+      ],
+      "shaft": [
+        -0.243,
+        0.8068,
+        0.031
+      ],
+      "neck": [
+        -0.243,
+        0.8068,
+        0.031
+      ],
+      "head": [
+        -0.2461,
+        0.8362,
+        0.027
+      ],
+      "distal": [
+        -0.2394,
+        0.7816,
+        0.0387
+      ]
+    }
+  },
+  {
+    "id": "proximal_phalanx_hand_1_left",
+    "bone": "proximal_phalanx_hand_1",
+    "side": "left",
+    "medical": "proximal phalanx of thumb",
+    "everyday": "base bone of thumb",
+    "words": [
+      "proximal phalanx of thumb",
+      "first proximal phalanx of hand",
+      "1st proximal phalanx"
+    ],
+    "parts": {
+      "proximal": [
+        0.3176,
+        0.8151,
+        0.0508
+      ],
+      "shaft": [
+        0.3182,
+        0.801,
+        0.0522
+      ],
+      "distal": [
+        0.3232,
+        0.7855,
+        0.0577
+      ]
+    }
+  },
+  {
+    "id": "proximal_phalanx_hand_1_right",
+    "bone": "proximal_phalanx_hand_1",
+    "side": "right",
+    "medical": "proximal phalanx of thumb",
+    "everyday": "base bone of thumb",
+    "words": [
+      "proximal phalanx of thumb",
+      "first proximal phalanx of hand",
+      "1st proximal phalanx"
+    ],
+    "parts": {
+      "proximal": [
+        -0.3176,
+        0.8151,
+        0.0508
+      ],
+      "shaft": [
+        -0.3182,
+        0.801,
+        0.0522
+      ],
+      "distal": [
+        -0.3232,
+        0.7855,
+        0.0577
+      ]
+    }
+  },
+  {
+    "id": "proximal_phalanx_hand_2_left",
+    "bone": "proximal_phalanx_hand_2",
+    "side": "left",
+    "medical": "proximal phalanx of index finger",
+    "everyday": "base bone of index finger",
+    "words": [
+      "proximal phalanx of index finger",
+      "second proximal phalanx of hand",
+      "2nd proximal phalanx"
+    ],
+    "parts": {
+      "proximal": [
+        0.301,
+        0.7702,
+        0.0396
+      ],
+      "shaft": [
+        0.3016,
+        0.7533,
+        0.0433
+      ],
+      "distal": [
+        0.3075,
+        0.7337,
+        0.0531
+      ]
+    }
+  },
+  {
+    "id": "proximal_phalanx_hand_2_right",
+    "bone": "proximal_phalanx_hand_2",
+    "side": "right",
+    "medical": "proximal phalanx of index finger",
+    "everyday": "base bone of index finger",
+    "words": [
+      "proximal phalanx of index finger",
+      "second proximal phalanx of hand",
+      "2nd proximal phalanx"
+    ],
+    "parts": {
+      "proximal": [
+        -0.301,
+        0.7702,
+        0.0396
+      ],
+      "shaft": [
+        -0.3016,
+        0.7533,
+        0.0433
+      ],
+      "distal": [
+        -0.3075,
+        0.7337,
+        0.0531
+      ]
+    }
+  },
+  {
+    "id": "proximal_phalanx_hand_3_left",
+    "bone": "proximal_phalanx_hand_3",
+    "side": "left",
+    "medical": "proximal phalanx of middle finger",
+    "everyday": "base bone of middle finger",
+    "words": [
+      "proximal phalanx of middle finger",
+      "third proximal phalanx of hand",
+      "3rd proximal phalanx"
+    ],
+    "parts": {
+      "proximal": [
+        0.2763,
+        0.7713,
+        0.0424
+      ],
+      "shaft": [
+        0.2782,
+        0.7522,
+        0.0468
+      ],
+      "distal": [
+        0.2804,
+        0.7321,
+        0.0616
+      ]
+    }
+  },
+  {
+    "id": "proximal_phalanx_hand_3_right",
+    "bone": "proximal_phalanx_hand_3",
+    "side": "right",
+    "medical": "proximal phalanx of middle finger",
+    "everyday": "base bone of middle finger",
+    "words": [
+      "proximal phalanx of middle finger",
+      "third proximal phalanx of hand",
+      "3rd proximal phalanx"
+    ],
+    "parts": {
+      "proximal": [
+        -0.2763,
+        0.7713,
+        0.0424
+      ],
+      "shaft": [
+        -0.2782,
+        0.7522,
+        0.0468
+      ],
+      "distal": [
+        -0.2804,
+        0.7321,
+        0.0616
+      ]
+    }
+  },
+  {
+    "id": "proximal_phalanx_hand_4_left",
+    "bone": "proximal_phalanx_hand_4",
+    "side": "left",
+    "medical": "proximal phalanx of ring finger",
+    "everyday": "base bone of ring finger",
+    "words": [
+      "proximal phalanx of ring finger",
+      "fourth proximal phalanx of hand",
+      "4th proximal phalanx"
+    ],
+    "parts": {
+      "proximal": [
+        0.2549,
+        0.7767,
+        0.0435
+      ],
+      "shaft": [
+        0.2554,
+        0.7541,
+        0.0489
+      ],
+      "distal": [
+        0.2567,
+        0.7375,
+        0.0576
+      ]
+    }
+  },
+  {
+    "id": "proximal_phalanx_hand_4_right",
+    "bone": "proximal_phalanx_hand_4",
+    "side": "right",
+    "medical": "proximal phalanx of ring finger",
+    "everyday": "base bone of ring finger",
+    "words": [
+      "proximal phalanx of ring finger",
+      "fourth proximal phalanx of hand",
+      "4th proximal phalanx"
+    ],
+    "parts": {
+      "proximal": [
+        -0.2549,
+        0.7767,
+        0.0435
+      ],
+      "shaft": [
+        -0.2554,
+        0.7541,
+        0.0489
+      ],
+      "distal": [
+        -0.2567,
+        0.7375,
+        0.0576
+      ]
+    }
+  },
+  {
+    "id": "proximal_phalanx_hand_5_left",
+    "bone": "proximal_phalanx_hand_5",
+    "side": "left",
+    "medical": "proximal phalanx of little finger",
+    "everyday": "base bone of little finger",
+    "words": [
+      "proximal phalanx of little finger",
+      "fifth proximal phalanx of hand",
+      "5th proximal phalanx"
+    ],
+    "parts": {
+      "proximal": [
+        0.2345,
+        0.784,
+        0.0453
+      ],
+      "shaft": [
+        0.2348,
+        0.7775,
+        0.043
+      ],
+      "distal": [
+        0.2343,
+        0.7513,
+        0.0558
+      ]
+    }
+  },
+  {
+    "id": "proximal_phalanx_hand_5_right",
+    "bone": "proximal_phalanx_hand_5",
+    "side": "right",
+    "medical": "proximal phalanx of little finger",
+    "everyday": "base bone of little finger",
+    "words": [
+      "proximal phalanx of little finger",
+      "fifth proximal phalanx of hand",
+      "5th proximal phalanx"
+    ],
+    "parts": {
+      "proximal": [
+        -0.2345,
+        0.784,
+        0.0453
+      ],
+      "shaft": [
+        -0.2348,
+        0.7775,
+        0.043
+      ],
+      "distal": [
+        -0.2343,
+        0.7513,
+        0.0558
+      ]
+    }
+  },
+  {
+    "id": "middle_phalanx_hand_2_left",
+    "bone": "middle_phalanx_hand_2",
+    "side": "left",
+    "medical": "middle phalanx of index finger",
+    "everyday": "middle bone of index finger",
+    "words": [
+      "middle phalanx of index finger",
+      "second middle phalanx of hand"
+    ],
+    "parts": {
+      "proximal": [
+        0.3119,
+        0.7367,
+        0.0576
+      ],
+      "shaft": [
+        0.3123,
+        0.7289,
+        0.0599
+      ],
+      "distal": [
+        0.315,
+        0.7183,
+        0.0707
+      ]
+    }
+  },
+  {
+    "id": "middle_phalanx_hand_2_right",
+    "bone": "middle_phalanx_hand_2",
+    "side": "right",
+    "medical": "middle phalanx of index finger",
+    "everyday": "middle bone of index finger",
+    "words": [
+      "middle phalanx of index finger",
+      "second middle phalanx of hand"
+    ],
+    "parts": {
+      "proximal": [
+        -0.3119,
+        0.7367,
+        0.0576
+      ],
+      "shaft": [
+        -0.3123,
+        0.7289,
+        0.0599
+      ],
+      "distal": [
+        -0.315,
+        0.7183,
+        0.0707
+      ]
+    }
+  },
+  {
+    "id": "middle_phalanx_hand_3_left",
+    "bone": "middle_phalanx_hand_3",
+    "side": "left",
+    "medical": "middle phalanx of middle finger",
+    "everyday": "middle bone of middle finger",
+    "words": [
+      "middle phalanx of middle finger",
+      "third middle phalanx of hand"
+    ],
+    "parts": {
+      "proximal": [
+        0.2819,
+        0.7336,
+        0.066
+      ],
+      "shaft": [
+        0.2814,
+        0.7283,
+        0.0639
+      ],
+      "distal": [
+        0.2845,
+        0.7094,
+        0.0795
+      ]
+    }
+  },
+  {
+    "id": "middle_phalanx_hand_3_right",
+    "bone": "middle_phalanx_hand_3",
+    "side": "right",
+    "medical": "middle phalanx of middle finger",
+    "everyday": "middle bone of middle finger",
+    "words": [
+      "middle phalanx of middle finger",
+      "third middle phalanx of hand"
+    ],
+    "parts": {
+      "proximal": [
+        -0.2819,
+        0.7336,
+        0.066
+      ],
+      "shaft": [
+        -0.2814,
+        0.7283,
+        0.0639
+      ],
+      "distal": [
+        -0.2845,
+        0.7094,
+        0.0795
+      ]
+    }
+  },
+  {
+    "id": "middle_phalanx_hand_4_left",
+    "bone": "middle_phalanx_hand_4",
+    "side": "left",
+    "medical": "middle phalanx of ring finger",
+    "everyday": "middle bone of ring finger",
+    "words": [
+      "middle phalanx of ring finger",
+      "fourth middle phalanx of hand"
+    ],
+    "parts": {
+      "proximal": [
+        0.256,
+        0.7397,
+        0.0637
+      ],
+      "shaft": [
+        0.2567,
+        0.7291,
+        0.067
+      ],
+      "distal": [
+        0.2585,
+        0.7165,
+        0.0792
+      ]
+    }
+  },
+  {
+    "id": "middle_phalanx_hand_4_right",
+    "bone": "middle_phalanx_hand_4",
+    "side": "right",
+    "medical": "middle phalanx of ring finger",
+    "everyday": "middle bone of ring finger",
+    "words": [
+      "middle phalanx of ring finger",
+      "fourth middle phalanx of hand"
+    ],
+    "parts": {
+      "proximal": [
+        -0.256,
+        0.7397,
+        0.0637
+      ],
+      "shaft": [
+        -0.2567,
+        0.7291,
+        0.067
+      ],
+      "distal": [
+        -0.2585,
+        0.7165,
+        0.0792
+      ]
+    }
+  },
+  {
+    "id": "middle_phalanx_hand_5_left",
+    "bone": "middle_phalanx_hand_5",
+    "side": "left",
+    "medical": "middle phalanx of little finger",
+    "everyday": "middle bone of little finger",
+    "words": [
+      "middle phalanx of little finger",
+      "fifth middle phalanx of hand"
+    ],
+    "parts": {
+      "proximal": [
+        0.2315,
+        0.7537,
+        0.061
+      ],
+      "shaft": [
+        0.2323,
+        0.7454,
+        0.0622
+      ],
+      "distal": [
+        0.2305,
+        0.7352,
+        0.0699
+      ]
+    }
+  },
+  {
+    "id": "middle_phalanx_hand_5_right",
+    "bone": "middle_phalanx_hand_5",
+    "side": "right",
+    "medical": "middle phalanx of little finger",
+    "everyday": "middle bone of little finger",
+    "words": [
+      "middle phalanx of little finger",
+      "fifth middle phalanx of hand"
+    ],
+    "parts": {
+      "proximal": [
+        -0.2315,
+        0.7537,
+        0.061
+      ],
+      "shaft": [
+        -0.2323,
+        0.7454,
+        0.0622
+      ],
+      "distal": [
+        -0.2305,
+        0.7352,
+        0.0699
+      ]
+    }
+  },
+  {
+    "id": "distal_phalanx_hand_1_left",
+    "bone": "distal_phalanx_hand_1",
+    "side": "left",
+    "medical": "distal phalanx of thumb",
+    "everyday": "tip bone of thumb",
+    "words": [
+      "distal phalanx of thumb",
+      "first distal phalanx of hand",
+      "thumb tip"
+    ],
+    "parts": {
+      "proximal": [
+        0.3254,
+        0.7904,
+        0.0662
+      ],
+      "shaft": [
+        0.3255,
+        0.7831,
+        0.0634
+      ],
+      "distal": [
+        0.3328,
+        0.7676,
+        0.071
+      ]
+    }
+  },
+  {
+    "id": "distal_phalanx_hand_1_right",
+    "bone": "distal_phalanx_hand_1",
+    "side": "right",
+    "medical": "distal phalanx of thumb",
+    "everyday": "tip bone of thumb",
+    "words": [
+      "distal phalanx of thumb",
+      "first distal phalanx of hand",
+      "thumb tip"
+    ],
+    "parts": {
+      "proximal": [
+        -0.3254,
+        0.7904,
+        0.0662
+      ],
+      "shaft": [
+        -0.3255,
+        0.7831,
+        0.0634
+      ],
+      "distal": [
+        -0.3328,
+        0.7676,
+        0.071
+      ]
+    }
+  },
+  {
+    "id": "distal_phalanx_hand_2_left",
+    "bone": "distal_phalanx_hand_2",
+    "side": "left",
+    "medical": "distal phalanx of index finger",
+    "everyday": "tip bone of index finger",
+    "words": [
+      "distal phalanx of index finger",
+      "second distal phalanx of hand"
+    ],
+    "parts": {
+      "proximal": [
+        0.3159,
+        0.7218,
+        0.0734
+      ],
+      "shaft": [
+        0.3158,
+        0.7166,
+        0.0743
+      ],
+      "distal": [
+        0.3175,
+        0.7091,
+        0.0869
+      ]
+    }
+  },
+  {
+    "id": "distal_phalanx_hand_2_right",
+    "bone": "distal_phalanx_hand_2",
+    "side": "right",
+    "medical": "distal phalanx of index finger",
+    "everyday": "tip bone of index finger",
+    "words": [
+      "distal phalanx of index finger",
+      "second distal phalanx of hand"
+    ],
+    "parts": {
+      "proximal": [
+        -0.3159,
+        0.7218,
+        0.0734
+      ],
+      "shaft": [
+        -0.3158,
+        0.7166,
+        0.0743
+      ],
+      "distal": [
+        -0.3175,
+        0.7091,
+        0.0869
+      ]
+    }
+  },
+  {
+    "id": "distal_phalanx_hand_3_left",
+    "bone": "distal_phalanx_hand_3",
+    "side": "left",
+    "medical": "distal phalanx of middle finger",
+    "everyday": "tip bone of middle finger",
+    "words": [
+      "distal phalanx of middle finger",
+      "third distal phalanx of hand"
+    ],
+    "parts": {
+      "proximal": [
+        0.2848,
+        0.7122,
+        0.0823
+      ],
+      "shaft": [
+        0.2846,
+        0.7071,
+        0.0844
+      ],
+      "distal": [
+        0.2864,
+        0.6997,
+        0.0953
+      ]
+    }
+  },
+  {
+    "id": "distal_phalanx_hand_3_right",
+    "bone": "distal_phalanx_hand_3",
+    "side": "right",
+    "medical": "distal phalanx of middle finger",
+    "everyday": "tip bone of middle finger",
+    "words": [
+      "distal phalanx of middle finger",
+      "third distal phalanx of hand"
+    ],
+    "parts": {
+      "proximal": [
+        -0.2848,
+        0.7122,
+        0.0823
+      ],
+      "shaft": [
+        -0.2846,
+        0.7071,
+        0.0844
+      ],
+      "distal": [
+        -0.2864,
+        0.6997,
+        0.0953
+      ]
+    }
+  },
+  {
+    "id": "distal_phalanx_hand_4_left",
+    "bone": "distal_phalanx_hand_4",
+    "side": "left",
+    "medical": "distal phalanx of ring finger",
+    "everyday": "tip bone of ring finger",
+    "words": [
+      "distal phalanx of ring finger",
+      "fourth distal phalanx of hand"
+    ],
+    "parts": {
+      "proximal": [
+        0.2564,
+        0.7198,
+        0.0832
+      ],
+      "shaft": [
+        0.2573,
+        0.7159,
+        0.0853
+      ],
+      "distal": [
+        0.2588,
+        0.7113,
+        0.0938
+      ]
+    }
+  },
+  {
+    "id": "distal_phalanx_hand_4_right",
+    "bone": "distal_phalanx_hand_4",
+    "side": "right",
+    "medical": "distal phalanx of ring finger",
+    "everyday": "tip bone of ring finger",
+    "words": [
+      "distal phalanx of ring finger",
+      "fourth distal phalanx of hand"
+    ],
+    "parts": {
+      "proximal": [
+        -0.2564,
+        0.7198,
+        0.0832
+      ],
+      "shaft": [
+        -0.2573,
+        0.7159,
+        0.0853
+      ],
+      "distal": [
+        -0.2588,
+        0.7113,
+        0.0938
+      ]
+    }
+  },
+  {
+    "id": "distal_phalanx_hand_5_left",
+    "bone": "distal_phalanx_hand_5",
+    "side": "left",
+    "medical": "distal phalanx of little finger",
+    "everyday": "tip bone of little finger",
+    "words": [
+      "distal phalanx of little finger",
+      "fifth distal phalanx of hand"
+    ],
+    "parts": {
+      "proximal": [
+        0.2302,
+        0.7356,
+        0.0729
+      ],
+      "shaft": [
+        0.2305,
+        0.7306,
+        0.0753
+      ],
+      "distal": [
+        0.2293,
+        0.7234,
+        0.0814
+      ]
+    }
+  },
+  {
+    "id": "distal_phalanx_hand_5_right",
+    "bone": "distal_phalanx_hand_5",
+    "side": "right",
+    "medical": "distal phalanx of little finger",
+    "everyday": "tip bone of little finger",
+    "words": [
+      "distal phalanx of little finger",
+      "fifth distal phalanx of hand"
+    ],
+    "parts": {
+      "proximal": [
+        -0.2302,
+        0.7356,
+        0.0729
+      ],
+      "shaft": [
+        -0.2305,
+        0.7306,
+        0.0753
+      ],
+      "distal": [
+        -0.2293,
+        0.7234,
+        0.0814
+      ]
+    }
+  },
+  {
+    "id": "hip_bone_left",
+    "bone": "hip_bone",
+    "side": "left",
+    "medical": "hip bone (ilium, ischium, pubis)",
+    "everyday": "pelvis / hip bone",
+    "words": [
+      "hip bone",
+      "innominate",
+      "pelvis",
+      "pelvic",
+      "ilium",
+      "iliac",
+      "ischium",
+      "ischial",
+      "pubis",
+      "pubic",
+      "acetabulum",
+      "acetabular"
+    ],
+    "parts": {
+      "ilium": [
+        0.0737,
+        0.8918,
+        -0.0087
+      ],
+      "acetabulum": [
+        0.0737,
+        0.8918,
+        -0.0087
+      ],
+      "pubis": [
+        0.0737,
+        0.8918,
+        -0.0087
+      ],
+      "ischium": [
+        0.0737,
+        0.8918,
+        -0.0087
+      ]
+    }
+  },
+  {
+    "id": "hip_bone_right",
+    "bone": "hip_bone",
+    "side": "right",
+    "medical": "hip bone (ilium, ischium, pubis)",
+    "everyday": "pelvis / hip bone",
+    "words": [
+      "hip bone",
+      "innominate",
+      "pelvis",
+      "pelvic",
+      "ilium",
+      "iliac",
+      "ischium",
+      "ischial",
+      "pubis",
+      "pubic",
+      "acetabulum",
+      "acetabular"
+    ],
+    "parts": {
+      "ilium": [
+        -0.0737,
+        0.8918,
+        -0.0087
+      ],
+      "acetabulum": [
+        -0.0737,
+        0.8918,
+        -0.0087
+      ],
+      "pubis": [
+        -0.0737,
+        0.8918,
+        -0.0087
+      ],
+      "ischium": [
+        -0.0737,
+        0.8918,
+        -0.0087
+      ]
+    }
+  },
+  {
+    "id": "femur_left",
+    "bone": "femur",
+    "side": "left",
+    "medical": "femur",
+    "everyday": "thigh bone",
+    "words": [
+      "femur",
+      "femoral",
+      "intertrochanteric",
+      "subtrochanteric"
+    ],
+    "parts": {
+      "head": [
+        0.0878,
+        0.8689,
+        -0.0071
+      ],
+      "neck": [
+        0.0962,
+        0.6654,
+        -0.0135
+      ],
+      "proximal": [
+        0.0878,
+        0.8689,
+        -0.0071
+      ],
+      "shaft": [
+        0.0962,
+        0.6654,
+        -0.0135
+      ],
+      "metaphysis": [
+        0.0962,
+        0.6654,
+        -0.0135
+      ],
+      "distal": [
+        0.0749,
+        0.4387,
+        -0.0293
+      ],
+      "condyle": [
+        0.0749,
+        0.4387,
+        -0.0293
+      ]
+    }
+  },
+  {
+    "id": "femur_right",
+    "bone": "femur",
+    "side": "right",
+    "medical": "femur",
+    "everyday": "thigh bone",
+    "words": [
+      "femur",
+      "femoral",
+      "intertrochanteric",
+      "subtrochanteric"
+    ],
+    "parts": {
+      "head": [
+        -0.0878,
+        0.8689,
+        -0.0071
+      ],
+      "neck": [
+        -0.0962,
+        0.6654,
+        -0.0135
+      ],
+      "proximal": [
+        -0.0878,
+        0.8689,
+        -0.0071
+      ],
+      "shaft": [
+        -0.0962,
+        0.6654,
+        -0.0135
+      ],
+      "metaphysis": [
+        -0.0962,
+        0.6654,
+        -0.0135
+      ],
+      "distal": [
+        -0.0749,
+        0.4387,
+        -0.0293
+      ],
+      "condyle": [
+        -0.0749,
+        0.4387,
+        -0.0293
+      ]
+    }
+  },
+  {
+    "id": "patella_left",
+    "bone": "patella",
+    "side": "left",
+    "medical": "patella",
+    "everyday": "kneecap",
+    "words": [
+      "patella",
+      "patellar",
+      "kneecap"
+    ],
+    "parts": {
+      "proximal": [
+        0.0878,
+        0.4633,
+        0.0085
+      ],
+      "center": [
+        0.0875,
+        0.4446,
+        0.0075
+      ],
+      "distal": [
+        0.0879,
+        0.4244,
+        0.0048
+      ]
+    }
+  },
+  {
+    "id": "patella_right",
+    "bone": "patella",
+    "side": "right",
+    "medical": "patella",
+    "everyday": "kneecap",
+    "words": [
+      "patella",
+      "patellar",
+      "kneecap"
+    ],
+    "parts": {
+      "proximal": [
+        -0.0878,
+        0.4633,
+        0.0085
+      ],
+      "center": [
+        -0.0875,
+        0.4446,
+        0.0075
+      ],
+      "distal": [
+        -0.0879,
+        0.4244,
+        0.0048
+      ]
+    }
+  },
+  {
+    "id": "tibia_left",
+    "bone": "tibia",
+    "side": "left",
+    "medical": "tibia",
+    "everyday": "shinbone",
+    "words": [
+      "tibia",
+      "tibial",
+      "shinbone",
+      "medial malleolus",
+      "tibial plateau",
+      "tibial plafond"
+    ],
+    "parts": {
+      "plateau": [
+        0.0745,
+        0.4307,
+        -0.0306
+      ],
+      "proximal": [
+        0.0745,
+        0.4307,
+        -0.0306
+      ],
+      "shaft": [
+        0.0757,
+        0.369,
+        -0.0291
+      ],
+      "metaphysis": [
+        0.0757,
+        0.369,
+        -0.0291
+      ],
+      "distal": [
+        0.0614,
+        0.0819,
+        -0.0375
+      ],
+      "medial_malleolus": [
+        0.0614,
+        0.0819,
+        -0.0375
+      ]
+    }
+  },
+  {
+    "id": "tibia_right",
+    "bone": "tibia",
+    "side": "right",
+    "medical": "tibia",
+    "everyday": "shinbone",
+    "words": [
+      "tibia",
+      "tibial",
+      "shinbone",
+      "medial malleolus",
+      "tibial plateau",
+      "tibial plafond"
+    ],
+    "parts": {
+      "plateau": [
+        -0.0745,
+        0.4307,
+        -0.0306
+      ],
+      "proximal": [
+        -0.0745,
+        0.4307,
+        -0.0306
+      ],
+      "shaft": [
+        -0.0757,
+        0.369,
+        -0.0291
+      ],
+      "metaphysis": [
+        -0.0757,
+        0.369,
+        -0.0291
+      ],
+      "distal": [
+        -0.0614,
+        0.0819,
+        -0.0375
+      ],
+      "medial_malleolus": [
+        -0.0614,
+        0.0819,
+        -0.0375
+      ]
+    }
+  },
+  {
+    "id": "fibula_left",
+    "bone": "fibula",
+    "side": "left",
+    "medical": "fibula",
+    "everyday": "outer lower leg bone",
+    "words": [
+      "fibula",
+      "fibular",
+      "lateral malleolus"
+    ],
+    "parts": {
+      "head": [
+        0.1124,
+        0.4134,
+        -0.0472
+      ],
+      "neck": [
+        0.107,
+        0.2848,
+        -0.0468
+      ],
+      "proximal": [
+        0.1124,
+        0.4134,
+        -0.0472
+      ],
+      "shaft": [
+        0.107,
+        0.2848,
+        -0.0468
+      ],
+      "metaphysis": [
+        0.107,
+        0.2848,
+        -0.0468
+      ],
+      "distal": [
+        0.1016,
+        0.0591,
+        -0.0513
+      ],
+      "lateral_malleolus": [
+        0.1016,
+        0.0591,
+        -0.0513
+      ]
+    }
+  },
+  {
+    "id": "fibula_right",
+    "bone": "fibula",
+    "side": "right",
+    "medical": "fibula",
+    "everyday": "outer lower leg bone",
+    "words": [
+      "fibula",
+      "fibular",
+      "lateral malleolus"
+    ],
+    "parts": {
+      "head": [
+        -0.1124,
+        0.4134,
+        -0.0472
+      ],
+      "neck": [
+        -0.107,
+        0.2848,
+        -0.0468
+      ],
+      "proximal": [
+        -0.1124,
+        0.4134,
+        -0.0472
+      ],
+      "shaft": [
+        -0.107,
+        0.2848,
+        -0.0468
+      ],
+      "metaphysis": [
+        -0.107,
+        0.2848,
+        -0.0468
+      ],
+      "distal": [
+        -0.1016,
+        0.0591,
+        -0.0513
+      ],
+      "lateral_malleolus": [
+        -0.1016,
+        0.0591,
+        -0.0513
+      ]
+    }
+  },
+  {
+    "id": "talus_left",
+    "bone": "talus",
+    "side": "left",
+    "medical": "talus",
+    "everyday": "ankle bone",
+    "words": [
+      "talus",
+      "talar"
+    ],
+    "parts": {
+      "dome": [
+        0.073,
+        0.0814,
+        -0.0354
+      ],
+      "neck": [
+        0.0715,
+        0.0646,
+        -0.0369
+      ],
+      "head": [
+        0.073,
+        0.0814,
+        -0.0354
+      ]
+    }
+  },
+  {
+    "id": "talus_right",
+    "bone": "talus",
+    "side": "right",
+    "medical": "talus",
+    "everyday": "ankle bone",
+    "words": [
+      "talus",
+      "talar"
+    ],
+    "parts": {
+      "dome": [
+        -0.073,
+        0.0814,
+        -0.0354
+      ],
+      "neck": [
+        -0.0715,
+        0.0646,
+        -0.0369
+      ],
+      "head": [
+        -0.073,
+        0.0814,
+        -0.0354
+      ]
+    }
+  },
+  {
+    "id": "calcaneus_left",
+    "bone": "calcaneus",
+    "side": "left",
+    "medical": "calcaneus",
+    "everyday": "heel bone",
+    "words": [
+      "calcaneus",
+      "calcaneal",
+      "heel bone",
+      "os calcis"
+    ],
+    "parts": {
+      "tuberosity": [
+        0.0848,
+        0.0449,
+        -0.045
+      ],
+      "body": [
+        0.0848,
+        0.0449,
+        -0.045
+      ],
+      "anterior": [
+        0.0848,
+        0.0449,
+        -0.045
+      ]
+    }
+  },
+  {
+    "id": "calcaneus_right",
+    "bone": "calcaneus",
+    "side": "right",
+    "medical": "calcaneus",
+    "everyday": "heel bone",
+    "words": [
+      "calcaneus",
+      "calcaneal",
+      "heel bone",
+      "os calcis"
+    ],
+    "parts": {
+      "tuberosity": [
+        -0.0848,
+        0.0449,
+        -0.045
+      ],
+      "body": [
+        -0.0848,
+        0.0449,
+        -0.045
+      ],
+      "anterior": [
+        -0.0848,
+        0.0449,
+        -0.045
+      ]
+    }
+  },
+  {
+    "id": "navicular_left",
+    "bone": "navicular",
+    "side": "left",
+    "medical": "navicular",
+    "everyday": "inner midfoot bone",
+    "words": [
+      "navicular",
+      "tarsal navicular"
+    ],
+    "parts": {
+      "center": [
+        0.077,
+        0.0651,
+        -0.0044
+      ]
+    }
+  },
+  {
+    "id": "navicular_right",
+    "bone": "navicular",
+    "side": "right",
+    "medical": "navicular",
+    "everyday": "inner midfoot bone",
+    "words": [
+      "navicular",
+      "tarsal navicular"
+    ],
+    "parts": {
+      "center": [
+        -0.077,
+        0.0651,
+        -0.0044
+      ]
+    }
+  },
+  {
+    "id": "cuboid_left",
+    "bone": "cuboid",
+    "side": "left",
+    "medical": "cuboid",
+    "everyday": "outer midfoot bone",
+    "words": [
+      "cuboid"
+    ],
+    "parts": {
+      "center": [
+        0.0934,
+        0.0416,
+        -0.0056
+      ]
+    }
+  },
+  {
+    "id": "cuboid_right",
+    "bone": "cuboid",
+    "side": "right",
+    "medical": "cuboid",
+    "everyday": "outer midfoot bone",
+    "words": [
+      "cuboid"
+    ],
+    "parts": {
+      "center": [
+        -0.0934,
+        0.0416,
+        -0.0056
+      ]
+    }
+  },
+  {
+    "id": "medial_cuneiform_left",
+    "bone": "medial_cuneiform",
+    "side": "left",
+    "medical": "medial cuneiform",
+    "everyday": "inner midfoot wedge bone",
+    "words": [
+      "medial cuneiform",
+      "first cuneiform",
+      "1st cuneiform"
+    ],
+    "parts": {
+      "center": [
+        0.0689,
+        0.0514,
+        0.0165
+      ]
+    }
+  },
+  {
+    "id": "medial_cuneiform_right",
+    "bone": "medial_cuneiform",
+    "side": "right",
+    "medical": "medial cuneiform",
+    "everyday": "inner midfoot wedge bone",
+    "words": [
+      "medial cuneiform",
+      "first cuneiform",
+      "1st cuneiform"
+    ],
+    "parts": {
+      "center": [
+        -0.0689,
+        0.0514,
+        0.0165
+      ]
+    }
+  },
+  {
+    "id": "intermediate_cuneiform_left",
+    "bone": "intermediate_cuneiform",
+    "side": "left",
+    "medical": "intermediate cuneiform",
+    "everyday": "middle midfoot wedge bone",
+    "words": [
+      "intermediate cuneiform",
+      "middle cuneiform",
+      "second cuneiform",
+      "2nd cuneiform"
+    ],
+    "parts": {
+      "center": [
+        0.0848,
+        0.0579,
+        0.0109
+      ]
+    }
+  },
+  {
+    "id": "intermediate_cuneiform_right",
+    "bone": "intermediate_cuneiform",
+    "side": "right",
+    "medical": "intermediate cuneiform",
+    "everyday": "middle midfoot wedge bone",
+    "words": [
+      "intermediate cuneiform",
+      "middle cuneiform",
+      "second cuneiform",
+      "2nd cuneiform"
+    ],
+    "parts": {
+      "center": [
+        -0.0848,
+        0.0579,
+        0.0109
+      ]
+    }
+  },
+  {
+    "id": "lateral_cuneiform_left",
+    "bone": "lateral_cuneiform",
+    "side": "left",
+    "medical": "lateral cuneiform",
+    "everyday": "outer midfoot wedge bone",
+    "words": [
+      "lateral cuneiform",
+      "third cuneiform",
+      "3rd cuneiform"
+    ],
+    "parts": {
+      "center": [
+        0.0913,
+        0.0508,
+        0.0044
+      ]
+    }
+  },
+  {
+    "id": "lateral_cuneiform_right",
+    "bone": "lateral_cuneiform",
+    "side": "right",
+    "medical": "lateral cuneiform",
+    "everyday": "outer midfoot wedge bone",
+    "words": [
+      "lateral cuneiform",
+      "third cuneiform",
+      "3rd cuneiform"
+    ],
+    "parts": {
+      "center": [
+        -0.0913,
+        0.0508,
+        0.0044
+      ]
+    }
+  },
+  {
+    "id": "metatarsal_1_left",
+    "bone": "metatarsal_1",
+    "side": "left",
+    "medical": "first metatarsal",
+    "everyday": "foot bone of big toe",
+    "words": [
+      "first metatarsal",
+      "1st metatarsal",
+      "great toe metatarsal",
+      "hallux metatarsal"
+    ],
+    "parts": {
+      "base": [
+        0.0707,
+        0.0572,
+        0.032
+      ],
+      "proximal": [
+        0.0707,
+        0.0572,
+        0.032
+      ],
+      "shaft": [
+        0.0731,
+        0.0345,
+        0.0473
+      ],
+      "neck": [
+        0.0731,
+        0.0345,
+        0.0473
+      ],
+      "head": [
+        0.0707,
+        0.0572,
+        0.032
+      ],
+      "distal": [
+        0.0707,
+        0.0161,
+        0.0757
+      ]
+    }
+  },
+  {
+    "id": "metatarsal_1_right",
+    "bone": "metatarsal_1",
+    "side": "right",
+    "medical": "first metatarsal",
+    "everyday": "foot bone of big toe",
+    "words": [
+      "first metatarsal",
+      "1st metatarsal",
+      "great toe metatarsal",
+      "hallux metatarsal"
+    ],
+    "parts": {
+      "base": [
+        -0.0707,
+        0.0572,
+        0.032
+      ],
+      "proximal": [
+        -0.0707,
+        0.0572,
+        0.032
+      ],
+      "shaft": [
+        -0.0731,
+        0.0345,
+        0.0473
+      ],
+      "neck": [
+        -0.0731,
+        0.0345,
+        0.0473
+      ],
+      "head": [
+        -0.0707,
+        0.0572,
+        0.032
+      ],
+      "distal": [
+        -0.0707,
+        0.0161,
+        0.0757
+      ]
+    }
+  },
+  {
+    "id": "metatarsal_2_left",
+    "bone": "metatarsal_2",
+    "side": "left",
+    "medical": "second metatarsal",
+    "everyday": "foot bone of second toe",
+    "words": [
+      "second metatarsal",
+      "2nd metatarsal"
+    ],
+    "parts": {
+      "base": [
+        0.0888,
+        0.0608,
+        0.0217
+      ],
+      "proximal": [
+        0.0888,
+        0.0608,
+        0.0217
+      ],
+      "shaft": [
+        0.0869,
+        0.047,
+        0.0238
+      ],
+      "neck": [
+        0.0869,
+        0.047,
+        0.0238
+      ],
+      "head": [
+        0.0888,
+        0.0608,
+        0.0217
+      ],
+      "distal": [
+        0.0925,
+        0.0166,
+        0.0749
+      ]
+    }
+  },
+  {
+    "id": "metatarsal_2_right",
+    "bone": "metatarsal_2",
+    "side": "right",
+    "medical": "second metatarsal",
+    "everyday": "foot bone of second toe",
+    "words": [
+      "second metatarsal",
+      "2nd metatarsal"
+    ],
+    "parts": {
+      "base": [
+        -0.0888,
+        0.0608,
+        0.0217
+      ],
+      "proximal": [
+        -0.0888,
+        0.0608,
+        0.0217
+      ],
+      "shaft": [
+        -0.0869,
+        0.047,
+        0.0238
+      ],
+      "neck": [
+        -0.0869,
+        0.047,
+        0.0238
+      ],
+      "head": [
+        -0.0888,
+        0.0608,
+        0.0217
+      ],
+      "distal": [
+        -0.0925,
+        0.0166,
+        0.0749
+      ]
+    }
+  },
+  {
+    "id": "metatarsal_3_left",
+    "bone": "metatarsal_3",
+    "side": "left",
+    "medical": "third metatarsal",
+    "everyday": "foot bone of third toe",
+    "words": [
+      "third metatarsal",
+      "3rd metatarsal"
+    ],
+    "parts": {
+      "base": [
+        0.1,
+        0.0529,
+        0.0235
+      ],
+      "proximal": [
+        0.1,
+        0.0529,
+        0.0235
+      ],
+      "shaft": [
+        0.1009,
+        0.0344,
+        0.0455
+      ],
+      "neck": [
+        0.1009,
+        0.0344,
+        0.0455
+      ],
+      "head": [
+        0.1,
+        0.0529,
+        0.0235
+      ],
+      "distal": [
+        0.1057,
+        0.0158,
+        0.0711
+      ]
+    }
+  },
+  {
+    "id": "metatarsal_3_right",
+    "bone": "metatarsal_3",
+    "side": "right",
+    "medical": "third metatarsal",
+    "everyday": "foot bone of third toe",
+    "words": [
+      "third metatarsal",
+      "3rd metatarsal"
+    ],
+    "parts": {
+      "base": [
+        -0.1,
+        0.0529,
+        0.0235
+      ],
+      "proximal": [
+        -0.1,
+        0.0529,
+        0.0235
+      ],
+      "shaft": [
+        -0.1009,
+        0.0344,
+        0.0455
+      ],
+      "neck": [
+        -0.1009,
+        0.0344,
+        0.0455
+      ],
+      "head": [
+        -0.1,
+        0.0529,
+        0.0235
+      ],
+      "distal": [
+        -0.1057,
+        0.0158,
+        0.0711
+      ]
+    }
+  },
+  {
+    "id": "metatarsal_4_left",
+    "bone": "metatarsal_4",
+    "side": "left",
+    "medical": "fourth metatarsal",
+    "everyday": "foot bone of fourth toe",
+    "words": [
+      "fourth metatarsal",
+      "4th metatarsal"
+    ],
+    "parts": {
+      "base": [
+        0.1039,
+        0.0456,
+        0.0132
+      ],
+      "proximal": [
+        0.1039,
+        0.0456,
+        0.0132
+      ],
+      "shaft": [
+        0.1043,
+        0.0335,
+        0.0182
+      ],
+      "neck": [
+        0.1043,
+        0.0335,
+        0.0182
+      ],
+      "head": [
+        0.1039,
+        0.0456,
+        0.0132
+      ],
+      "distal": [
+        0.1153,
+        0.0151,
+        0.0617
+      ]
+    }
+  },
+  {
+    "id": "metatarsal_4_right",
+    "bone": "metatarsal_4",
+    "side": "right",
+    "medical": "fourth metatarsal",
+    "everyday": "foot bone of fourth toe",
+    "words": [
+      "fourth metatarsal",
+      "4th metatarsal"
+    ],
+    "parts": {
+      "base": [
+        -0.1039,
+        0.0456,
+        0.0132
+      ],
+      "proximal": [
+        -0.1039,
+        0.0456,
+        0.0132
+      ],
+      "shaft": [
+        -0.1043,
+        0.0335,
+        0.0182
+      ],
+      "neck": [
+        -0.1043,
+        0.0335,
+        0.0182
+      ],
+      "head": [
+        -0.1039,
+        0.0456,
+        0.0132
+      ],
+      "distal": [
+        -0.1153,
+        0.0151,
+        0.0617
+      ]
+    }
+  },
+  {
+    "id": "metatarsal_5_left",
+    "bone": "metatarsal_5",
+    "side": "left",
+    "medical": "fifth metatarsal",
+    "everyday": "outer foot bone of little toe",
+    "words": [
+      "fifth metatarsal",
+      "5th metatarsal",
+      "little toe metatarsal"
+    ],
+    "parts": {
+      "base": [
+        0.111,
+        0.0387,
+        0.0068
+      ],
+      "proximal": [
+        0.111,
+        0.0387,
+        0.0068
+      ],
+      "shaft": [
+        0.1179,
+        0.0245,
+        0.0141
+      ],
+      "neck": [
+        0.1179,
+        0.0245,
+        0.0141
+      ],
+      "head": [
+        0.111,
+        0.0387,
+        0.0068
+      ],
+      "distal": [
+        0.1275,
+        0.0115,
+        0.0498
+      ]
+    }
+  },
+  {
+    "id": "metatarsal_5_right",
+    "bone": "metatarsal_5",
+    "side": "right",
+    "medical": "fifth metatarsal",
+    "everyday": "outer foot bone of little toe",
+    "words": [
+      "fifth metatarsal",
+      "5th metatarsal",
+      "little toe metatarsal"
+    ],
+    "parts": {
+      "base": [
+        -0.111,
+        0.0387,
+        0.0068
+      ],
+      "proximal": [
+        -0.111,
+        0.0387,
+        0.0068
+      ],
+      "shaft": [
+        -0.1179,
+        0.0245,
+        0.0141
+      ],
+      "neck": [
+        -0.1179,
+        0.0245,
+        0.0141
+      ],
+      "head": [
+        -0.111,
+        0.0387,
+        0.0068
+      ],
+      "distal": [
+        -0.1275,
+        0.0115,
+        0.0498
+      ]
+    }
+  },
+  {
+    "id": "proximal_phalanx_foot_1_left",
+    "bone": "proximal_phalanx_foot_1",
+    "side": "left",
+    "medical": "proximal phalanx of great toe",
+    "everyday": "base bone of big toe",
+    "words": [
+      "proximal phalanx of great toe",
+      "proximal phalanx of big toe",
+      "proximal phalanx of hallux",
+      "first proximal phalanx of foot"
+    ],
+    "parts": {
+      "proximal": [
+        0.0721,
+        0.0284,
+        0.0866
+      ],
+      "shaft": [
+        0.0739,
+        0.0167,
+        0.0988
+      ],
+      "distal": [
+        0.0817,
+        0.0116,
+        0.0994
+      ]
+    }
+  },
+  {
+    "id": "proximal_phalanx_foot_1_right",
+    "bone": "proximal_phalanx_foot_1",
+    "side": "right",
+    "medical": "proximal phalanx of great toe",
+    "everyday": "base bone of big toe",
+    "words": [
+      "proximal phalanx of great toe",
+      "proximal phalanx of big toe",
+      "proximal phalanx of hallux",
+      "first proximal phalanx of foot"
+    ],
+    "parts": {
+      "proximal": [
+        -0.0721,
+        0.0284,
+        0.0866
+      ],
+      "shaft": [
+        -0.0739,
+        0.0167,
+        0.0988
+      ],
+      "distal": [
+        -0.0817,
+        0.0116,
+        0.0994
+      ]
+    }
+  },
+  {
+    "id": "proximal_phalanx_foot_2_left",
+    "bone": "proximal_phalanx_foot_2",
+    "side": "left",
+    "medical": "proximal phalanx of second toe",
+    "everyday": "base bone of second toe",
+    "words": [
+      "proximal phalanx of second toe",
+      "proximal phalanx of 2nd toe",
+      "second proximal phalanx of foot"
+    ],
+    "parts": {
+      "proximal": [
+        0.0916,
+        0.0248,
+        0.0849
+      ],
+      "shaft": [
+        0.0967,
+        0.0179,
+        0.0987
+      ],
+      "distal": [
+        0.1011,
+        0.0139,
+        0.107
+      ]
+    }
+  },
+  {
+    "id": "proximal_phalanx_foot_2_right",
+    "bone": "proximal_phalanx_foot_2",
+    "side": "right",
+    "medical": "proximal phalanx of second toe",
+    "everyday": "base bone of second toe",
+    "words": [
+      "proximal phalanx of second toe",
+      "proximal phalanx of 2nd toe",
+      "second proximal phalanx of foot"
+    ],
+    "parts": {
+      "proximal": [
+        -0.0916,
+        0.0248,
+        0.0849
+      ],
+      "shaft": [
+        -0.0967,
+        0.0179,
+        0.0987
+      ],
+      "distal": [
+        -0.1011,
+        0.0139,
+        0.107
+      ]
+    }
+  },
+  {
+    "id": "proximal_phalanx_foot_3_left",
+    "bone": "proximal_phalanx_foot_3",
+    "side": "left",
+    "medical": "proximal phalanx of third toe",
+    "everyday": "base bone of third toe",
+    "words": [
+      "proximal phalanx of third toe",
+      "proximal phalanx of 3rd toe",
+      "third proximal phalanx of foot"
+    ],
+    "parts": {
+      "proximal": [
+        0.1072,
+        0.0231,
+        0.0821
+      ],
+      "shaft": [
+        0.1118,
+        0.0164,
+        0.0878
+      ],
+      "distal": [
+        0.1102,
+        0.0131,
+        0.098
+      ]
+    }
+  },
+  {
+    "id": "proximal_phalanx_foot_3_right",
+    "bone": "proximal_phalanx_foot_3",
+    "side": "right",
+    "medical": "proximal phalanx of third toe",
+    "everyday": "base bone of third toe",
+    "words": [
+      "proximal phalanx of third toe",
+      "proximal phalanx of 3rd toe",
+      "third proximal phalanx of foot"
+    ],
+    "parts": {
+      "proximal": [
+        -0.1072,
+        0.0231,
+        0.0821
+      ],
+      "shaft": [
+        -0.1118,
+        0.0164,
+        0.0878
+      ],
+      "distal": [
+        -0.1102,
+        0.0131,
+        0.098
+      ]
+    }
+  },
+  {
+    "id": "proximal_phalanx_foot_4_left",
+    "bone": "proximal_phalanx_foot_4",
+    "side": "left",
+    "medical": "proximal phalanx of fourth toe",
+    "everyday": "base bone of fourth toe",
+    "words": [
+      "proximal phalanx of fourth toe",
+      "proximal phalanx of 4th toe",
+      "fourth proximal phalanx of foot"
+    ],
+    "parts": {
+      "proximal": [
+        0.1208,
+        0.0226,
+        0.0726
+      ],
+      "shaft": [
+        0.1229,
+        0.0162,
+        0.0824
+      ],
+      "distal": [
+        0.1301,
+        0.0109,
+        0.0904
+      ]
+    }
+  },
+  {
+    "id": "proximal_phalanx_foot_4_right",
+    "bone": "proximal_phalanx_foot_4",
+    "side": "right",
+    "medical": "proximal phalanx of fourth toe",
+    "everyday": "base bone of fourth toe",
+    "words": [
+      "proximal phalanx of fourth toe",
+      "proximal phalanx of 4th toe",
+      "fourth proximal phalanx of foot"
+    ],
+    "parts": {
+      "proximal": [
+        -0.1208,
+        0.0226,
+        0.0726
+      ],
+      "shaft": [
+        -0.1229,
+        0.0162,
+        0.0824
+      ],
+      "distal": [
+        -0.1301,
+        0.0109,
+        0.0904
+      ]
+    }
+  },
+  {
+    "id": "proximal_phalanx_foot_5_left",
+    "bone": "proximal_phalanx_foot_5",
+    "side": "left",
+    "medical": "proximal phalanx of fifth toe",
+    "everyday": "base bone of little toe",
+    "words": [
+      "proximal phalanx of fifth toe",
+      "proximal phalanx of 5th toe",
+      "proximal phalanx of little toe",
+      "fifth proximal phalanx of foot"
+    ],
+    "parts": {
+      "proximal": [
+        0.1326,
+        0.0181,
+        0.0609
+      ],
+      "shaft": [
+        0.1361,
+        0.013,
+        0.0666
+      ],
+      "distal": [
+        0.1366,
+        0.0101,
+        0.0722
+      ]
+    }
+  },
+  {
+    "id": "proximal_phalanx_foot_5_right",
+    "bone": "proximal_phalanx_foot_5",
+    "side": "right",
+    "medical": "proximal phalanx of fifth toe",
+    "everyday": "base bone of little toe",
+    "words": [
+      "proximal phalanx of fifth toe",
+      "proximal phalanx of 5th toe",
+      "proximal phalanx of little toe",
+      "fifth proximal phalanx of foot"
+    ],
+    "parts": {
+      "proximal": [
+        -0.1326,
+        0.0181,
+        0.0609
+      ],
+      "shaft": [
+        -0.1361,
+        0.013,
+        0.0666
+      ],
+      "distal": [
+        -0.1366,
+        0.0101,
+        0.0722
+      ]
+    }
+  },
+  {
+    "id": "middle_phalanx_foot_2_left",
+    "bone": "middle_phalanx_foot_2",
+    "side": "left",
+    "medical": "middle phalanx of second toe",
+    "everyday": "middle bone of second toe",
+    "words": [
+      "middle phalanx of second toe",
+      "middle phalanx of 2nd toe",
+      "second middle phalanx of foot"
+    ],
+    "parts": {
+      "proximal": [
+        0.1003,
+        0.0201,
+        0.1128
+      ],
+      "shaft": [
+        0.1012,
+        0.0147,
+        0.1193
+      ],
+      "distal": [
+        0.1046,
+        0.0123,
+        0.119
+      ]
+    }
+  },
+  {
+    "id": "middle_phalanx_foot_2_right",
+    "bone": "middle_phalanx_foot_2",
+    "side": "right",
+    "medical": "middle phalanx of second toe",
+    "everyday": "middle bone of second toe",
+    "words": [
+      "middle phalanx of second toe",
+      "middle phalanx of 2nd toe",
+      "second middle phalanx of foot"
+    ],
+    "parts": {
+      "proximal": [
+        -0.1003,
+        0.0201,
+        0.1128
+      ],
+      "shaft": [
+        -0.1012,
+        0.0147,
+        0.1193
+      ],
+      "distal": [
+        -0.1046,
+        0.0123,
+        0.119
+      ]
+    }
+  },
+  {
+    "id": "middle_phalanx_foot_3_left",
+    "bone": "middle_phalanx_foot_3",
+    "side": "left",
+    "medical": "middle phalanx of third toe",
+    "everyday": "middle bone of third toe",
+    "words": [
+      "middle phalanx of third toe",
+      "middle phalanx of 3rd toe",
+      "third middle phalanx of foot"
+    ],
+    "parts": {
+      "proximal": [
+        0.1151,
+        0.0187,
+        0.1069
+      ],
+      "shaft": [
+        0.1167,
+        0.0137,
+        0.1133
+      ],
+      "distal": [
+        0.1149,
+        0.0115,
+        0.1111
+      ]
+    }
+  },
+  {
+    "id": "middle_phalanx_foot_3_right",
+    "bone": "middle_phalanx_foot_3",
+    "side": "right",
+    "medical": "middle phalanx of third toe",
+    "everyday": "middle bone of third toe",
+    "words": [
+      "middle phalanx of third toe",
+      "middle phalanx of 3rd toe",
+      "third middle phalanx of foot"
+    ],
+    "parts": {
+      "proximal": [
+        -0.1151,
+        0.0187,
+        0.1069
+      ],
+      "shaft": [
+        -0.1167,
+        0.0137,
+        0.1133
+      ],
+      "distal": [
+        -0.1149,
+        0.0115,
+        0.1111
+      ]
+    }
+  },
+  {
+    "id": "middle_phalanx_foot_4_left",
+    "bone": "middle_phalanx_foot_4",
+    "side": "left",
+    "medical": "middle phalanx of fourth toe",
+    "everyday": "middle bone of fourth toe",
+    "words": [
+      "middle phalanx of fourth toe",
+      "middle phalanx of 4th toe",
+      "fourth middle phalanx of foot"
+    ],
+    "parts": {
+      "proximal": [
+        0.1286,
+        0.0174,
+        0.097
+      ],
+      "shaft": [
+        0.1287,
+        0.0134,
+        0.1001
+      ],
+      "distal": [
+        0.1307,
+        0.01,
+        0.0943
+      ]
+    }
+  },
+  {
+    "id": "middle_phalanx_foot_4_right",
+    "bone": "middle_phalanx_foot_4",
+    "side": "right",
+    "medical": "middle phalanx of fourth toe",
+    "everyday": "middle bone of fourth toe",
+    "words": [
+      "middle phalanx of fourth toe",
+      "middle phalanx of 4th toe",
+      "fourth middle phalanx of foot"
+    ],
+    "parts": {
+      "proximal": [
+        -0.1286,
+        0.0174,
+        0.097
+      ],
+      "shaft": [
+        -0.1287,
+        0.0134,
+        0.1001
+      ],
+      "distal": [
+        -0.1307,
+        0.01,
+        0.0943
+      ]
+    }
+  },
+  {
+    "id": "middle_phalanx_foot_5_left",
+    "bone": "middle_phalanx_foot_5",
+    "side": "left",
+    "medical": "middle phalanx of fifth toe",
+    "everyday": "middle bone of little toe",
+    "words": [
+      "middle phalanx of fifth toe",
+      "middle phalanx of 5th toe",
+      "middle phalanx of little toe",
+      "fifth middle phalanx of foot"
+    ],
+    "parts": {
+      "proximal": [
+        0.1406,
+        0.0161,
+        0.0827
+      ],
+      "shaft": [
+        0.1399,
+        0.0115,
+        0.0831
+      ],
+      "distal": [
+        0.1418,
+        0.0098,
+        0.0831
+      ]
+    }
+  },
+  {
+    "id": "middle_phalanx_foot_5_right",
+    "bone": "middle_phalanx_foot_5",
+    "side": "right",
+    "medical": "middle phalanx of fifth toe",
+    "everyday": "middle bone of little toe",
+    "words": [
+      "middle phalanx of fifth toe",
+      "middle phalanx of 5th toe",
+      "middle phalanx of little toe",
+      "fifth middle phalanx of foot"
+    ],
+    "parts": {
+      "proximal": [
+        -0.1406,
+        0.0161,
+        0.0827
+      ],
+      "shaft": [
+        -0.1399,
+        0.0115,
+        0.0831
+      ],
+      "distal": [
+        -0.1418,
+        0.0098,
+        0.0831
+      ]
+    }
+  },
+  {
+    "id": "distal_phalanx_foot_1_left",
+    "bone": "distal_phalanx_foot_1",
+    "side": "left",
+    "medical": "distal phalanx of great toe",
+    "everyday": "tip bone of big toe",
+    "words": [
+      "distal phalanx of great toe",
+      "distal phalanx of big toe",
+      "distal phalanx of hallux",
+      "first distal phalanx of foot"
+    ],
+    "parts": {
+      "proximal": [
+        0.0796,
+        0.0203,
+        0.1133
+      ],
+      "shaft": [
+        0.0828,
+        0.0136,
+        0.1206
+      ],
+      "distal": [
+        0.0797,
+        0.0105,
+        0.1213
+      ]
+    }
+  },
+  {
+    "id": "distal_phalanx_foot_1_right",
+    "bone": "distal_phalanx_foot_1",
+    "side": "right",
+    "medical": "distal phalanx of great toe",
+    "everyday": "tip bone of big toe",
+    "words": [
+      "distal phalanx of great toe",
+      "distal phalanx of big toe",
+      "distal phalanx of hallux",
+      "first distal phalanx of foot"
+    ],
+    "parts": {
+      "proximal": [
+        -0.0796,
+        0.0203,
+        0.1133
+      ],
+      "shaft": [
+        -0.0828,
+        0.0136,
+        0.1206
+      ],
+      "distal": [
+        -0.0797,
+        0.0105,
+        0.1213
+      ]
+    }
+  },
+  {
+    "id": "distal_phalanx_foot_2_left",
+    "bone": "distal_phalanx_foot_2",
+    "side": "left",
+    "medical": "distal phalanx of second toe",
+    "everyday": "tip bone of second toe",
+    "words": [
+      "distal phalanx of second toe",
+      "distal phalanx of 2nd toe",
+      "second distal phalanx of foot"
+    ],
+    "parts": {
+      "proximal": [
+        0.1027,
+        0.0166,
+        0.1266
+      ],
+      "shaft": [
+        0.1044,
+        0.0126,
+        0.1307
+      ],
+      "distal": [
+        0.1047,
+        0.0099,
+        0.1312
+      ]
+    }
+  },
+  {
+    "id": "distal_phalanx_foot_2_right",
+    "bone": "distal_phalanx_foot_2",
+    "side": "right",
+    "medical": "distal phalanx of second toe",
+    "everyday": "tip bone of second toe",
+    "words": [
+      "distal phalanx of second toe",
+      "distal phalanx of 2nd toe",
+      "second distal phalanx of foot"
+    ],
+    "parts": {
+      "proximal": [
+        -0.1027,
+        0.0166,
+        0.1266
+      ],
+      "shaft": [
+        -0.1044,
+        0.0126,
+        0.1307
+      ],
+      "distal": [
+        -0.1047,
+        0.0099,
+        0.1312
+      ]
+    }
+  },
+  {
+    "id": "distal_phalanx_foot_3_left",
+    "bone": "distal_phalanx_foot_3",
+    "side": "left",
+    "medical": "distal phalanx of third toe",
+    "everyday": "tip bone of third toe",
+    "words": [
+      "distal phalanx of third toe",
+      "distal phalanx of 3rd toe",
+      "third distal phalanx of foot"
+    ],
+    "parts": {
+      "proximal": [
+        0.1184,
+        0.0154,
+        0.1208
+      ],
+      "shaft": [
+        0.1196,
+        0.0123,
+        0.1251
+      ],
+      "distal": [
+        0.1191,
+        0.0098,
+        0.1224
+      ]
+    }
+  },
+  {
+    "id": "distal_phalanx_foot_3_right",
+    "bone": "distal_phalanx_foot_3",
+    "side": "right",
+    "medical": "distal phalanx of third toe",
+    "everyday": "tip bone of third toe",
+    "words": [
+      "distal phalanx of third toe",
+      "distal phalanx of 3rd toe",
+      "third distal phalanx of foot"
+    ],
+    "parts": {
+      "proximal": [
+        -0.1184,
+        0.0154,
+        0.1208
+      ],
+      "shaft": [
+        -0.1196,
+        0.0123,
+        0.1251
+      ],
+      "distal": [
+        -0.1191,
+        0.0098,
+        0.1224
+      ]
+    }
+  },
+  {
+    "id": "distal_phalanx_foot_4_left",
+    "bone": "distal_phalanx_foot_4",
+    "side": "left",
+    "medical": "distal phalanx of fourth toe",
+    "everyday": "tip bone of fourth toe",
+    "words": [
+      "distal phalanx of fourth toe",
+      "distal phalanx of 4th toe",
+      "fourth distal phalanx of foot"
+    ],
+    "parts": {
+      "proximal": [
+        0.1321,
+        0.0163,
+        0.1063
+      ],
+      "shaft": [
+        0.1323,
+        0.0117,
+        0.1091
+      ],
+      "distal": [
+        0.1328,
+        0.0095,
+        0.1101
+      ]
+    }
+  },
+  {
+    "id": "distal_phalanx_foot_4_right",
+    "bone": "distal_phalanx_foot_4",
+    "side": "right",
+    "medical": "distal phalanx of fourth toe",
+    "everyday": "tip bone of fourth toe",
+    "words": [
+      "distal phalanx of fourth toe",
+      "distal phalanx of 4th toe",
+      "fourth distal phalanx of foot"
+    ],
+    "parts": {
+      "proximal": [
+        -0.1321,
+        0.0163,
+        0.1063
+      ],
+      "shaft": [
+        -0.1323,
+        0.0117,
+        0.1091
+      ],
+      "distal": [
+        -0.1328,
+        0.0095,
+        0.1101
+      ]
+    }
+  },
+  {
+    "id": "distal_phalanx_foot_5_left",
+    "bone": "distal_phalanx_foot_5",
+    "side": "left",
+    "medical": "distal phalanx of fifth toe",
+    "everyday": "tip bone of little toe",
+    "words": [
+      "distal phalanx of fifth toe",
+      "distal phalanx of 5th toe",
+      "distal phalanx of little toe",
+      "fifth distal phalanx of foot"
+    ],
+    "parts": {
+      "proximal": [
+        0.142,
+        0.0143,
+        0.0883
+      ],
+      "shaft": [
+        0.1427,
+        0.0119,
+        0.0922
+      ],
+      "distal": [
+        0.143,
+        0.0097,
+        0.0922
+      ]
+    }
+  },
+  {
+    "id": "distal_phalanx_foot_5_right",
+    "bone": "distal_phalanx_foot_5",
+    "side": "right",
+    "medical": "distal phalanx of fifth toe",
+    "everyday": "tip bone of little toe",
+    "words": [
+      "distal phalanx of fifth toe",
+      "distal phalanx of 5th toe",
+      "distal phalanx of little toe",
+      "fifth distal phalanx of foot"
+    ],
+    "parts": {
+      "proximal": [
+        -0.142,
+        0.0143,
+        0.0883
+      ],
+      "shaft": [
+        -0.1427,
+        0.0119,
+        0.0922
+      ],
+      "distal": [
+        -0.143,
+        0.0097,
+        0.0922
+      ]
+    }
+  }
+]
