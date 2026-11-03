@@ -1,0 +1,98 @@
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 2rem;
+  border-bottom: 1px solid #d0d0d0;
+}
+
+.brand {
+  font-weight: 600;
+}
+
+.nav {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.nav a {
+  color: inherit;
+}
+
+.hero {
+  max-width: 40rem;
+  margin: 0 auto;
+  padding: 5rem 2rem 3rem;
+  text-align: center;
+}
+
+.hero h1 {
+  margin: 0 0 1rem;
+  font-size: 2.25rem;
+}
+
+.hero p {
+  margin: 0;
+  font-size: 1.125rem;
+}
+
+.actions {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.primary,
+.secondary {
+  padding: 0.75rem 1.5rem;
+  border: 1px solid #1a1a1a;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.primary {
+  background: #1a1a1a;
+  color: #ffffff;
+}
+
+.secondary {
+  color: #1a1a1a;
+}
+
+.features {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+  gap: 1.5rem;
+  max-width: 60rem;
+  margin: 0 auto;
+  padding: 2rem;
+  border-top: 1px solid #d0d0d0;
+  list-style: none;
+  text-align: center;
+}
+
+.features h2 {
+  margin: 0 0 0.5rem;
+  font-size: 1.125rem;
+}
+
+.features p {
+  margin: 0;
+  color: #4a4a4a;
+}
+
+.about {
+  max-width: 40rem;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.footer {
+  padding: 2rem;
+  border-top: 1px solid #d0d0d0;
+  color: #4a4a4a;
+  font-size: 0.875rem;
+  text-align: center;
+}

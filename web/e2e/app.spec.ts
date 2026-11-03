@@ -1,6 +1,8 @@
 import { expect, test } from '@playwright/test'
 
-test('loads the app in the browser', async ({ page }) => {
+test('shows the homepage', async ({ page }) => {
   await page.goto('/')
-  await expect(page.getByRole('heading', { name: 'BoneScan' })).toBeVisible()
+  await expect(
+    page.getByRole('heading', { name: 'Understand your imaging report in 3D' }),
+  ).toBeVisible()
 })

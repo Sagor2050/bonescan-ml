@@ -1,9 +1,7 @@
+import HomePage from './pages/HomePage.tsx'
+
 function App() {
-  return (
-    <main>
-      <h1>BoneScan</h1>
-    </main>
-  )
+  return <HomePage />
 }
 
 export default App
