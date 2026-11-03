@@ -56,24 +56,34 @@ during development.
 
 ## Tech stack and commands
 
-The team hasn't chosen a stack yet. Until this section is updated:
+The stack comes from the [project plan](docs/project-plan.pdf). The repository
+holds two projects:
 
-- Don't add a language, framework, package manager, dependency, build tool,
-  or CI workflow without team agreement. Propose it in an issue first.
-- Don't scaffold application code ahead of that decision.
+- `web/`: the web app. React and TypeScript built with Vite, Three.js through
+  React Three Fiber and drei for the 3D skeleton, PDF.js for the original
+  report, and supabase-js for accounts and storage. Tested with Vitest and
+  Playwright, linted with oxlint. Needs Node 24 (`web/.nvmrc`).
+- `reader/`: the report reader. A FastAPI service in Python 3.11 that uses
+  pdfplumber and medspaCy. Tested with pytest.
 
-Once the stack is chosen, record it here with exact commands:
+Don't add a language, framework, package manager, dependency, build tool, or
+CI workflow outside this stack without team agreement. Propose it in an issue
+first.
 
-| Task                 | Command |
-| -------------------- | ------- |
-| Install dependencies | _TBD_   |
-| Run the app          | _TBD_   |
-| Run tests            | _TBD_   |
-| Lint and format      | _TBD_   |
+Run each command from inside its project folder:
+
+| Task                 | `web/`                                            | `reader/`                                                                       |
+| -------------------- | ------------------------------------------------- | ------------------------------------------------------------------------------- |
+| Install dependencies | `npm ci`, then `npx playwright install chromium` | `python3.11 -m venv .venv`, then `.venv/bin/pip install -r requirements-dev.txt` |
+| Run the app          | `npm run dev`                                     | `.venv/bin/uvicorn app.main:app --reload`                                       |
+| Run tests            | `npm test` and `npm run test:e2e`                 | `.venv/bin/pytest`                                                              |
+| Lint                 | `npm run lint`                                    | None yet                                                                        |
+| Type-check and build | `npm run build`                                   | Not needed                                                                      |
+
+On Windows, use `.venv\Scripts\` instead of `.venv/bin/`.
 
 Always run code and tests inside the project's own environment and lockfile
-(for example a virtual environment or `package-lock.json`). Never install
-packages globally.
+(`web/package-lock.json` and `reader/.venv`). Never install packages globally.
 
 ## Development workflow
 
