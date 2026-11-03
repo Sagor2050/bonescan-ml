@@ -5,8 +5,9 @@ patient's actual bone in 3D with the reported spot marked, translates report
 language into plain English, and lines up scans over time so a patient can see
 their recovery for themselves.
 
-> **Status:** Early planning. The team has not chosen a tech stack yet, and
-> there is no application code.
+> **Status:** Setup. The tech stack is chosen (see the
+> [project plan](docs/project-plan.pdf)), and the web app and report reader
+> are set up, but no features are built yet.
 
 BoneScan is a team project for CISC 3171: Introduction to Software Engineering
 (Fall 2026, instructor Alec Malstrom), based on a pitch by Sagor Sutra Dhor.
@@ -76,7 +77,25 @@ data or public, de-identified datasets only. See
 
 ## Getting started
 
-Setup instructions will be added once the team chooses a tech stack.
+You need [Node 24](https://nodejs.org/) and
+[Python 3.11](https://www.python.org/downloads/).
+
+```sh
+# Web app, at http://localhost:5173
+cd web
+npm ci
+npx playwright install chromium   # browser for the end-to-end tests
+npm run dev
+
+# Report reader, at http://localhost:8000/health (in a second terminal)
+cd reader
+python3.11 -m venv .venv
+.venv/bin/pip install -r requirements-dev.txt
+.venv/bin/uvicorn app.main:app --reload
+```
+
+On Windows, use `.venv\Scripts\` instead of `.venv/bin/`. Test and lint
+commands are in [AGENTS.md](AGENTS.md#tech-stack-and-commands).
 
 ## Contributing
 

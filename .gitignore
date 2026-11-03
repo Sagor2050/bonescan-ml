@@ -39,5 +39,14 @@ DICOMDIR
 *.mhd
 !tests/fixtures/**
 
-# Add language- and framework-specific entries once the stack is chosen
-# (templates: https://github.com/github/gitignore).
+# Web app (Node, Vite, Playwright)
+node_modules/
+dist/
+web/test-results/
+web/playwright-report/
+
+# Report reader (Python)
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
