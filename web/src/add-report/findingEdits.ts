@@ -43,13 +43,30 @@ export function newFinding(): DraftFinding {
 }
 
 // The reason a finding gets no marker (S2.4). Written in advance, never generated.
-export const STATUS_REASONS: Partial<Record<Status, string>> = {
+const STATUS_REASONS: Partial<Record<Status, string>> = {
   outside_coverage:
     "This is on a bone the app doesn't cover, so it won't be marked on the skeleton. It's still in your original report.",
   side_not_stated:
     "Your report doesn't say which side this is on. It won't be marked until you choose a side.",
   bone_not_stated:
-    "Your report names an area but not a bone. It won't be marked until you choose a bone. Your care team can tell you which one if you're not sure.",
+    "Your report doesn't say which bone this is. It won't be marked until you choose a bone. Your care team can tell you which one if you're not sure.",
+}
+
+/** Why a finding gets no marker, or null if it gets one. */
+export function noMarkerReason(finding: Finding): string | null {
+  if (finding.status === 'placed') return null
+  // A finding the patient added isn't from the report, so don't blame the report.
+  if (finding.wording.length === 0) {
+    return 'Choose a bone and a side to mark this on the skeleton.'
+  }
+  return STATUS_REASONS[finding.status] ?? null
+}
+
+/** What to call a finding that has no bone chosen. */
+export function unplacedTitle(finding: Finding): string {
+  return finding.status === 'outside_coverage'
+    ? "A bone the app doesn't cover"
+    : 'Bone not chosen'
 }
 
 /** Today's date where the patient is, as YYYY-MM-DD. */

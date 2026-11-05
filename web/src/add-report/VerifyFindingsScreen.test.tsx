@@ -134,6 +134,8 @@ test('a missed finding can be added, and is marked once it has a bone and side',
   expect(card().getByText('Entered by you')).toBeDefined()
   expect(card().getByText('No marker')).toBeDefined()
   expect(card().queryByText('Your report says:')).toBeNull()
+  expect(card().getByText(/Choose a bone and a side/)).toBeDefined()
+  expect(card().queryByText(/Your report doesn't/)).toBeNull()
 
   fireEvent.change(card().getByLabelText('Bone for finding 1'), {
     target: { value: 'femur' },
@@ -162,14 +164,18 @@ test('a finding with no bone gets no marker and says why', async () => {
   showDraft(withFinding({ bone: '', side: 'left', status: 'bone_not_stated' }))
   await renderScreen()
   expect(card().getByText('No marker')).toBeDefined()
-  expect(card().getByText(/names an area but not a bone/)).toBeDefined()
+  expect(card().getByText(/doesn't say which bone/)).toBeDefined()
+  expect(card().getByRole('heading').textContent).toContain('Bone not chosen')
 })
 
 test('a finding outside coverage gets no marker and says why', async () => {
   showDraft(withFinding({ bone: '', side: '', status: 'outside_coverage' }))
   await renderScreen()
   expect(card().getByText('No marker')).toBeDefined()
-  expect(card().getByText(/doesn't cover/)).toBeDefined()
+  expect(card().getByText(/It's still in your original report/)).toBeDefined()
+  expect(card().getByRole('heading').textContent).toContain(
+    "A bone the app doesn't cover",
+  )
 })
 
 test('an uncertain finding is labeled in words, not by color', async () => {

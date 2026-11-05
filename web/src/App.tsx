@@ -1,3 +1,4 @@
+import AddReportScreen from './add-report/AddReportScreen.tsx'
 import VerifyFindingsScreen from './add-report/VerifyFindingsScreen.tsx'
 import HomePage from './pages/HomePage.tsx'
 import RegisterPage from './pages/RegisterPage.tsx'
@@ -29,10 +30,7 @@ const routes: Route[] = [
     path: paths.addReport,
     render: () => (
       <WorkspaceLayout>
-        <PlaceholderScreen
-          title="Add a report"
-          links={[{ href: paths.verifyFindings, label: 'Check the findings' }]}
-        />
+        <AddReportScreen />
       </WorkspaceLayout>
     ),
   },
