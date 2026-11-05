@@ -1,3 +1,4 @@
+import RegisterPage from './pages/RegisterPage.tsx'
 import HomePage from './pages/HomePage.tsx'
 import NotFoundScreen from './routing/NotFoundScreen.tsx'
 import { paths, reportPath } from './routing/paths.ts'
@@ -5,6 +6,7 @@ import PlaceholderScreen from './routing/PlaceholderScreen.tsx'
 import Routes, { type Route } from './routing/Routes.tsx'
 import WorkspaceController from './workspace/WorkspaceController.tsx'
 import WorkspaceLayout from './workspace/WorkspaceLayout.tsx'
+
 
 // Stands in for a real report until reports can be saved (Milestone 4).
 const sampleReportPath = reportPath('sample')
@@ -25,12 +27,7 @@ const routes: Route[] = [
   },
   {
     path: paths.createAccount,
-    render: () => (
-      <PlaceholderScreen
-        title="Create account"
-        links={[{ href: paths.signIn, label: 'Sign in' }]}
-      />
-    ),
+  render: () => <RegisterPage />,
   },
   {
     path: paths.addReport,

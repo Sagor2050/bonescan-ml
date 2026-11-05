@@ -24,7 +24,13 @@ test.each([
 ])('%s shows the "%s" screen', (path, title) => {
   window.history.replaceState(null, '', path)
   render(<App />)
+  if (path === '/create-account') {
+  expect(
+    screen.getByRole('heading', { name: 'Create Account' })
+  ).toBeDefined()
+} else {
   expect(heading()).toBe(title)
+}
 })
 
 test('a path with no screen says so and links home', () => {
