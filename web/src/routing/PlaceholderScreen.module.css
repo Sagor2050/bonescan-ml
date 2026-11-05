@@ -1,9 +1,28 @@
 .screen {
-  max-width: 40rem;
-  margin: 0 auto;
-  padding: 3rem 2rem;
+  max-width: 34rem;
+  margin: 4rem auto;
+  padding: 2rem 2.5rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+  box-shadow: var(--shadow);
 }
 
 .screen h1 {
+  margin: 0 0 0.5rem;
+  font-size: 1.5rem;
+}
+
+.screen p {
   margin: 0 0 1rem;
+  color: var(--ink-soft);
+}
+
+.screen ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.25rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
 }

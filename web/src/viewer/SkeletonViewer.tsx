@@ -222,11 +222,10 @@ function SkeletonViewer({ findings }: { findings: SavedFinding[] }) {
 
   return (
     <section className={styles.viewer} aria-label="3D skeleton">
-      <p className={styles.notice}>
-        This is a standard adult skeleton, not a model of your own bones.
-      </p>
-
       <div className={styles.stage}>
+        <p className={styles.notice}>
+          This is a standard adult skeleton, not a model of your own bones.
+        </p>
         <ViewerErrorBoundary
           fallback={
             <p className={styles.message}>
@@ -306,14 +305,14 @@ function SkeletonViewer({ findings }: { findings: SavedFinding[] }) {
       </div>
 
       <p className={styles.help}>
+        <strong aria-live="polite">
+          {selectedBone
+            ? `Your ${selectedBone.side} ${boneLabel(selectedBone)}`
+            : 'Click a bone to see its name.'}
+        </strong>{' '}
         Drag to turn. Scroll to zoom. Right-drag to move sideways.
       </p>
 
-      <p className={styles.selectedBone} aria-live="polite">
-        {selectedBone
-          ? `Your ${selectedBone.side} ${boneLabel(selectedBone)}`
-          : 'Click a bone to see its name.'}
-      </p>
     </section>
   )
 }

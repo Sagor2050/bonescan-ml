@@ -1,5 +1,8 @@
 import { lazy, Suspense, useState } from 'react'
 import ReportPane from '../report-view/ReportPane.tsx'
+import Link from '../routing/Link.tsx'
+import { paths } from '../routing/paths.ts'
+import { formatExamDate } from './examDate.ts'
 import FindingsList from './FindingsList.tsx'
 import styles from './ReportScreen.module.css'
 import { useReport } from './useReport.ts'
@@ -15,10 +18,19 @@ function ReportScreen({ reportId }: { reportId: string }) {
   return (
     <main className={styles.screen}>
       <div className={styles.heading}>
-        <h1>Your report and skeleton</h1>
+        <div>
+          <Link className={styles.back} href={paths.reports}>
+            ← My reports
+          </Link>
+          <h1>Your report and skeleton</h1>
+        </div>
+        {report.status === 'ready' && (
+          <p className={styles.examDate}>
+            Exam date: {formatExamDate(report.report.exam_date)}
+          </p>
+        )}
         {report.status === 'ready' && (
           <button
-            className={styles.toggle}
             onClick={() => setShowReport(!showReport)}
           >
             {showReport ? 'Hide the report' : 'Show the report'}

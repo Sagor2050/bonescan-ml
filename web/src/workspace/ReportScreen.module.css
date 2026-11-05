@@ -1,33 +1,38 @@
 .screen {
   display: flex;
   flex-direction: column;
-  height: calc(100vh - 4rem);
+  height: calc(100vh - 3.25rem);
   min-height: 36rem;
   box-sizing: border-box;
-  padding: 0.75rem 1.5rem;
+  padding: 0.75rem 1.5rem 1rem;
 }
 
 .heading {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
+  align-items: flex-end;
   gap: 1rem;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.heading > div {
+  flex: 1;
+  min-width: 0;
+}
+
+.back {
+  font-size: 0.9375rem;
 }
 
 .heading h1 {
   margin: 0;
   font-size: 1.5rem;
+  line-height: 1.25;
 }
 
-.toggle {
-  padding: 0.25rem 0.75rem;
-  border: 1px solid #1a1a1a;
-  border-radius: 0.25rem;
-  background: #ffffff;
-  color: inherit;
-  font: inherit;
-  cursor: pointer;
+.examDate {
+  margin: 0;
+  padding: 0.375rem 0;
+  color: var(--ink-soft);
 }
 
 .split,
@@ -40,11 +45,11 @@
 
 /* Wide enough on a 13-inch laptop to read the report without zooming (NFR12). */
 .split {
-  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr) 15rem;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr) 15.5rem;
 }
 
 .modelOnly {
-  grid-template-columns: minmax(0, 1fr) 15rem;
+  grid-template-columns: minmax(0, 1fr) 15.5rem;
 }
 
 .reportPane {

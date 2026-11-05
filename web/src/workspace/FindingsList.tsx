@@ -52,15 +52,44 @@ function FindingsList({ findings }: { findings: SavedFinding[] }) {
                     aria-pressed={finding.id === selectedFindingId}
                     onClick={() => selectFinding(finding.id)}
                   >
-                    <strong>{summary.title}</strong>
+                    <strong>
+                      {summary.noMarkerReason ? (
+                        <span
+                          className={styles.noMarker}
+                          aria-hidden="true"
+                        >
+                          ○
+                        </span>
+                      ) : (
+                        <span
+                          className={
+                            finding.certainty === 'certain'
+                              ? styles.certain
+                              : styles.uncertain
+                          }
+                          aria-hidden="true"
+                        >
+                          {finding.certainty === 'certain' ? '●' : '◆'}
+                        </span>
+                      )}{' '}
+                      {summary.title}
+                    </strong>
                     {summary.boneName && <span>{summary.boneName}</span>}
                     {summary.sideLabel && <span>{summary.sideLabel}</span>}
-                    {summary.parts && <span>Part: {summary.parts}</span>}
+                    {summary.parts && (
+                      <span className={styles.detail}>
+                        Part: {summary.parts}
+                      </span>
+                    )}
                     {summary.reportWords && (
-                      <span>Report says: {summary.reportWords}</span>
+                      <span className={styles.detail}>
+                        Report says: {summary.reportWords}
+                      </span>
                     )}
                     {summary.reportSentence && (
-                      <span>Report says: “{summary.reportSentence}”</span>
+                      <span className={styles.detail}>
+                        Report says: “{summary.reportSentence}”
+                      </span>
                     )}
                     {summary.noMarkerReason && (
                       <em>{summary.noMarkerReason}</em>
