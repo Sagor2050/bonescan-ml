@@ -1,3 +1,5 @@
+import Link from '../routing/Link.tsx'
+import { paths } from '../routing/paths.ts'
 import styles from './HomePage.module.css'
 
 const features = [
@@ -22,7 +24,7 @@ function HomePage() {
         <span className={styles.brand}>BoneScan</span>
         <nav className={styles.nav}>
           <a href="#about">About</a>
-          <a href="/sign-in">Sign in</a>
+          <Link href={paths.signIn}>Sign in</Link>
         </nav>
       </header>
 
@@ -34,12 +36,12 @@ function HomePage() {
             one is on a 3D skeleton.
           </p>
           <div className={styles.actions}>
-            <a className={styles.primary} href="/create-account">
+            <Link className={styles.primary} href={paths.createAccount}>
               Create account
-            </a>
-            <a className={styles.secondary} href="/sign-in">
+            </Link>
+            <Link className={styles.secondary} href={paths.signIn}>
               Sign in
-            </a>
+            </Link>
           </div>
         </section>
 
