@@ -304,6 +304,7 @@ Run each command from inside its project folder:
 | Run tests            | `npm test` and `npm run test:e2e`                 | `.venv/bin/pytest`                                                              |
 | Lint                 | `npm run lint`                                    | None yet                                                                        |
 | Type-check and build | `npm run build`                                   | Not needed                                                                      |
+| Check the 3D model   | `npm run check:model`                             | Not needed                                                                      |
 
 On Windows, use `.venv\Scripts\` instead of `.venv/bin/`.
 
