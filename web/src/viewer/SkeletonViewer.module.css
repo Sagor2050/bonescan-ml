@@ -1,0 +1,64 @@
+.viewer {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  min-height: 0;
+  height: 100%;
+}
+
+.notice {
+  margin: 0;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #1a1a1a;
+  border-radius: 0.25rem;
+  font-weight: 600;
+}
+
+.stage {
+  position: relative;
+  flex: 1;
+  min-height: 20rem;
+  overflow: hidden;
+  border: 1px solid #d0d0d0;
+  border-radius: 0.25rem;
+  background: #2b3038;
+}
+
+.message {
+  margin: 0;
+  padding: 2rem;
+  color: #ffffff;
+  text-align: center;
+}
+
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.5rem 1rem;
+}
+
+.controls > div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+}
+
+.controls button {
+  padding: 0.375rem 0.75rem;
+  border: 1px solid #1a1a1a;
+  border-radius: 0.25rem;
+  background: #ffffff;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+.help,
+.selectedBone {
+  margin: 0;
+}
+
+.selectedBone {
+  font-weight: 600;
+}
