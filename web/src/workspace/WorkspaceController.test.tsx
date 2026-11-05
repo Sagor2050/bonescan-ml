@@ -1,0 +1,98 @@
+import { fireEvent, render, screen, within } from '@testing-library/react'
+import { expect, test } from 'vitest'
+import WorkspaceController from './WorkspaceController.tsx'
+import {
+  initialWorkspaceState,
+  useWorkspace,
+  workspaceReducer,
+} from './workspaceState.ts'
+
+// Stand-ins for the two panes that follow the selected finding (S4.2).
+function Pane({ name, findingId }: { name: string; findingId: string }) {
+  const { selectedFindingId, selectFinding, clearSelection } = useWorkspace()
+  return (
+    <section aria-label={name}>
+      <p>Selected: {selectedFindingId ?? 'nothing'}</p>
+      <button onClick={() => selectFinding(findingId)}>Select</button>
+      <button onClick={clearSelection}>Clear</button>
+    </section>
+  )
+}
+
+function renderPanes() {
+  render(
+    <WorkspaceController>
+      <Pane name="report" findingId="finding-1" />
+      <Pane name="skeleton" findingId="finding-2" />
+    </WorkspaceController>,
+  )
+}
+
+function pane(name: string) {
+  return screen.getByRole('region', { name })
+}
+
+function click(paneName: string, button: string) {
+  fireEvent.click(within(pane(paneName)).getByRole('button', { name: button }))
+}
+
+test('nothing is selected at first', () => {
+  renderPanes()
+  expect(pane('report').textContent).toContain('Selected: nothing')
+  expect(pane('skeleton').textContent).toContain('Selected: nothing')
+})
+
+test('selecting a finding in one pane updates both panes', () => {
+  renderPanes()
+
+  click('report', 'Select')
+
+  expect(pane('report').textContent).toContain('Selected: finding-1')
+  expect(pane('skeleton').textContent).toContain('Selected: finding-1')
+})
+
+test('only one finding is selected at a time', () => {
+  renderPanes()
+
+  click('report', 'Select')
+  click('skeleton', 'Select')
+
+  expect(pane('report').textContent).toContain('Selected: finding-2')
+  expect(pane('skeleton').textContent).toContain('Selected: finding-2')
+})
+
+test('clearing the selection clears it in both panes', () => {
+  renderPanes()
+  click('report', 'Select')
+
+  click('skeleton', 'Clear')
+
+  expect(pane('report').textContent).toContain('Selected: nothing')
+  expect(pane('skeleton').textContent).toContain('Selected: nothing')
+})
+
+test('the reducer selects and clears a finding', () => {
+  const selected = workspaceReducer(initialWorkspaceState, {
+    type: 'selectFinding',
+    findingId: 'finding-1',
+  })
+  expect(selected.selectedFindingId).toBe('finding-1')
+
+  const cleared = workspaceReducer(selected, { type: 'clearSelection' })
+  expect(cleared.selectedFindingId).toBeNull()
+})
+
+test('useWorkspace outside the controller is an error', () => {
+  function Orphan() {
+    useWorkspace()
+    return null
+  }
+  // React logs the thrown error; keep it out of the test output.
+  const consoleError = console.error
+  console.error = () => {}
+  try {
+    expect(() => render(<Orphan />)).toThrow(/inside WorkspaceController/)
+  } finally {
+    console.error = consoleError
+  }
+})
