@@ -9,7 +9,14 @@ from starlette.datastructures import UploadFile
 from app import logging_setup  # noqa: F401
 from app.auth import allowed_origins, token_is_valid
 from app.contract import ReadResponse, Refusal
-from app.pdf import MAX_BYTES, REFUSAL_MESSAGES, ReportRefused, extract_pdf
+from app.pdf import (
+    MAX_BYTES,
+    REFUSAL_MESSAGES,
+    ReportRefused,
+    extract_pdf,
+    wording_on_pages,
+)
+from app.reading import read_report
 
 # Room for the multipart wrapper around a file that is exactly at the limit.
 MULTIPART_OVERHEAD = 64 * 1024
@@ -48,13 +55,25 @@ def refusal_response(error: ReportRefused) -> JSONResponse:
 def read_pasted(text: str) -> ReadResponse:
     if not text.strip():
         raise ReportRefused("no_text")
-    return ReadResponse(text=text, exam_date=None, candidate_dates=[], findings=[])
+    reading = read_report(text)
+    return ReadResponse(
+        text=text,
+        exam_date=reading.exam_date,
+        candidate_dates=reading.candidate_dates,
+        findings=reading.findings,
+    )
 
 
 def read_pdf(data: bytes) -> ReadResponse:
     extracted = extract_pdf(data)
+    reading = read_report(
+        extracted.text, lambda start, end: wording_on_pages(extracted, start, end)
+    )
     return ReadResponse(
-        text=extracted.text, exam_date=None, candidate_dates=[], findings=[]
+        text=extracted.text,
+        exam_date=reading.exam_date,
+        candidate_dates=reading.candidate_dates,
+        findings=reading.findings,
     )
 
 
