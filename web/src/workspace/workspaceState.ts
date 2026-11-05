@@ -9,15 +9,19 @@ export type WorkspaceState = {
   // Goes up with every selection, even of the same finding, so that choosing a
   // finding again brings the camera back to it.
   selectionCount: number
+  // The report the timeline is showing. Null until the patient chooses one.
+  timelineReportId: string | null
 }
 
 export type WorkspaceAction =
   | { type: 'selectFinding'; findingId: string }
   | { type: 'clearSelection' }
+  | { type: 'showReport'; reportId: string }
 
 export const initialWorkspaceState: WorkspaceState = {
   selectedFindingId: null,
   selectionCount: 0,
+  timelineReportId: null,
 }
 
 export function workspaceReducer(
@@ -33,6 +37,13 @@ export function workspaceReducer(
       }
     case 'clearSelection':
       return { ...state, selectedFindingId: null }
+    case 'showReport':
+      // A finding belongs to one report, so its selection doesn't carry over.
+      return {
+        ...state,
+        timelineReportId: action.reportId,
+        selectedFindingId: null,
+      }
   }
 }
 
@@ -51,6 +62,7 @@ export function steppedFinding(
 export type Workspace = WorkspaceState & {
   selectFinding: (findingId: string) => void
   clearSelection: () => void
+  showReport: (reportId: string) => void
 }
 
 export const WorkspaceContext = createContext<Workspace | null>(null)

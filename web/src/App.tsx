@@ -4,6 +4,7 @@ import { paths, reportPath } from './routing/paths.ts'
 import PlaceholderScreen from './routing/PlaceholderScreen.tsx'
 import Routes, { type Route } from './routing/Routes.tsx'
 import ReportScreen from './workspace/ReportScreen.tsx'
+import TimelineScreen from './timeline/TimelineScreen.tsx'
 import WorkspaceController from './workspace/WorkspaceController.tsx'
 import WorkspaceLayout from './workspace/WorkspaceLayout.tsx'
 
@@ -67,10 +68,7 @@ const routes: Route[] = [
     path: paths.reports,
     render: () => (
       <WorkspaceLayout>
-        <PlaceholderScreen
-          title="My reports"
-          links={[{ href: paths.addReport, label: 'Add a report' }]}
-        />
+        <TimelineScreen />
       </WorkspaceLayout>
     ),
   },
