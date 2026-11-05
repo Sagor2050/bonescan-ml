@@ -1,4 +1,5 @@
 import { lazy, Suspense } from 'react'
+import FindingsList from './FindingsList.tsx'
 import styles from './ReportScreen.module.css'
 import { useReport } from './useReport.ts'
 
@@ -19,7 +20,10 @@ function ReportScreen({ reportId }: { reportId: string }) {
       )}
       {report.status === 'ready' && (
         <Suspense fallback={<p>Loading the skeleton…</p>}>
-          <SkeletonViewer findings={report.report.findings} />
+          <div className={styles.panes}>
+            <SkeletonViewer findings={report.report.findings} />
+            <FindingsList findings={report.report.findings} />
+          </div>
         </Suspense>
       )}
     </main>

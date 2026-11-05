@@ -3,6 +3,7 @@ import { expect, test } from 'vitest'
 import WorkspaceController from './WorkspaceController.tsx'
 import {
   initialWorkspaceState,
+  steppedFinding,
   useWorkspace,
   workspaceReducer,
 } from './workspaceState.ts'
@@ -80,6 +81,35 @@ test('the reducer selects and clears a finding', () => {
 
   const cleared = workspaceReducer(selected, { type: 'clearSelection' })
   expect(cleared.selectedFindingId).toBeNull()
+})
+
+test('selecting the same finding again still counts as a new selection', () => {
+  const first = workspaceReducer(initialWorkspaceState, {
+    type: 'selectFinding',
+    findingId: 'finding-1',
+  })
+  const again = workspaceReducer(first, {
+    type: 'selectFinding',
+    findingId: 'finding-1',
+  })
+  expect(again.selectionCount).toBe(first.selectionCount + 1)
+})
+
+test.each([
+  [null, 1, 'a'],
+  [null, -1, null],
+  ['a', 1, 'b'],
+  ['b', 1, 'c'],
+  ['c', 1, null],
+  ['b', -1, 'a'],
+  ['a', -1, null],
+  ['not-in-this-report', 1, 'a'],
+] as const)('stepping from %s by %i gives %s', (current, step, expected) => {
+  expect(steppedFinding(['a', 'b', 'c'], current, step)).toBe(expected)
+})
+
+test('stepping through no findings gives nothing', () => {
+  expect(steppedFinding([], null, 1)).toBeNull()
 })
 
 test('useWorkspace outside the controller is an error', () => {

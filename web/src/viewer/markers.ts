@@ -17,7 +17,7 @@ export type MarkerSpec = {
   stackIndex: number
 }
 
-const CERTAINTY_TITLES: Record<Certainty, string> = {
+export const CERTAINTY_TITLES: Record<Certainty, string> = {
   certain: 'Fracture',
   uncertain: 'Possible fracture',
 }

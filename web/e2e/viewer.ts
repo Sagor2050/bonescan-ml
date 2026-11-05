@@ -6,11 +6,12 @@ import { expect, type Page } from '@playwright/test'
 type Vector = {
   x: number
   y: number
+  z: number
   clone: () => Vector
   project: (camera: unknown) => Vector
 }
 type Hook = {
-  camera: { position: Vector & { z: number } }
+  camera: { position: Vector }
   scene: {
     getObjectByName: (name: string) => {
       children: unknown[]
@@ -41,6 +42,8 @@ export async function openViewer(page: Page, path = '/reports/sample-b1') {
         const hook = (globalThis as unknown as HookHolder).__bonescanViewer
         return Boolean(hook?.controls && hook.scene.getObjectByName('femur_left'))
       }),
+      // Software rendering is slow when several tests load the model at once.
+      { timeout: 30_000 },
     )
     .toBe(true)
 }
@@ -85,7 +88,7 @@ export function markerInfo(page: Page, findingId: string) {
     const hook = holder.__bonescanViewer
     const marker = hook?.scene.getObjectByName(`marker:${id}`) as unknown as {
       parent: { name: string }
-      getWorldPosition: (target: Vector) => Vector & { z: number }
+      getWorldPosition: (target: Vector) => Vector
       children: {
         children: { geometry: { type: string } }[]
       }[]
@@ -101,10 +104,22 @@ export function markerInfo(page: Page, findingId: string) {
       shape: marker.children[0].children[0].geometry.type,
       world: [world.x, world.y, world.z],
       ndcX: ndc.x,
+      ndcY: ndc.y,
       screenX: rect.left + ((ndc.x + 1) / 2) * rect.width,
       screenY: rect.top + ((1 - ndc.y) / 2) * rect.height,
     }
   }, findingId)
+}
+
+export function boneIsVisible(page: Page, id: string) {
+  return page.evaluate((boneId) => {
+    const hook = (globalThis as unknown as HookHolder).__bonescanViewer
+    const bone = hook?.scene.getObjectByName(boneId) as unknown as {
+      visible: boolean
+    } | null
+    if (!bone) throw new Error(`No bone ${boneId}`)
+    return bone.visible
+  }, id)
 }
 
 export function cameraState(page: Page) {
