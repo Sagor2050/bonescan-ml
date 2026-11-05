@@ -5,3 +5,4 @@ afterEach(cleanup)
 
 // jsdom has no scrolling, and navigating scrolls to the top of the page.
 window.scrollTo = () => {}
+Element.prototype.scrollIntoView = () => {}

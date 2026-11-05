@@ -6,6 +6,8 @@ import {
 import workerUrl from 'pdfjs-dist/build/pdf.worker.min.mjs?url'
 import { useEffect, useRef, useState } from 'react'
 import { loadReportPdf, type SavedReport } from '../workspace/reportStore.ts'
+import { useWorkspace } from '../workspace/workspaceState.ts'
+import { pageHighlights, type PageHighlight } from './highlights.ts'
 import styles from './PdfReport.module.css'
 
 GlobalWorkerOptions.workerSrc = workerUrl
@@ -17,13 +19,17 @@ function PdfPage({
   pdf,
   pageNumber,
   width,
+  highlights,
 }: {
   pdf: PDFDocumentProxy
   pageNumber: number
   width: number
+  highlights: PageHighlight[]
 }) {
+  const { selectedFindingId, selectFinding } = useWorkspace()
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const [drawn, setDrawn] = useState(false)
+  const [scale, setScale] = useState<number | null>(null)
 
   useEffect(() => {
     const draw: { cancelled: boolean; task?: { cancel: () => void } } = {
@@ -36,8 +42,9 @@ function PdfPage({
         const canvas = canvasRef.current
         if (draw.cancelled || !canvas) return
 
-        const scale = width / page.getViewport({ scale: 1 }).width
-        const viewport = page.getViewport({ scale })
+        const nextScale = width / page.getViewport({ scale: 1 }).width
+        const viewport = page.getViewport({ scale: nextScale })
+        setScale(nextScale)
         // Draws at the screen's real pixel size, so the text stays sharp.
         const pixelRatio = window.devicePixelRatio || 1
         canvas.width = Math.floor(viewport.width * pixelRatio)
@@ -69,6 +76,26 @@ function PdfPage({
   return (
     <div className={styles.page} data-page={pageNumber} data-drawn={drawn}>
       <canvas ref={canvasRef} role="img" aria-label={`Page ${pageNumber}`} />
+      {scale !== null &&
+        highlights.map(({ findingId, box, text }, index) => {
+          const [x0, top, x1, bottom] = box
+          return (
+            <button
+              key={index}
+              className={styles.highlight}
+              data-finding={findingId}
+              aria-label={`Show on the model: ${text}`}
+              aria-pressed={findingId === selectedFindingId}
+              style={{
+                left: x0 * scale,
+                top: top * scale,
+                width: (x1 - x0) * scale,
+                height: (bottom - top) * scale,
+              }}
+              onClick={() => selectFinding(findingId)}
+            />
+          )
+        })}
     </div>
   )
 }
@@ -134,6 +161,7 @@ function PdfReport({ report }: { report: SavedReport }) {
               pdf={pdf}
               pageNumber={index + 1}
               width={width}
+              highlights={pageHighlights(report.findings, index + 1)}
             />
           ))
         : <p className={styles.message}>Loading your report…</p>}
