@@ -1,0 +1,55 @@
+{
+  "text": "EXAM: XR WRIST LEFT, 3 VIEWS\nDATE OF EXAM: 09/14/2026\nHISTORY: Fall on outstretched hand.\nCOMPARISON: None.\nFINDINGS: There is a transverse fracture of the distal radial metaphysis with\nmild dorsal angulation. No fracture of the ulna. The carpal bones are intact.\nSoft tissue swelling over the dorsal wrist.\nIMPRESSION: Mildly angulated distal left radius fracture.",
+  "exam_date": "2026-09-14",
+  "candidate_dates": [],
+  "findings": [
+    {
+      "bone": "radius",
+      "side": "left",
+      "part": [
+        "distal",
+        "metaphysis"
+      ],
+      "type_words": [
+        "transverse",
+        "mild dorsal angulation"
+      ],
+      "certainty": "certain",
+      "healing_words": [],
+      "status": "placed",
+      "entered_by_patient": false,
+      "wording": [
+        {
+          "page": 1,
+          "boxes": [
+            [
+              130.67,
+              135.28,
+              444.9,
+              146.28
+            ],
+            [
+              72.0,
+              153.28,
+              182.04,
+              164.28
+            ]
+          ],
+          "text": "There is a transverse fracture of the distal radial metaphysis with mild dorsal angulation."
+        },
+        {
+          "page": 1,
+          "boxes": [
+            [
+              147.19,
+              189.28,
+              349.54,
+              200.28
+            ]
+          ],
+          "text": "Mildly angulated distal left radius fracture."
+        }
+      ]
+    }
+  ]
+}
