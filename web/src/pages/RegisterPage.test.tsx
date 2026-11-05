@@ -6,7 +6,7 @@ test('renders the registration page', () => {
   render(<RegisterPage />)
 
   expect(
-    screen.getByRole('heading', { name: '3D Medical Report Viewer' })
+    screen.getByRole('heading', { level: 1, name: 'Create account' })
   ).toBeDefined()
 
   expect(
