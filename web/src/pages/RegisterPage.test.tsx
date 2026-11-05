@@ -1,9 +1,9 @@
 import { render, screen } from '@testing-library/react'
 import { test, expect } from 'vitest'
-import App from './App'
+import RegisterPage from './RegisterPage'
 
 test('renders the registration page', () => {
-  render(<App />)
+  render(<RegisterPage />)
 
   expect(
     screen.getByRole('heading', { name: '3D Medical Report Viewer' })
