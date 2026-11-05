@@ -1,0 +1,36 @@
+{
+  "text": "EXAM: XR WRIST LEFT, 2 VIEWS\nDATE OF EXAM: 10/12/2026\nHISTORY: Follow-up of distal radius fracture.\nCOMPARISON: 09/14/2026.\nFINDINGS: Again seen is the distal radius fracture with interval callus\nformation. Alignment is unchanged. No new fracture.\nIMPRESSION: Healing left distal radius fracture. Alignment unchanged.",
+  "exam_date": "2026-10-12",
+  "candidate_dates": [],
+  "findings": [
+    {
+      "bone": "radius",
+      "side": "left",
+      "part": [
+        "distal"
+      ],
+      "type_words": [
+        "alignment unchanged"
+      ],
+      "certainty": "certain",
+      "healing_words": [
+        "interval callus formation",
+        "healing"
+      ],
+      "status": "placed",
+      "entered_by_patient": false,
+      "wording": [
+        {
+          "start": 134,
+          "end": 206,
+          "text": "Again seen is the distal radius fracture with interval callus formation."
+        },
+        {
+          "start": 260,
+          "end": 296,
+          "text": "Healing left distal radius fracture."
+        }
+      ]
+    }
+  ]
+}
