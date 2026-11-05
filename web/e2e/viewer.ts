@@ -33,7 +33,7 @@ type HookHolder = {
   }
 }
 
-export async function openViewer(page: Page, path = '/reports/sample') {
+export async function openViewer(page: Page, path = '/reports/sample-b1') {
   await page.goto(path)
   await expect
     .poll(() =>
@@ -76,6 +76,35 @@ export function boneOnScreen(page: Page, id: string) {
       y: rect.top + ((1 - ndc.y) / 2) * rect.height,
     }
   }, id)
+}
+
+// Where a marker is in the model, and which bone holds it.
+export function markerInfo(page: Page, findingId: string) {
+  return page.evaluate((id) => {
+    const holder = globalThis as unknown as HookHolder
+    const hook = holder.__bonescanViewer
+    const marker = hook?.scene.getObjectByName(`marker:${id}`) as unknown as {
+      parent: { name: string }
+      getWorldPosition: (target: Vector) => Vector & { z: number }
+      children: {
+        children: { geometry: { type: string } }[]
+      }[]
+    } | null
+    if (!hook || !marker) throw new Error(`No marker ${id}`)
+    const world = marker.getWorldPosition(hook.camera.position.clone())
+    const ndc = world.clone().project(hook.camera)
+    const canvas = holder.document.querySelector('canvas')
+    if (!canvas) throw new Error('No canvas')
+    const rect = canvas.getBoundingClientRect()
+    return {
+      bone: marker.parent.name,
+      shape: marker.children[0].children[0].geometry.type,
+      world: [world.x, world.y, world.z],
+      ndcX: ndc.x,
+      screenX: rect.left + ((ndc.x + 1) / 2) * rect.width,
+      screenY: rect.top + ((1 - ndc.y) / 2) * rect.height,
+    }
+  }, findingId)
 }
 
 export function cameraState(page: Page) {

@@ -1,6 +1,8 @@
 import { CameraControls, useGLTF } from '@react-three/drei'
 import { Canvas, useThree, type ThreeEvent } from '@react-three/fiber'
 import { Suspense, useEffect, useMemo, useRef, useState } from 'react'
+import type { SavedFinding } from '../workspace/reportStore.ts'
+import { useWorkspace } from '../workspace/workspaceState.ts'
 import { boneLabel, useBones, type Bone } from './bones.ts'
 import {
   FIELD_OF_VIEW,
@@ -12,7 +14,14 @@ import {
   VIEWS,
   ZOOM_STEP,
 } from './cameraViews.ts'
-import { boneIdOf, MODEL_URL, prepareSkeleton } from './skeletonObjects.ts'
+import FractureMarker from './FractureMarker.tsx'
+import { markersFor, type MarkerSpec } from './markers.ts'
+import {
+  boneIdOf,
+  highlightBone,
+  MODEL_URL,
+  prepareSkeleton,
+} from './skeletonObjects.ts'
 import styles from './SkeletonViewer.module.css'
 import ViewerErrorBoundary from './ViewerErrorBoundary.tsx'
 
@@ -23,12 +32,19 @@ const CLICK_DRAG_LIMIT = 4
 
 function Skeleton({
   bones,
+  markers,
+  selectedFindingId,
   onSelectBone,
+  onSelectFinding,
 }: {
   bones: Bone[]
+  markers: MarkerSpec[]
+  selectedFindingId: string | null
   onSelectBone: (bone: Bone | null) => void
+  onSelectFinding: (findingId: string) => void
 }) {
   const { scene } = useGLTF(MODEL_URL)
+  const invalidate = useThree((state) => state.invalidate)
   const skeleton = useMemo(() => prepareSkeleton(scene), [scene])
   const byId = useMemo(
     () => new Map(bones.map((bone) => [bone.id, bone])),
@@ -36,14 +52,60 @@ function Skeleton({
   )
   const ids = useMemo(() => new Set(byId.keys()), [byId])
 
+  // A finding with no named part marks the whole bone (S3.1).
+  const wholeBoneIds = useMemo(
+    () =>
+      [
+        ...new Set(
+          markers
+            .filter((marker) => marker.point === null)
+            .map((marker) => marker.boneId),
+        ),
+      ].join(' '),
+    [markers],
+  )
+  useEffect(() => {
+    if (!wholeBoneIds) return
+    const undo = wholeBoneIds.split(' ').flatMap((id) => {
+      const bone = skeleton.getObjectByName(id)
+      return bone ? [highlightBone(bone)] : []
+    })
+    invalidate()
+    return () => {
+      undo.forEach((restore) => restore())
+      invalidate()
+    }
+  }, [skeleton, wholeBoneIds, invalidate])
+
   function handleClick(event: ThreeEvent<MouseEvent>) {
     if (event.delta > CLICK_DRAG_LIMIT) return
+    // Markers draw on top of the bones, so one wins even if a bone is nearer.
+    const hitMarker = event.intersections.some(
+      (hit) => hit.object.userData.findingId,
+    )
+    if (hitMarker) return
     event.stopPropagation()
     const id = boneIdOf(event.object, ids)
     onSelectBone(id ? (byId.get(id) ?? null) : null)
   }
 
-  return <primitive object={skeleton} onClick={handleClick} />
+  return (
+    <>
+      <primitive object={skeleton} onClick={handleClick} />
+      {markers.map((marker) => {
+        const bone = skeleton.getObjectByName(marker.boneId)
+        return bone ? (
+          <FractureMarker
+            key={marker.findingId}
+            marker={marker}
+            bone={bone}
+            selected={marker.findingId === selectedFindingId}
+            onSelect={onSelectFinding}
+          />
+        ) : null
+      })}
+    </>
+  )
 }
 
 // Lets the end-to-end tests read the camera and the scene. It is left out of
@@ -62,8 +124,10 @@ function ExposeForTests({ controls }: { controls: CameraControls | null }) {
   return null
 }
 
-function SkeletonViewer() {
+function SkeletonViewer({ findings }: { findings: SavedFinding[] }) {
   const bones = useBones()
+  const { selectedFindingId, selectFinding } = useWorkspace()
+  const markers = useMemo(() => markersFor(findings, bones), [findings, bones])
   const controlsRef = useRef<CameraControls | null>(null)
   const [controls, setControls] = useState<CameraControls | null>(null)
   const [selectedBone, setSelectedBone] = useState<Bone | null>(null)
@@ -131,7 +195,13 @@ function SkeletonViewer() {
               <ambientLight intensity={0.8} />
               <directionalLight position={[1, 2, 3]} intensity={1.8} />
               <directionalLight position={[-1, 1, -3]} intensity={1} />
-              <Skeleton bones={bones} onSelectBone={setSelectedBone} />
+              <Skeleton
+                bones={bones}
+                markers={markers}
+                selectedFindingId={selectedFindingId}
+                onSelectBone={setSelectedBone}
+                onSelectFinding={selectFinding}
+              />
               <CameraControls
                 ref={connectControls}
                 makeDefault

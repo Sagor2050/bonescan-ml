@@ -1,8 +1,17 @@
-import { Color, Mesh, MeshStandardMaterial, type Object3D } from 'three'
+import {
+  Box3,
+  Color,
+  Mesh,
+  MeshStandardMaterial,
+  Vector3,
+  type Object3D,
+} from 'three'
+import type { Point } from './bones.ts'
 
 export const MODEL_URL = '/shared/models/skeleton.glb'
 
 const BONE_COLOR = new Color('#e6dfd0')
+const HIGHLIGHT_COLOR = new Color('#f08a4b')
 
 // Finds which bone an object belongs to, such as the mesh a click landed on.
 //
@@ -42,5 +51,36 @@ export function prepareSkeleton(scene: Object3D) {
     }
     object.material = copy
   })
+  skeleton.updateMatrixWorld(true)
   return skeleton
+}
+
+// Where a marker goes inside its bone: the given point, in the model's
+// coordinates, or the middle of the bone when the finding names no part. The
+// result is in the bone's own coordinates, because half the bones are mirrored.
+export function markerPosition(bone: Object3D, point: Point | null) {
+  const world = point
+    ? new Vector3(...point)
+    : new Box3().setFromObject(bone).getCenter(new Vector3())
+  return bone.worldToLocal(world)
+}
+
+// Highlights a whole bone and returns how to undo it. The bones share materials,
+// so each mesh gets its own copy and no other bone changes (#38). Markers are
+// children of their bone but have a different material, so they stay as they are.
+export function highlightBone(bone: Object3D) {
+  const undo: (() => void)[] = []
+  bone.traverse((object) => {
+    if (!(object instanceof Mesh)) return
+    const original = object.material
+    if (!(original instanceof MeshStandardMaterial)) return
+    const copy = original.clone()
+    copy.color.copy(HIGHLIGHT_COLOR)
+    object.material = copy
+    undo.push(() => {
+      object.material = original
+      copy.dispose()
+    })
+  })
+  return () => undo.forEach((restore) => restore())
 }
