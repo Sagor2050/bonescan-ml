@@ -22,7 +22,7 @@ const model = (page: Page) => page.getByRole('region', { name: '3D skeleton' })
 // is across the view, from -1 to 1. This catches a mirrored model from end to
 // end, because it trusts the pixels and not the scene (Plan Milestone 3).
 async function redPixelsAcrossView(page: Page) {
-  const canvas = page.locator('canvas')
+  const canvas = page.getByRole('region', { name: '3D skeleton' }).locator('canvas')
   const png = (await canvas.screenshot()).toString('base64')
   return page.evaluate(`(async () => {
     const image = new Image()
@@ -174,6 +174,11 @@ test.describe('a report with several kinds of finding', () => {
     await expect(label).toHaveAttribute('aria-pressed', 'false')
     await label.click()
     await expect(label).toHaveAttribute('aria-pressed', 'true')
+
+    // Selecting moved the camera to the femur, so go back to see the tibia.
+    await waitForCameraToStop(page)
+    await page.getByRole('button', { name: 'Starting view' }).click()
+    await waitForCameraToStop(page)
 
     const tibia = await markerInfo(page, finding(2))
     await page.mouse.click(tibia.screenX, tibia.screenY)

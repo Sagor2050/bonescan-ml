@@ -66,7 +66,7 @@ export function boneOnScreen(page: Page, id: string) {
     const hook = holder.__bonescanViewer
     const bone = hook?.scene.getObjectByName(boneId)
     if (!hook || !bone) throw new Error(`No bone ${boneId}`)
-    const canvas = holder.document.querySelector('canvas')
+    const canvas = holder.document.querySelector('[aria-label="3D skeleton"] canvas')
     if (!canvas) throw new Error('No canvas')
     const rect = canvas.getBoundingClientRect()
     const ndc = bone
@@ -96,7 +96,7 @@ export function markerInfo(page: Page, findingId: string) {
     if (!hook || !marker) throw new Error(`No marker ${id}`)
     const world = marker.getWorldPosition(hook.camera.position.clone())
     const ndc = world.clone().project(hook.camera)
-    const canvas = holder.document.querySelector('canvas')
+    const canvas = holder.document.querySelector('[aria-label="3D skeleton"] canvas')
     if (!canvas) throw new Error('No canvas')
     const rect = canvas.getBoundingClientRect()
     return {

@@ -24,6 +24,7 @@ function saved(fields: Partial<Finding>, id = 'finding-1'): SavedFinding {
     entered_by_patient: false,
     id,
     report_id: 'report-1',
+    position: 0,
     ...fields,
   }
 }

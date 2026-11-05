@@ -3,7 +3,7 @@ import { createPortal, useFrame, type ThreeEvent } from '@react-three/fiber'
 import { useMemo, useRef, type CSSProperties } from 'react'
 import { Group, Vector3, type Object3D } from 'three'
 import styles from './FractureMarker.module.css'
-import type { MarkerSpec } from './markers.ts'
+import { labelPlacement, type MarkerSpec } from './markers.ts'
 import { markerPosition } from './skeletonObjects.ts'
 
 // How big a marker looks, as a share of its distance from the camera. It keeps
@@ -48,7 +48,7 @@ function FractureMarker({
   const shapeRef = useRef<Group>(null)
   const labelRef = useRef<HTMLButtonElement>(null)
 
-  useFrame(({ camera }) => {
+  useFrame(({ camera, size }) => {
     const shape = shapeRef.current
     if (!shape) return
     shape.getWorldPosition(worldPosition)
@@ -56,10 +56,14 @@ function FractureMarker({
       worldPosition.distanceTo(camera.position) * SCREEN_SIZE,
     )
 
-    // Labels point away from the middle of the view, so they cover fewer bones.
     const label = labelRef.current
     if (label) {
-      const flip = String(worldPosition.project(camera).x < 0)
+      const placement = labelPlacement(
+        worldPosition.project(camera).x,
+        size.width,
+      )
+      const flip = String(placement.goesLeft)
+      label.style.maxWidth = `${placement.maxWidth}px`
       if (label.dataset.flip !== flip) label.dataset.flip = flip
     }
   })
