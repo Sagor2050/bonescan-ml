@@ -1,0 +1,35 @@
+.anchor {
+  /* The anchor would otherwise catch clicks meant for the model. */
+  pointer-events: none;
+}
+
+.label {
+  display: flex;
+  flex-direction: column;
+  width: max-content;
+  padding: 0.25rem 0.5rem;
+  transform: translate(1rem, calc(-50% + var(--stack, 0) * 5.5rem));
+  border: 2px solid #111111;
+  border-radius: 0.25rem;
+  background: #ffffff;
+  color: #111111;
+  font: inherit;
+  font-size: 0.875rem;
+  line-height: 1.3;
+  text-align: left;
+  pointer-events: auto;
+  cursor: pointer;
+}
+
+.label[data-flip='true'] {
+  transform: translate(calc(-100% - 1rem), calc(-50% + var(--stack, 0) * 5.5rem));
+}
+
+.uncertain {
+  border-style: dashed;
+}
+
+.label[aria-pressed='true'] {
+  outline: 3px solid #ffffff;
+  box-shadow: 0 0 0 6px #111111;
+}

@@ -8,7 +8,7 @@ import WorkspaceController from './workspace/WorkspaceController.tsx'
 import WorkspaceLayout from './workspace/WorkspaceLayout.tsx'
 
 // Stands in for a real report until reports can be saved (Milestone 4).
-const sampleReportPath = reportPath('sample')
+const sampleReportPath = reportPath('sample-b1')
 
 const routes: Route[] = [
   { path: paths.home, render: () => <HomePage /> },
@@ -57,9 +57,9 @@ const routes: Route[] = [
   },
   {
     path: paths.report,
-    render: () => (
+    render: ({ reportId }) => (
       <WorkspaceLayout>
-        <ReportScreen />
+        <ReportScreen reportId={reportId} />
       </WorkspaceLayout>
     ),
   },

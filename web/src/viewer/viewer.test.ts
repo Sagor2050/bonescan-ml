@@ -1,8 +1,20 @@
-import { Group, Mesh, MeshStandardMaterial, Object3D } from 'three'
+import {
+  Group,
+  Mesh,
+  MeshBasicMaterial,
+  MeshStandardMaterial,
+  Object3D,
+  Vector3,
+} from 'three'
 import { describe, expect, test } from 'vitest'
 import { boneLabel } from './bones.ts'
 import { nearestAzimuth, VIEWS } from './cameraViews.ts'
-import { boneIdOf, prepareSkeleton } from './skeletonObjects.ts'
+import {
+  boneIdOf,
+  highlightBone,
+  markerPosition,
+  prepareSkeleton,
+} from './skeletonObjects.ts'
 
 const ids = new Set(['radius_left', 'radius_right'])
 
@@ -73,6 +85,56 @@ describe('prepareSkeleton', () => {
     scene.add(new Mesh(undefined, material), new Mesh(undefined, material))
     const [first, second] = prepareSkeleton(scene).children as Mesh[]
     expect(first.material).toBe(second.material)
+  })
+})
+
+describe('highlightBone', () => {
+  test('changes only its own bone, even when bones share a material', () => {
+    const shared = new MeshStandardMaterial({ name: 'Bone' })
+    const left = new Group()
+    const right = new Group()
+    left.add(new Mesh(undefined, shared))
+    right.add(new Mesh(undefined, shared))
+    const before = shared.color.getHex()
+
+    const undo = highlightBone(left)
+
+    const highlighted = (left.children[0] as Mesh)
+      .material as MeshStandardMaterial
+    expect(highlighted).not.toBe(shared)
+    expect(highlighted.color.getHex()).not.toBe(before)
+    expect((right.children[0] as Mesh).material).toBe(shared)
+    expect(shared.color.getHex()).toBe(before)
+
+    undo()
+    expect((left.children[0] as Mesh).material).toBe(shared)
+  })
+})
+
+test('highlightBone leaves a marker on the bone unchanged', () => {
+  const bone = new Group()
+  const markerMaterial = new MeshBasicMaterial({ color: '#e5352b' })
+  const marker = new Mesh(undefined, markerMaterial)
+  bone.add(marker)
+
+  highlightBone(bone)
+
+  expect(marker.material).toBe(markerMaterial)
+})
+
+describe('markerPosition', () => {
+  test('lands on the model’s point inside a mirrored, moved bone', () => {
+    const bone = new Group()
+    bone.scale.set(-1, 1, 1)
+    bone.position.set(0.25, 1, 0)
+    bone.updateMatrixWorld(true)
+
+    const local = markerPosition(bone, [0.3, 0.9, 0.01])
+
+    const backInModel = bone.localToWorld(new Vector3().copy(local))
+    expect(backInModel.x).toBeCloseTo(0.3)
+    expect(backInModel.y).toBeCloseTo(0.9)
+    expect(backInModel.z).toBeCloseTo(0.01)
   })
 })
 

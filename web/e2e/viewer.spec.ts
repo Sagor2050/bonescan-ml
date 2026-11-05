@@ -30,20 +30,20 @@ test('goes straight to the back, left-side, and right-side views', async ({
 }) => {
   await openViewer(page)
 
-  await page.getByRole('button', { name: 'Back' }).click()
+  await page.getByRole('button', { name: 'Back', exact: true }).click()
   await waitForCameraToStop(page)
   expect((await cameraState(page)).z).toBeLessThan(-2)
   expect((await boneOnScreen(page, 'radius_left')).ndcX).toBeLessThan(0)
 
-  await page.getByRole('button', { name: 'Your left side' }).click()
+  await page.getByRole('button', { name: 'Your left side', exact: true }).click()
   await waitForCameraToStop(page)
   expect((await cameraState(page)).x).toBeGreaterThan(2)
 
-  await page.getByRole('button', { name: 'Your right side' }).click()
+  await page.getByRole('button', { name: 'Your right side', exact: true }).click()
   await waitForCameraToStop(page)
   expect((await cameraState(page)).x).toBeLessThan(-2)
 
-  await page.getByRole('button', { name: 'Front' }).click()
+  await page.getByRole('button', { name: 'Front', exact: true }).click()
   await waitForCameraToStop(page)
   expect((await cameraState(page)).z).toBeGreaterThan(2)
   expect((await boneOnScreen(page, 'radius_left')).ndcX).toBeGreaterThan(0)

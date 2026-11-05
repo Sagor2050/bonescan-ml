@@ -21,7 +21,7 @@ test('goes from the homepage through every screen without reloading', async ({
     { link: 'Check the findings', path: '/verify-findings' },
     {
       link: 'See it on the skeleton',
-      path: '/reports/sample',
+      path: '/reports/sample-b1',
       heading: 'Your report and skeleton',
     },
     { link: 'Account', path: '/account' },
@@ -67,7 +67,7 @@ for (const [path, heading] of [
   ['/create-account', 'Create account'],
   ['/add-report', 'Add a report'],
   ['/verify-findings', 'Check the findings'],
-  ['/reports/sample', 'Your report and skeleton'],
+  ['/reports/sample-b1', 'Your report and skeleton'],
   ['/reports', 'My reports'],
   ['/account', 'Account'],
 ]) {
