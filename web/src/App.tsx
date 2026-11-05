@@ -3,6 +3,7 @@ import NotFoundScreen from './routing/NotFoundScreen.tsx'
 import { paths, reportPath } from './routing/paths.ts'
 import PlaceholderScreen from './routing/PlaceholderScreen.tsx'
 import Routes, { type Route } from './routing/Routes.tsx'
+import ReportScreen from './workspace/ReportScreen.tsx'
 import WorkspaceController from './workspace/WorkspaceController.tsx'
 import WorkspaceLayout from './workspace/WorkspaceLayout.tsx'
 
@@ -58,7 +59,7 @@ const routes: Route[] = [
     path: paths.report,
     render: () => (
       <WorkspaceLayout>
-        <PlaceholderScreen title="Your report and skeleton" />
+        <ReportScreen />
       </WorkspaceLayout>
     ),
   },
