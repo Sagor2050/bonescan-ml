@@ -97,6 +97,9 @@ python3.11 -m venv .venv
 On Windows, use `.venv\Scripts\` instead of `.venv/bin/`. Test and lint
 commands are in [AGENTS.md](AGENTS.md#tech-stack-and-commands).
 
+This runs the app without accounts. To connect it to the team's Supabase
+project, follow the [teammate setup guide](docs/teammate-setup.md).
+
 ## Contributing
 
 Every contributor, human or AI, follows [AGENTS.md](AGENTS.md). In short, every
