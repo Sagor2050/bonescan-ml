@@ -1,6 +1,8 @@
 import Link from '../routing/Link.tsx'
 import { paths } from '../routing/paths.ts'
+import BrandMark from '../ui/BrandMark.tsx'
 import styles from './HomePage.module.css'
+import skeletonPreview from './skeleton-preview.jpg'
 
 const features = [
   {
@@ -21,7 +23,9 @@ function HomePage() {
   return (
     <>
       <header className={styles.header}>
-        <span className={styles.brand}>BoneScan</span>
+        <span className={styles.brand}>
+          <BrandMark />
+        </span>
         <nav className={styles.nav}>
           <a href="#about">About</a>
           <Link href={paths.signIn}>Sign in</Link>
@@ -30,29 +34,42 @@ function HomePage() {
 
       <main>
         <section className={styles.hero}>
-          <h1>Understand your imaging report in 3D</h1>
-          <p>
-            Add your report, check the fractures it lists, and see where each
-            one is on a 3D skeleton.
-          </p>
-          <div className={styles.actions}>
-            <Link className={styles.primary} href={paths.createAccount}>
-              Create account
-            </Link>
-            <Link className={styles.secondary} href={paths.signIn}>
-              Sign in
-            </Link>
+          <div className={styles.heroText}>
+            <h1>Understand your imaging report in 3D</h1>
+            <p>
+              Add your report, check the fractures it lists, and see where each
+              one is on a 3D skeleton.
+            </p>
+            <div className={styles.actions}>
+              <Link className={styles.primary} href={paths.createAccount}>
+                Create account
+              </Link>
+              <Link className={styles.secondary} href={paths.signIn}>
+                Sign in
+              </Link>
+            </div>
           </div>
+          <figure className={styles.preview}>
+            <img
+              src={skeletonPreview}
+              alt="A 3D skeleton with a labeled marker on the left forearm."
+              width="720"
+              height="620"
+            />
+            <figcaption>
+              An example from a made-up report, on a standard adult skeleton.
+            </figcaption>
+          </figure>
         </section>
 
-        <ul className={styles.features}>
+        <ol className={styles.features}>
           {features.map((feature) => (
             <li key={feature.title}>
               <h2>{feature.title}</h2>
               <p>{feature.text}</p>
             </li>
           ))}
-        </ul>
+        </ol>
 
         <section id="about" className={styles.about}>
           <h2>What BoneScan does and does not do</h2>

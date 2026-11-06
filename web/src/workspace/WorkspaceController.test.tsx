@@ -3,6 +3,7 @@ import { expect, test } from 'vitest'
 import WorkspaceController from './WorkspaceController.tsx'
 import {
   initialWorkspaceState,
+  steppedFinding,
   useWorkspace,
   workspaceReducer,
 } from './workspaceState.ts'
@@ -82,6 +83,48 @@ test('the reducer selects and clears a finding', () => {
   expect(cleared.selectedFindingId).toBeNull()
 })
 
+test('showing another report clears the selected finding', () => {
+  const selected = workspaceReducer(initialWorkspaceState, {
+    type: 'selectFinding',
+    findingId: 'finding-1',
+  })
+  const next = workspaceReducer(selected, {
+    type: 'showReport',
+    reportId: 'report-2',
+  })
+  expect(next.timelineReportId).toBe('report-2')
+  expect(next.selectedFindingId).toBeNull()
+})
+
+test('selecting the same finding again still counts as a new selection', () => {
+  const first = workspaceReducer(initialWorkspaceState, {
+    type: 'selectFinding',
+    findingId: 'finding-1',
+  })
+  const again = workspaceReducer(first, {
+    type: 'selectFinding',
+    findingId: 'finding-1',
+  })
+  expect(again.selectionCount).toBe(first.selectionCount + 1)
+})
+
+test.each([
+  [null, 1, 'a'],
+  [null, -1, null],
+  ['a', 1, 'b'],
+  ['b', 1, 'c'],
+  ['c', 1, null],
+  ['b', -1, 'a'],
+  ['a', -1, null],
+  ['not-in-this-report', 1, 'a'],
+] as const)('stepping from %s by %i gives %s', (current, step, expected) => {
+  expect(steppedFinding(['a', 'b', 'c'], current, step)).toBe(expected)
+})
+
+test('stepping through no findings gives nothing', () => {
+  expect(steppedFinding([], null, 1)).toBeNull()
+})
+
 test('useWorkspace outside the controller is an error', () => {
   function Orphan() {
     useWorkspace()
@@ -95,4 +138,25 @@ test('useWorkspace outside the controller is an error', () => {
   } finally {
     console.error = consoleError
   }
+})
+
+test('forgetting the report the timeline shows starts it on the latest again', () => {
+  const state = {
+    ...initialWorkspaceState,
+    timelineReportId: 'report-1',
+    selectedFindingId: 'finding-1',
+  }
+
+  expect(
+    workspaceReducer(state, { type: 'forgetReport', reportId: 'report-1' }),
+  ).toMatchObject({ timelineReportId: null, selectedFindingId: null })
+})
+
+test('forgetting another report leaves the timeline where it is', () => {
+  const state = { ...initialWorkspaceState, timelineReportId: 'report-2' }
+
+  expect(
+    workspaceReducer(state, { type: 'forgetReport', reportId: 'report-1' })
+      .timelineReportId,
+  ).toBe('report-2')
 })

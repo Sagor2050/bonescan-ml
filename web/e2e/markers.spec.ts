@@ -15,11 +15,14 @@ const bones = JSON.parse(
   ),
 ) as { id: string; parts: Record<string, number[]> }[]
 
+// The labels on the model, leaving out the findings list beside it.
+const model = (page: Page) => page.getByRole('region', { name: '3D skeleton' })
+
 // Finds the marker's red in a real screenshot of the model and returns where it
 // is across the view, from -1 to 1. This catches a mirrored model from end to
 // end, because it trusts the pixels and not the scene (Plan Milestone 3).
 async function redPixelsAcrossView(page: Page) {
-  const canvas = page.locator('canvas')
+  const canvas = page.getByRole('region', { name: '3D skeleton' }).locator('canvas')
   const png = (await canvas.screenshot()).toString('base64')
   return page.evaluate(`(async () => {
     const image = new Image()
@@ -60,7 +63,7 @@ test('B.1’s fracture is one marker on the left radius, on the viewer’s right
   expect(marker.ndcX).toBeGreaterThan(0)
 
   await expect(
-    page.getByRole('button', { name: /radius \(forearm bone, thumb side\)/ }),
+    model(page).getByRole('button', { name: /radius \(forearm bone, thumb side\)/ }),
   ).toHaveCount(1)
 
   const red = await redPixelsAcrossView(page)
@@ -108,7 +111,7 @@ test('one finding on each of the 126 bones lands on each bone', async ({
     expect(marker.bone).toBe(bone.id)
     expect(Math.sign(marker.world[0])).toBe(bone.id.endsWith('_left') ? 1 : -1)
   }
-  await expect(page.getByRole('button', { name: /Fracture/ })).toHaveCount(126)
+  await expect(model(page).getByRole('button', { name: /Fracture/ })).toHaveCount(126)
 })
 
 test.describe('a report with several kinds of finding', () => {
@@ -125,9 +128,9 @@ test.describe('a report with several kinds of finding', () => {
     const uncertain = await markerInfo(page, finding(2))
     expect(certain.shape).not.toBe(uncertain.shape)
     await expect(
-      page.getByRole('button', { name: /Possible fracture.*tibia/ }),
+      model(page).getByRole('button', { name: /Possible fracture.*tibia/ }),
     ).toHaveCount(1)
-    await expect(page.getByRole('button', { name: /^.?\s*Fracture/ })).toHaveCount(3)
+    await expect(model(page).getByRole('button', { name: /^.?\s*Fracture/ })).toHaveCount(3)
   })
 
   test('a finding with no named part sits in the middle of its bone', async ({
@@ -141,14 +144,14 @@ test.describe('a report with several kinds of finding', () => {
 
   test('a finding the patient entered says so on its marker', async ({ page }) => {
     await expect(
-      page.getByRole('button', { name: /fibula.*Entered by you/ }),
+      model(page).getByRole('button', { name: /fibula.*Entered by you/ }),
     ).toHaveCount(1)
   })
 
   test('a finding with no side gets no marker', async ({ page }) => {
-    await expect(page.getByRole('button', { name: /radius/ })).toHaveCount(0)
+    await expect(model(page).getByRole('button', { name: /radius/ })).toHaveCount(0)
     await expect(
-      page.getByRole('button', { name: /Fracture|fracture/ }),
+      model(page).getByRole('button', { name: /Fracture|fracture/ }),
     ).toHaveCount(4)
   })
 
@@ -162,20 +165,25 @@ test.describe('a report with several kinds of finding', () => {
   test('clicking a label selects its finding, not the bone behind it', async ({
     page,
   }) => {
-    await page.getByRole('button', { name: /tibia/ }).click()
+    await model(page).getByRole('button', { name: /tibia/ }).click()
     await expect(page.getByText('Click a bone to see its name.')).toBeVisible()
   })
 
   test('clicking a marker or its label selects its finding', async ({ page }) => {
-    const label = page.getByRole('button', { name: /femur/ })
+    const label = model(page).getByRole('button', { name: /femur/ })
     await expect(label).toHaveAttribute('aria-pressed', 'false')
     await label.click()
     await expect(label).toHaveAttribute('aria-pressed', 'true')
 
+    // Selecting moved the camera to the femur, so go back to see the tibia.
+    await waitForCameraToStop(page)
+    await page.getByRole('button', { name: 'Starting view' }).click()
+    await waitForCameraToStop(page)
+
     const tibia = await markerInfo(page, finding(2))
     await page.mouse.click(tibia.screenX, tibia.screenY)
     await expect(
-      page.getByRole('button', { name: /tibia/ }),
+      model(page).getByRole('button', { name: /tibia/ }),
     ).toHaveAttribute('aria-pressed', 'true')
     await expect(label).toHaveAttribute('aria-pressed', 'false')
   })
