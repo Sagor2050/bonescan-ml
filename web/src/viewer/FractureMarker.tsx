@@ -3,7 +3,7 @@ import { createPortal, useFrame, type ThreeEvent } from '@react-three/fiber'
 import { useMemo, useRef, type CSSProperties } from 'react'
 import { Group, Vector3, type Object3D } from 'three'
 import styles from './FractureMarker.module.css'
-import { labelPlacement, type MarkerSpec } from './markers.ts'
+import { labelPlacement, type MarkerLook, type MarkerSpec } from './markers.ts'
 import { markerPosition } from './skeletonObjects.ts'
 
 // How big a marker looks, as a share of its distance from the camera. It keeps
@@ -12,18 +12,20 @@ const SCREEN_SIZE = 0.008
 const CLICK_DRAG_LIMIT = 4
 
 const OUTLINE_COLOR = '#111111'
-const COLORS = { certain: '#e5352b', uncertain: '#ffb000' }
 
 const worldPosition = new Vector3()
 
-// Certain and uncertain findings differ by shape, so the difference survives
-// without color (S3.1, NFR12): a round marker, or a diamond.
-function MarkerShape({ certainty }: { certainty: MarkerSpec['certainty'] }) {
-  return certainty === 'certain' ? (
-    <sphereGeometry args={[1, 24, 16]} />
-  ) : (
-    <octahedronGeometry args={[1.5]} />
-  )
+function MarkerShape({ shape }: { shape: MarkerLook['shape'] }) {
+  switch (shape) {
+    case 'round':
+      return <sphereGeometry args={[1, 24, 16]} />
+    case 'diamond':
+      return <octahedronGeometry args={[1.5]} />
+    case 'cube':
+      return <boxGeometry args={[1.7, 1.7, 1.7]} />
+    case 'cone':
+      return <coneGeometry args={[1.3, 2.2, 32]} />
+  }
 }
 
 type FractureMarkerProps = {
@@ -82,15 +84,15 @@ function FractureMarker({
           userData={{ findingId: marker.findingId }}
           onClick={handleClick}
         >
-          <MarkerShape certainty={marker.certainty} />
+          <MarkerShape shape={marker.look.shape} />
           <meshBasicMaterial
-            color={COLORS[marker.certainty]}
+            color={marker.look.fill}
             depthTest={false}
             transparent
           />
         </mesh>
         <mesh renderOrder={10} scale={1.3}>
-          <MarkerShape certainty={marker.certainty} />
+          <MarkerShape shape={marker.look.shape} />
           <meshBasicMaterial
             color={OUTLINE_COLOR}
             depthTest={false}
@@ -98,7 +100,11 @@ function FractureMarker({
           />
         </mesh>
       </group>
-      <Html wrapperClass={styles.anchor} zIndexRange={[10, 0]}>
+      {/* A chosen label comes to the front, in case another was covering it. */}
+      <Html
+        wrapperClass={styles.anchor}
+        zIndexRange={selected ? [20, 11] : [10, 0]}
+      >
         <button
           ref={labelRef}
           className={`${styles.label} ${styles[marker.certainty]}`}
@@ -111,11 +117,10 @@ function FractureMarker({
           }}
         >
           <strong>
-            <span aria-hidden="true">
-              {marker.certainty === 'certain' ? '● ' : '◆ '}
-            </span>
+            <span aria-hidden="true">{marker.look.glyph} </span>
             {marker.title}
           </strong>
+          {marker.subtitle && <span>{marker.subtitle}</span>}
           <span>{marker.boneName}</span>
           <span>{marker.sideLabel}</span>
           {marker.healing.map((line) => (

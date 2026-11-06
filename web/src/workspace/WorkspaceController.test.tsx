@@ -96,6 +96,39 @@ test('showing another report clears the selected finding', () => {
   expect(next.selectedFindingId).toBeNull()
 })
 
+test('comparing clears the selection, and showing one report stops comparing', () => {
+  const selected = workspaceReducer(initialWorkspaceState, {
+    type: 'selectFinding',
+    findingId: 'finding-1',
+  })
+  const comparing = workspaceReducer(selected, {
+    type: 'compareReports',
+    firstId: 'a',
+    secondId: 'b',
+  })
+  expect(comparing.comparison).toEqual({ firstId: 'a', secondId: 'b' })
+  expect(comparing.selectedFindingId).toBeNull()
+
+  expect(
+    workspaceReducer(comparing, { type: 'showReport', reportId: 'a' }).comparison,
+  ).toBeNull()
+  expect(workspaceReducer(comparing, { type: 'stopComparing' }).comparison).toBeNull()
+})
+
+test('deleting a report being compared ends the comparison', () => {
+  const comparing = workspaceReducer(initialWorkspaceState, {
+    type: 'compareReports',
+    firstId: 'a',
+    secondId: 'b',
+  })
+  expect(
+    workspaceReducer(comparing, { type: 'forgetReport', reportId: 'c' }).comparison,
+  ).toEqual({ firstId: 'a', secondId: 'b' })
+  expect(
+    workspaceReducer(comparing, { type: 'forgetReport', reportId: 'b' }).comparison,
+  ).toBeNull()
+})
+
 test('selecting the same finding again still counts as a new selection', () => {
   const first = workspaceReducer(initialWorkspaceState, {
     type: 'selectFinding',

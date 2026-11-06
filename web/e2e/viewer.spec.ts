@@ -135,3 +135,21 @@ test('a drag that ends on a bone does not select it', async ({ page }) => {
 
   await expect(page.getByText('Click a bone to see its name.')).toBeVisible()
 })
+
+test('clicking a bone keeps the angle the patient was looking from', async ({
+  page,
+}) => {
+  await openViewer(page)
+  await page.getByRole('button', { name: 'Back', exact: true }).click()
+  // The camera eases into place, so wait until it has all but arrived.
+  await expect
+    .poll(async () => Math.abs((await cameraState(page)).azimuth))
+    .toBeCloseTo(Math.PI, 1)
+  await waitForCameraToStop(page)
+  const before = await cameraState(page)
+
+  const femur = await boneOnScreen(page, 'femur_left')
+  await page.mouse.click(femur.x, femur.y)
+  await expect(page.getByText(/^Your left femur/)).toBeVisible()
+  expect((await cameraState(page)).azimuth).toBeCloseTo(before.azimuth, 1)
+})

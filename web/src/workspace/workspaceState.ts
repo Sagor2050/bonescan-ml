@@ -2,8 +2,7 @@ import { createContext, useContext } from 'react'
 
 // The Workspace Controller's state (Plan section 3). The report pane and the
 // skeleton both follow the one selected finding here, so they can't disagree.
-// The confirmation gate joins it in Milestone 4, and the timeline and comparison
-// state in Milestone 6.
+// The confirmation gate joins it in Milestone 4.
 export type WorkspaceState = {
   selectedFindingId: string | null
   // Goes up with every selection, even of the same finding, so that choosing a
@@ -11,6 +10,9 @@ export type WorkspaceState = {
   selectionCount: number
   // The report the timeline is showing. Null until the patient chooses one.
   timelineReportId: string | null
+  // The two reports being compared, in the order the patient chose them. Null
+  // when not comparing.
+  comparison: { firstId: string; secondId: string } | null
 }
 
 export type WorkspaceAction =
@@ -18,11 +20,14 @@ export type WorkspaceAction =
   | { type: 'clearSelection' }
   | { type: 'showReport'; reportId: string }
   | { type: 'forgetReport'; reportId: string }
+  | { type: 'compareReports'; firstId: string; secondId: string }
+  | { type: 'stopComparing' }
 
 export const initialWorkspaceState: WorkspaceState = {
   selectedFindingId: null,
   selectionCount: 0,
   timelineReportId: null,
+  comparison: null,
 }
 
 export function workspaceReducer(
@@ -44,6 +49,7 @@ export function workspaceReducer(
         ...state,
         timelineReportId: action.reportId,
         selectedFindingId: null,
+        comparison: null,
       }
     case 'forgetReport':
       // A deleted report's findings are gone, and the timeline goes back to
@@ -55,7 +61,20 @@ export function workspaceReducer(
             ? null
             : state.timelineReportId,
         selectedFindingId: null,
+        comparison:
+          state.comparison?.firstId === action.reportId ||
+          state.comparison?.secondId === action.reportId
+            ? null
+            : state.comparison,
       }
+    case 'compareReports':
+      return {
+        ...state,
+        comparison: { firstId: action.firstId, secondId: action.secondId },
+        selectedFindingId: null,
+      }
+    case 'stopComparing':
+      return { ...state, comparison: null, selectedFindingId: null }
   }
 }
 
@@ -76,6 +95,8 @@ export type Workspace = WorkspaceState & {
   clearSelection: () => void
   showReport: (reportId: string) => void
   forgetReport: (reportId: string) => void
+  compareReports: (firstId: string, secondId: string) => void
+  stopComparing: () => void
 }
 
 export const WorkspaceContext = createContext<Workspace | null>(null)
