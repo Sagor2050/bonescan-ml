@@ -1,7 +1,7 @@
 import { createClient, type SupabaseClient } from '@supabase/supabase-js'
 
 // The one Supabase client. It's null when the project isn't configured, as in
-// tests and in development before web/.env is filled in.
+// tests and in plain `npm run dev`. See supabase/README.md for running it live.
 const url = import.meta.env.VITE_SUPABASE_URL as string | undefined
 const anonKey = import.meta.env.VITE_SUPABASE_ANON_KEY as string | undefined
 
