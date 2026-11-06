@@ -110,6 +110,15 @@ export async function loadSamplePdf(filePath: string): Promise<ArrayBuffer> {
   return response.arrayBuffer()
 }
 
+// The timeline's samples. B.2 was added first, to show that order comes from the
+// exam date and not from when a report was added.
+export async function loadSampleReports() {
+  return [
+    appendixReport('sample-b2', b2, '2026-10-13T12:00:00Z', report2Url),
+    appendixReport('sample-b1', b1, '2026-10-14T12:00:00Z', report1Url),
+  ]
+}
+
 export async function loadSampleReport(
   id: string,
 ): Promise<SavedReport | null> {

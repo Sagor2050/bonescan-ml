@@ -83,6 +83,19 @@ test('the reducer selects and clears a finding', () => {
   expect(cleared.selectedFindingId).toBeNull()
 })
 
+test('showing another report clears the selected finding', () => {
+  const selected = workspaceReducer(initialWorkspaceState, {
+    type: 'selectFinding',
+    findingId: 'finding-1',
+  })
+  const next = workspaceReducer(selected, {
+    type: 'showReport',
+    reportId: 'report-2',
+  })
+  expect(next.timelineReportId).toBe('report-2')
+  expect(next.selectedFindingId).toBeNull()
+})
+
 test('selecting the same finding again still counts as a new selection', () => {
   const first = workspaceReducer(initialWorkspaceState, {
     type: 'selectFinding',

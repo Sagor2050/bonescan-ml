@@ -47,6 +47,34 @@ export async function loadReport(id: string): Promise<SavedReport | null> {
   return data as SavedReport | null
 }
 
+// Exam date first, oldest first. Reports with the same exam date keep the order
+// they were added (S5.1). The added time is never the main order, so a report
+// added later with an earlier exam takes its place by exam date.
+export function inExamOrder(reports: SavedReport[]) {
+  return [...reports].sort(
+    (a, b) =>
+      a.exam_date.localeCompare(b.exam_date) ||
+      a.added_at.localeCompare(b.added_at),
+  )
+}
+
+export async function loadReports(): Promise<SavedReport[]> {
+  if (!supabase) {
+    if (!import.meta.env.DEV) return []
+    const { loadSampleReports } = await import('./sampleReports.ts')
+    return inExamOrder(await loadSampleReports())
+  }
+
+  const { data, error } = await supabase
+    .from('reports')
+    .select('*, findings(*)')
+    .order('exam_date')
+    .order('added_at')
+    .order('position', { referencedTable: 'findings' })
+  if (error) throw new Error('Your reports could not be loaded.')
+  return inExamOrder(data as SavedReport[])
+}
+
 // The original PDF, exactly as it was added (NFR4).
 export async function loadReportPdf(report: SavedReport): Promise<ArrayBuffer> {
   if (isSample(report.id)) {

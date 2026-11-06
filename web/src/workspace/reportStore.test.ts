@@ -26,7 +26,9 @@ vi.mock('../account/supabase.ts', () => ({
   },
 }))
 
-const { loadReport, loadReportPdf } = await import('./reportStore.ts')
+const { inExamOrder, loadReport, loadReportPdf } = await import(
+  './reportStore.ts'
+)
 
 beforeEach(() => {
   vi.clearAllMocks()
@@ -97,5 +99,44 @@ describe('loadReportPdf', () => {
       error: { message: 'failed' },
     })
     await expect(loadReportPdf(report)).rejects.toThrow()
+  })
+})
+
+describe('inExamOrder', () => {
+  const report = (id: string, exam_date: string, added_at: string) =>
+    ({ id, exam_date, added_at }) as Parameters<typeof inExamOrder>[0][number]
+  const ids = (reports: Parameters<typeof inExamOrder>[0]) =>
+    reports.map((one) => one.id)
+
+  test('lists the oldest exam first, whichever was added first', () => {
+    const first = report('first', '2026-09-14', '2026-10-14T00:00:00Z')
+    const second = report('second', '2026-10-12', '2026-10-13T00:00:00Z')
+    expect(ids(inExamOrder([first, second]))).toEqual(['first', 'second'])
+    expect(ids(inExamOrder([second, first]))).toEqual(['first', 'second'])
+  })
+
+  test('a report added later with an earlier exam takes its place', () => {
+    const middle = report('middle', '2026-09-14', '2026-09-15T00:00:00Z')
+    const last = report('last', '2026-10-12', '2026-10-13T00:00:00Z')
+    const added = report('added-later', '2026-08-01', '2026-11-01T00:00:00Z')
+    expect(ids(inExamOrder([middle, last, added]))).toEqual([
+      'added-later',
+      'middle',
+      'last',
+    ])
+  })
+
+  test('reports with the same exam date keep the order they were added', () => {
+    const one = report('one', '2026-09-14', '2026-09-15T00:00:00Z')
+    const two = report('two', '2026-09-14', '2026-09-16T00:00:00Z')
+    expect(ids(inExamOrder([two, one]))).toEqual(['one', 'two'])
+  })
+
+  test('leaves the list it was given as it was', () => {
+    const later = report('later', '2026-10-12', '2026-10-13T00:00:00Z')
+    const earlier = report('earlier', '2026-09-14', '2026-09-15T00:00:00Z')
+    const given = [later, earlier]
+    inExamOrder(given)
+    expect(ids(given)).toEqual(['later', 'earlier'])
   })
 })
