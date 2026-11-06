@@ -14,7 +14,9 @@ are in [`migrations/`](migrations/). Run these steps once per Supabase project.
    as Resend. Supabase's built-in email only reaches our team, so sign-up fails
    for everyone else without this.
 5. Under **Authentication > URL Configuration**, set the Site URL to the deployed
-   web app, and add `http://localhost:5173` to the redirect URLs.
+   web app. Add these to the redirect URLs, for the deployed app and for
+   `http://localhost:5173`: `/reports` (after confirming an email) and
+   `/reset-password` (after asking for a new password).
 6. Copy `web/.env.example` to `web/.env` and `reader/.env.example` to
    `reader/.env`, and fill in the project URL and anon key. Never commit the real
    values, and never put the service role key in either file.
