@@ -156,11 +156,31 @@ ALIGNMENT_WORDS = [
 
 # Requirements A.6: New, Healing, Healed, Not healing, Healed out of line.
 HEALING_PATTERN = re.compile(
-    r"(?<!no )(?<!without )(?<!-)\b("
+    r"(?<!-)(?<!year )(?<!years )\b("
     r"interval callus formation|callus formation|interval callus|callus|"
     r"interval healing|healing|healed|non-?union|delayed union|mal-?union|"
     r"united|remodell?ed|old|acute"
     r")\b",
+    re.IGNORECASE,
+)
+
+# Words a negation can reach across, as in "not yet fully healed". A joining word
+# ends its reach: "no displacement and healing" doesn't deny the healing.
+_NEGATION_REACH = r"(?:(?!and\b|or\b|with\b|but\b)\w+\s+){0,2}"
+# A sign of healing the report says is absent, so there's no healing word to show:
+# "no evidence of healing". These match the text just before a healing word.
+HEALING_ABSENT = re.compile(
+    r"\b(?:"
+    + "|".join(re.escape(word) for word in sorted(ABSENT_BEFORE, key=len, reverse=True))
+    + r")\s+"
+    + _NEGATION_REACH
+    + r"$",
+    re.IGNORECASE,
+)
+# A status the report denies. The phrase is kept whole, so the patient sees the
+# report's own words and never the opposite: "not healed", not "healed".
+HEALING_DENIED = re.compile(
+    r"\b(?:not|\w+n't)\s+" + _NEGATION_REACH + r"$",
     re.IGNORECASE,
 )
 
