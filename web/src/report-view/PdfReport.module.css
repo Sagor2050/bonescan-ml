@@ -1,0 +1,18 @@
+.pages {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1rem;
+}
+
+.page {
+  position: relative;
+  align-self: center;
+  line-height: 0;
+  background: #ffffff;
+  box-shadow: 0 0 0 1px #c0c0c0;
+}
+
+.message {
+  margin: 0;
+}

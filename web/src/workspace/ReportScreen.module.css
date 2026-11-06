@@ -2,19 +2,55 @@
   display: flex;
   flex-direction: column;
   height: calc(100vh - 4rem);
+  min-height: 36rem;
   box-sizing: border-box;
-  padding: 1rem 2rem;
+  padding: 0.75rem 1.5rem;
 }
 
-.screen h1 {
-  margin: 0 0 0.5rem;
+.heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.heading h1 {
+  margin: 0;
   font-size: 1.5rem;
 }
 
-.panes {
+.toggle {
+  padding: 0.25rem 0.75rem;
+  border: 1px solid #1a1a1a;
+  border-radius: 0.25rem;
+  background: #ffffff;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+.split,
+.modelOnly {
   display: grid;
   flex: 1;
-  grid-template-columns: minmax(0, 1fr) 20rem;
   gap: 1rem;
   min-height: 0;
+}
+
+/* Wide enough on a 13-inch laptop to read the report without zooming (NFR12). */
+.split {
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr) 15rem;
+}
+
+.modelOnly {
+  grid-template-columns: minmax(0, 1fr) 15rem;
+}
+
+.reportPane {
+  min-height: 0;
+}
+
+.reportPane[hidden] {
+  display: none;
 }

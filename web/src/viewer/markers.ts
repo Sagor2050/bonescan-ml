@@ -63,3 +63,22 @@ export function markersFor(findings: SavedFinding[], bones: Bone[]) {
   }
   return markers
 }
+
+// The gap between a marker and its label, and the label's limits, in pixels.
+const LABEL_GAP = 20
+const LABEL_MIN_WIDTH = 110
+const LABEL_MAX_WIDTH = 208
+
+// A label points away from the middle of the view, so it covers fewer bones, and
+// narrows to fit before the edge cuts it off. Only when even that is too tight
+// does it point inward. `x` runs from -1 to 1 across the view.
+export function labelPlacement(x: number, viewWidth: number) {
+  const fromCenter = (Math.abs(x) * viewWidth) / 2
+  const outside = viewWidth / 2 - fromCenter - LABEL_GAP
+  const inside = viewWidth / 2 + fromCenter - LABEL_GAP
+  const pointsOutward = outside >= LABEL_MIN_WIDTH
+  return {
+    goesLeft: x < 0 ? pointsOutward : !pointsOutward,
+    maxWidth: Math.min(LABEL_MAX_WIDTH, pointsOutward ? outside : inside),
+  }
+}

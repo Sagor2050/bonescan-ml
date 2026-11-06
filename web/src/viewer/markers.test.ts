@@ -6,7 +6,7 @@ import { parseReadResponse } from '../findings/parse.ts'
 import type { Finding } from '../findings/types.ts'
 import type { SavedFinding } from '../workspace/reportStore.ts'
 import type { Bone } from './bones.ts'
-import { markersFor } from './markers.ts'
+import { labelPlacement, markersFor } from './markers.ts'
 
 const bones = catalog as unknown as Bone[]
 
@@ -29,6 +29,7 @@ function saved(finding: Partial<Finding>, id = 'finding-1'): SavedFinding {
     entered_by_patient: false,
     id,
     report_id: 'report-1',
+    position: 0,
     ...finding,
   }
 }
@@ -124,5 +125,27 @@ describe('what a marker says', () => {
       bones,
     )
     expect(markers.map((marker) => marker.stackIndex)).toEqual([0, 1])
+  })
+})
+
+describe('where a label goes', () => {
+  test('points away from the middle when there is room', () => {
+    expect(labelPlacement(0.2, 800).goesLeft).toBe(false)
+    expect(labelPlacement(-0.2, 800).goesLeft).toBe(true)
+  })
+
+  test('narrows to fit before the edge of the view', () => {
+    const { goesLeft, maxWidth } = labelPlacement(0.36, 450)
+    expect(goesLeft).toBe(false)
+    expect(maxWidth).toBeLessThan(450 / 2 - 0.36 * (450 / 2))
+  })
+
+  test('points inward only when the outside is too tight', () => {
+    expect(labelPlacement(0.9, 450).goesLeft).toBe(true)
+    expect(labelPlacement(-0.9, 450).goesLeft).toBe(false)
+  })
+
+  test('never grows past its widest size', () => {
+    expect(labelPlacement(0, 2000).maxWidth).toBe(208)
   })
 })
