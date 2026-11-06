@@ -18,6 +18,9 @@ function WorkspaceController({ children }: { children: ReactNode }) {
         dispatch({ type: 'showReport', reportId }),
       forgetReport: (reportId: string) =>
         dispatch({ type: 'forgetReport', reportId }),
+      compareReports: (firstId: string, secondId: string) =>
+        dispatch({ type: 'compareReports', firstId, secondId }),
+      stopComparing: () => dispatch({ type: 'stopComparing' }),
     }),
     [state],
   )

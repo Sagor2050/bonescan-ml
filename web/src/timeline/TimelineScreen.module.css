@@ -114,6 +114,28 @@ button.report[aria-pressed='true'] {
   min-height: 0;
 }
 
+.tag {
+  font-weight: 400;
+}
+
+.picker {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  color: var(--ink-soft);
+  font-size: 0.9375rem;
+}
+
+.picker select {
+  max-width: 13rem;
+  padding: 0.25rem 0.375rem;
+  border: 1px solid var(--line);
+  border-radius: 0.5rem;
+  background: var(--surface);
+  color: var(--ink);
+  font: inherit;
+}
+
 .empty {
   max-width: 34rem;
   margin: 3rem auto;

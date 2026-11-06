@@ -1,8 +1,7 @@
 import { CameraControls, useGLTF } from '@react-three/drei'
 import { Canvas, useThree, type ThreeEvent } from '@react-three/fiber'
-import { Suspense, useEffect, useMemo, useRef, useState } from 'react'
+import { Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Sphere, Vector3, type Object3D } from 'three'
-import type { SavedFinding } from '../workspace/reportStore.ts'
 import { useWorkspace } from '../workspace/workspaceState.ts'
 import { boneLabel, useBones, type Bone } from './bones.ts'
 import {
@@ -17,7 +16,7 @@ import {
   ZOOM_STEP,
 } from './cameraViews.ts'
 import FractureMarker from './FractureMarker.tsx'
-import { markersFor, type MarkerSpec } from './markers.ts'
+import type { MarkerSpec } from './markers.ts'
 import {
   boneBox,
   boneIdOf,
@@ -170,10 +169,9 @@ function ExposeForTests({ controls }: { controls: CameraControls | null }) {
   return null
 }
 
-function SkeletonViewer({ findings }: { findings: SavedFinding[] }) {
+function SkeletonViewer({ markers }: { markers: MarkerSpec[] }) {
   const bones = useBones()
   const { selectedFindingId, selectionCount, selectFinding } = useWorkspace()
-  const markers = useMemo(() => markersFor(findings, bones), [findings, bones])
   const controlsRef = useRef<CameraControls | null>(null)
   const [controls, setControls] = useState<CameraControls | null>(null)
   const [selectedBone, setSelectedBone] = useState<Bone | null>(null)
@@ -189,12 +187,14 @@ function SkeletonViewer({ findings }: { findings: SavedFinding[] }) {
       : null
   const boneToShowAlone = selectedMarker?.boneId ?? selectedBone?.id ?? null
 
-  function connectControls(instance: CameraControls | null) {
+  // Has to stay the same function. React reconnects a ref that changes, and that
+  // would put the camera back at the start on every render.
+  const connectControls = useCallback((instance: CameraControls | null) => {
     controlsRef.current = instance
     if (!instance) return
     instance.setLookAt(...START_POSITION, ...START_TARGET, false)
     setControls(instance)
-  }
+  }, [])
 
   function goToView(azimuth: number) {
     const current = controlsRef.current

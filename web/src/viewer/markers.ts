@@ -4,13 +4,24 @@ import { healingLines } from '../workspace/healingStatus.ts'
 import type { SavedFinding } from '../workspace/reportStore.ts'
 import { boneLabel, type Bone, type Point } from './bones.ts'
 
+export type MarkerLook = {
+  shape: 'round' | 'diamond' | 'cube' | 'cone'
+  fill: string
+  // The same shape as text, for the label.
+  glyph: string
+}
+
 export type MarkerSpec = {
   findingId: string
   boneId: string
   // The named part's point from bones.json, or null to mark the whole bone.
   point: Point | null
   certainty: Certainty
+  look: MarkerLook
   title: string
+  // A second heading line, used when the title says something else, as a
+  // comparison's does.
+  subtitle: string | null
   boneName: string
   sideLabel: string
   // The report's healing words with their labels; empty if it has none (S5.3).
@@ -25,6 +36,13 @@ export const CERTAINTY_TITLES: Record<Certainty, string> = {
   uncertain: 'Possible fracture',
 }
 
+// Certain and uncertain findings differ by shape, so the difference survives
+// without color (S3.1, NFR12).
+const CERTAINTY_LOOKS: Record<Certainty, MarkerLook> = {
+  certain: { shape: 'round', fill: '#e5352b', glyph: '●' },
+  uncertain: { shape: 'diamond', fill: '#ffb000', glyph: '◆' },
+}
+
 // The first part the finding names that the catalog has a point for. A part the
 // catalog doesn't know marks the whole bone rather than guessing a spot (NFR5).
 function partPoint(finding: SavedFinding, bone: Bone): Point | null {
@@ -35,11 +53,21 @@ function partPoint(finding: SavedFinding, bone: Bone): Point | null {
   return null
 }
 
+// Numbers the markers that share a spot, so their labels can stack.
+export function withStackIndexes(markers: MarkerSpec[]) {
+  const spots = new Map<string, number>()
+  return markers.map((marker) => {
+    const spot = `${marker.boneId}:${marker.point?.join(',') ?? 'whole'}`
+    const stackIndex = spots.get(spot) ?? 0
+    spots.set(spot, stackIndex + 1)
+    return { ...marker, stackIndex }
+  })
+}
+
 // One marker for each finding that can be placed (S3.1). The rest get none, and
 // the findings list says why (S2.4).
 export function markersFor(findings: SavedFinding[], bones: Bone[]) {
   const byId = new Map(bones.map((bone) => [bone.id, bone]))
-  const spots = new Map<string, number>()
   const markers: MarkerSpec[] = []
 
   for (const finding of findings) {
@@ -47,25 +75,22 @@ export function markersFor(findings: SavedFinding[], bones: Bone[]) {
     const bone = id ? byId.get(id) : undefined
     if (!bone) continue
 
-    const point = partPoint(finding, bone)
-    const spot = `${bone.id}:${point?.join(',') ?? 'whole'}`
-    const stackIndex = spots.get(spot) ?? 0
-    spots.set(spot, stackIndex + 1)
-
     markers.push({
       findingId: finding.id,
       boneId: bone.id,
-      point,
+      point: partPoint(finding, bone),
       certainty: finding.certainty,
+      look: CERTAINTY_LOOKS[finding.certainty],
       title: CERTAINTY_TITLES[finding.certainty],
+      subtitle: null,
       boneName: boneLabel(bone),
       sideLabel: `Your ${bone.side} side`,
       healing: healingLines(finding.healing_words),
       enteredByPatient: finding.entered_by_patient,
-      stackIndex,
+      stackIndex: 0,
     })
   }
-  return markers
+  return withStackIndexes(markers)
 }
 
 // The gap between a marker and its label, and the label's limits, in pixels.
