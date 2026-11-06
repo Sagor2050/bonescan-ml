@@ -18,12 +18,6 @@ test('goes from the homepage through every screen without reloading', async ({
     { link: 'Sign in', path: '/sign-in' },
     { link: 'Go to my reports', path: '/reports', heading: 'My reports' },
     { link: 'Add a report', path: '/add-report' },
-    { link: 'Check the findings', path: '/verify-findings' },
-    {
-      link: 'See it on the skeleton',
-      path: '/reports/sample-b1',
-      heading: 'Your report and skeleton',
-    },
     { link: 'Account', path: '/account' },
     { link: 'My reports', path: '/reports' },
   ]

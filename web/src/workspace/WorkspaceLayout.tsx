@@ -1,4 +1,7 @@
 import type { ReactNode } from 'react'
+import { signOut } from '../account/auth.ts'
+import RequireSignIn from '../account/RequireSignIn.tsx'
+import { useSession } from '../account/session.ts'
 import Link from '../routing/Link.tsx'
 import { paths } from '../routing/paths.ts'
 import { usePath } from '../routing/router.ts'
@@ -7,6 +10,7 @@ import styles from './WorkspaceLayout.module.css'
 
 // The header on the screens a signed-in patient uses (Plan A.4 to A.6).
 function WorkspaceLayout({ children }: { children: ReactNode }) {
+  const session = useSession()
   const path = usePath()
   const inReports = path === paths.reports || path.startsWith(`${paths.reports}/`)
 
@@ -29,9 +33,18 @@ function WorkspaceLayout({ children }: { children: ReactNode }) {
           >
             Account
           </Link>
+          {session.status === 'signed-in' && (
+            <button
+              type="button"
+              className={styles.signOut}
+              onClick={() => signOut()}
+            >
+              Sign out
+            </button>
+          )}
         </nav>
       </header>
-      {children}
+      <RequireSignIn>{children}</RequireSignIn>
     </>
   )
 }
