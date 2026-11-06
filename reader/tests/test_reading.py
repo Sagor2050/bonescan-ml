@@ -10,7 +10,7 @@ from pathlib import Path
 import pytest
 
 from app.main import read_pasted, read_pdf
-from app.reading import read_report
+from app.reading import _healing_words, read_report
 
 FIXTURES = Path(__file__).resolve().parents[2] / "tests" / "fixtures"
 
@@ -238,6 +238,72 @@ def test_healing_words_can_follow_in_their_own_sentence():
 
 def test_no_callus_is_not_a_healing_word():
     assert only("Radius fracture with no callus.").healing_words == []
+
+
+@pytest.mark.parametrize(
+    "sentence, expected",
+    [
+        ("Radius fracture has not healed.", ["not healed"]),
+        ("Radius fracture is not united.", ["not united"]),
+        ("Radius fracture, not healing.", ["not healing"]),
+        ("Radius fracture has not yet healed.", ["not yet healed"]),
+        ("Radius fracture is not fully united.", ["not fully united"]),
+        ("Radius fracture has not yet fully healed.", ["not yet fully healed"]),
+        ("Radius fracture hasn't healed.", ["hasn't healed"]),
+        ("Radius fracture has NOT healed.", ["not healed"]),
+    ],
+)
+def test_a_denied_status_keeps_the_reports_whole_phrase(sentence, expected):
+    assert only(sentence).healing_words == expected
+
+
+def test_a_denied_status_can_follow_in_its_own_sentence():
+    assert only("Radius fracture. It has not healed.").healing_words == ["not healed"]
+
+
+def test_a_denied_status_can_run_over_a_line_break():
+    assert only("Radius fracture has not\nhealed.").healing_words == ["not healed"]
+
+
+@pytest.mark.parametrize(
+    "sentence",
+    [
+        "Radius fracture. No evidence of healing.",
+        "Radius fracture without healing.",
+        "Radius fracture without evidence of healing.",
+        "Radius fracture with no visible callus.",
+        "Radius fracture with no significant callus formation.",
+        "Radius fracture. Absence of callus.",
+        "Radius fracture. No acute displacement.",
+    ],
+)
+def test_an_absent_sign_of_healing_is_no_healing_word(sentence):
+    assert only(sentence).healing_words == []
+
+
+def test_a_negation_in_another_clause_leaves_the_healing_word_alone():
+    assert only("Radius fracture, not displaced, healing.").healing_words == ["healing"]
+
+
+@pytest.mark.parametrize(
+    "clause, expected",
+    [
+        ("no displacement and interval healing", ["interval healing"]),
+        ("no displacement with callus", ["callus"]),
+        ("not displaced but healing", ["healing"]),
+        ("not displaced or healing", ["healing"]),
+    ],
+)
+def test_a_joining_word_ends_a_negation(clause, expected):
+    assert _healing_words(clause) == expected
+
+
+@pytest.mark.parametrize(
+    "sentence",
+    ["Radius fracture in a 5 year old.", "Radius fracture in a patient 40 years old."],
+)
+def test_a_patients_age_is_no_healing_word(sentence):
+    assert only(sentence).healing_words == []
 
 
 @pytest.mark.parametrize(

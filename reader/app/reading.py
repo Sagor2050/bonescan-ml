@@ -418,11 +418,20 @@ def _collect_alignment(segment: str, draft: Draft) -> None:
             draft.type_words.append(recorded)
 
 
+def _healing_words(segment: str) -> list[str]:
+    found = []
+    for match in words.HEALING_PATTERN.finditer(segment):
+        before = segment[: match.start()]
+        if words.HEALING_ABSENT.search(before):
+            continue
+        denied = words.HEALING_DENIED.search(before)
+        start = denied.start() if denied else match.start()
+        found.append(" ".join(segment[start : match.end()].lower().split()))
+    return found
+
+
 def _collect_healing(segment: str, draft: Draft) -> None:
-    _add_unique(
-        draft.healing_words,
-        [m.group(1).lower() for m in words.HEALING_PATTERN.finditer(segment)],
-    )
+    _add_unique(draft.healing_words, _healing_words(segment))
 
 
 def _clauses(start: int, end: int, text: str) -> list[tuple[int, int]]:
