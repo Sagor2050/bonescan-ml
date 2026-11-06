@@ -17,9 +17,26 @@ are in [`migrations/`](migrations/). Run these steps once per Supabase project.
    web app. Add these to the redirect URLs, for the deployed app and for
    `http://localhost:5173`: `/reports` (after confirming an email) and
    `/reset-password` (after asking for a new password).
-6. Copy `web/.env.example` to `web/.env` and `reader/.env.example` to
+6. Copy `web/.env.example` to `web/.env.live` and `reader/.env.example` to
    `reader/.env`, and fill in the project URL and anon key. Never commit the real
    values, and never put the service role key in either file.
+
+   Don't name the web file `web/.env`. Vite loads that file in every mode, so
+   `npm test` and `npm run test:e2e` would run against the real project.
+
+## Run the app against the project
+
+From `web/`, then from `reader/`:
+
+```sh
+npm run dev -- --mode live
+.venv/bin/uvicorn app.main:app --reload --env-file .env
+```
+
+The reader doesn't load `.env` by itself. Without `--env-file` it has no project
+to check tokens against, so it refuses every report with "Sign in first."
+
+Only use fictional reports here, like the ones in `tests/fixtures/`.
 
 ## Test the access rules
 
