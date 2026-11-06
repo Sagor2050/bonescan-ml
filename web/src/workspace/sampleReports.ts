@@ -40,13 +40,17 @@ function appendixReport(
   }
 }
 
-function handWrittenReport(id: string, findings: Finding[]): SavedReport {
+function handWrittenReport(
+  id: string,
+  findings: Finding[],
+  examDate = '2026-09-14',
+): SavedReport {
   return {
     id,
     source: 'pasted',
     file_path: '',
     raw_text: 'A fictional report for testing.',
-    exam_date: '2026-09-14',
+    exam_date: examDate,
     exam_date_source: 'patient',
     added_at: '2026-09-15T12:00:00Z',
     findings: saved(id, findings),
@@ -110,9 +114,67 @@ export async function loadSamplePdf(filePath: string): Promise<ArrayBuffer> {
   return response.arrayBuffer()
 }
 
+// Three reports with findings in both, only the earlier, and only the later of
+// any pair. Open /reports?samples=comparison to see them.
+function comparisonSamples() {
+  return [
+    handWrittenReport(
+      'sample-c1',
+      [
+        finding({
+          bone: 'radius',
+          side: 'left',
+          part: ['distal'],
+          healing_words: ['acute'],
+        }),
+        finding({ bone: 'humerus', side: 'left' }),
+        finding({
+          bone: 'tibia',
+          side: 'right',
+          part: ['shaft'],
+          certainty: 'uncertain',
+        }),
+      ],
+      '2026-07-06',
+    ),
+    handWrittenReport(
+      'sample-c2',
+      [
+        finding({
+          bone: 'radius',
+          side: 'left',
+          part: ['distal'],
+          healing_words: ['callus formation'],
+        }),
+        finding({ bone: 'fibula', side: 'left', part: ['distal'] }),
+        finding({
+          bone: 'femur',
+          side: 'right',
+          part: ['neck'],
+          certainty: 'uncertain',
+        }),
+      ],
+      '2026-08-17',
+    ),
+    handWrittenReport(
+      'sample-c3',
+      [
+        finding({ bone: 'radius', side: 'left', part: ['proximal'] }),
+        finding({ bone: 'radius', side: '', status: 'side_not_stated' }),
+      ],
+      '2026-10-01',
+    ),
+  ]
+}
+
 // The timeline's samples. B.2 was added first, to show that order comes from the
 // exam date and not from when a report was added.
 export async function loadSampleReports() {
+  const samples = new URLSearchParams(window.location.search).get('samples')
+  if (samples === 'comparison') return comparisonSamples()
+  if (samples === 'one') {
+    return [appendixReport('sample-b1', b1, '2026-10-14T12:00:00Z', report1Url)]
+  }
   return [
     appendixReport('sample-b2', b2, '2026-10-13T12:00:00Z', report2Url),
     appendixReport('sample-b1', b1, '2026-10-14T12:00:00Z', report1Url),
