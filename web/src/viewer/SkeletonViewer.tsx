@@ -1,11 +1,13 @@
 import { CameraControls, useGLTF } from '@react-three/drei'
 import { Canvas, useThree, type ThreeEvent } from '@react-three/fiber'
 import { Suspense, useEffect, useMemo, useRef, useState } from 'react'
+import { Sphere, Vector3, type Object3D } from 'three'
 import type { SavedFinding } from '../workspace/reportStore.ts'
 import { useWorkspace } from '../workspace/workspaceState.ts'
 import { boneLabel, useBones, type Bone } from './bones.ts'
 import {
   FIELD_OF_VIEW,
+  focusView,
   MAX_DISTANCE,
   MIN_DISTANCE,
   nearestAzimuth,
@@ -17,15 +19,28 @@ import {
 import FractureMarker from './FractureMarker.tsx'
 import { markersFor, type MarkerSpec } from './markers.ts'
 import {
+  boneBox,
   boneIdOf,
   highlightBone,
+  markerPosition,
   MODEL_URL,
   prepareSkeleton,
+  showOnlyBone,
 } from './skeletonObjects.ts'
 import styles from './SkeletonViewer.module.css'
 import ViewerErrorBoundary from './ViewerErrorBoundary.tsx'
 
 useGLTF.preload(MODEL_URL)
+
+function moveCameraTo(
+  controls: CameraControls,
+  bone: Object3D,
+  point: Vector3,
+) {
+  const { radius } = boneBox(bone).getBoundingSphere(new Sphere())
+  const { position, target } = focusView([point.x, point.y, point.z], radius)
+  void controls.setLookAt(...position, ...target, true)
+}
 
 // Movement of more pixels than this between press and release is a drag.
 const CLICK_DRAG_LIMIT = 4
@@ -33,13 +48,19 @@ const CLICK_DRAG_LIMIT = 4
 function Skeleton({
   bones,
   markers,
+  controls,
   selectedFindingId,
+  selectionCount,
+  shownAloneId,
   onSelectBone,
   onSelectFinding,
 }: {
   bones: Bone[]
   markers: MarkerSpec[]
+  controls: CameraControls | null
   selectedFindingId: string | null
+  selectionCount: number
+  shownAloneId: string | null
   onSelectBone: (bone: Bone | null) => void
   onSelectFinding: (findingId: string) => void
 }) {
@@ -77,16 +98,40 @@ function Skeleton({
     }
   }, [skeleton, wholeBoneIds, invalidate])
 
+  // Choosing a finding centers its fracture in the view (S3.3).
+  useEffect(() => {
+    if (!controls || !selectedFindingId) return
+    const marker = markers.find(
+      (candidate) => candidate.findingId === selectedFindingId,
+    )
+    const bone = marker && skeleton.getObjectByName(marker.boneId)
+    if (!marker || !bone) return
+    const point = bone.localToWorld(markerPosition(bone, marker.point))
+    moveCameraTo(controls, bone, point)
+  }, [controls, markers, selectedFindingId, selectionCount, skeleton])
+
+  // Showing a bone on its own also brings it into the view.
+  useEffect(() => {
+    showOnlyBone(skeleton, shownAloneId)
+    const bone = shownAloneId && skeleton.getObjectByName(shownAloneId)
+    if (controls && bone) {
+      moveCameraTo(controls, bone, boneBox(bone).getCenter(new Vector3()))
+    }
+    invalidate()
+  }, [controls, invalidate, shownAloneId, skeleton])
+
   function handleClick(event: ThreeEvent<MouseEvent>) {
     if (event.delta > CLICK_DRAG_LIMIT) return
+    // Hidden bones still catch the ray, so a click passes through them.
+    const clickedId = boneIdOf(event.object, ids)
+    if (shownAloneId && clickedId !== shownAloneId) return
     // Markers draw on top of the bones, so one wins even if a bone is nearer.
     const hitMarker = event.intersections.some(
       (hit) => hit.object.userData.findingId,
     )
     if (hitMarker) return
     event.stopPropagation()
-    const id = boneIdOf(event.object, ids)
-    onSelectBone(id ? (byId.get(id) ?? null) : null)
+    onSelectBone(clickedId ? (byId.get(clickedId) ?? null) : null)
   }
 
   return (
@@ -94,7 +139,8 @@ function Skeleton({
       <primitive object={skeleton} onClick={handleClick} />
       {markers.map((marker) => {
         const bone = skeleton.getObjectByName(marker.boneId)
-        return bone ? (
+        const shown = !shownAloneId || marker.boneId === shownAloneId
+        return bone && shown ? (
           <FractureMarker
             key={marker.findingId}
             marker={marker}
@@ -126,11 +172,22 @@ function ExposeForTests({ controls }: { controls: CameraControls | null }) {
 
 function SkeletonViewer({ findings }: { findings: SavedFinding[] }) {
   const bones = useBones()
-  const { selectedFindingId, selectFinding } = useWorkspace()
+  const { selectedFindingId, selectionCount, selectFinding } = useWorkspace()
   const markers = useMemo(() => markersFor(findings, bones), [findings, bones])
   const controlsRef = useRef<CameraControls | null>(null)
   const [controls, setControls] = useState<CameraControls | null>(null)
   const [selectedBone, setSelectedBone] = useState<Bone | null>(null)
+  const [aloneId, setAloneId] = useState<string | null>(null)
+
+  const selectedMarker = markers.find(
+    (marker) => marker.findingId === selectedFindingId,
+  )
+  // Choosing a finding on another bone brings that bone back into view.
+  const shownAloneId =
+    aloneId && (!selectedMarker || selectedMarker.boneId === aloneId)
+      ? aloneId
+      : null
+  const boneToShowAlone = selectedMarker?.boneId ?? selectedBone?.id ?? null
 
   function connectControls(instance: CameraControls | null) {
     controlsRef.current = instance
@@ -198,7 +255,10 @@ function SkeletonViewer({ findings }: { findings: SavedFinding[] }) {
               <Skeleton
                 bones={bones}
                 markers={markers}
+                controls={controls}
                 selectedFindingId={selectedFindingId}
+                selectionCount={selectionCount}
+                shownAloneId={shownAloneId}
                 onSelectBone={setSelectedBone}
                 onSelectFinding={selectFinding}
               />
@@ -228,6 +288,20 @@ function SkeletonViewer({ findings }: { findings: SavedFinding[] }) {
           <button onClick={() => zoom(1)}>Zoom in</button>
           <button onClick={() => zoom(-1)}>Zoom out</button>
           <button onClick={resetView}>Starting view</button>
+        </div>
+        <div role="group" aria-label="Bones shown">
+          {shownAloneId ? (
+            <button onClick={() => setAloneId(null)}>
+              Show the full skeleton
+            </button>
+          ) : (
+            <button
+              disabled={!boneToShowAlone}
+              onClick={() => setAloneId(boneToShowAlone)}
+            >
+              Show this bone on its own
+            </button>
+          )}
         </div>
       </div>
 

@@ -61,8 +61,27 @@ export function prepareSkeleton(scene: Object3D) {
 export function markerPosition(bone: Object3D, point: Point | null) {
   const world = point
     ? new Vector3(...point)
-    : new Box3().setFromObject(bone).getCenter(new Vector3())
+    : boneBox(bone).getCenter(new Vector3())
   return bone.worldToLocal(world)
+}
+
+// The space the bone itself takes up, in the model's coordinates. Markers are
+// children of the bone, so they are left out.
+export function boneBox(bone: Object3D) {
+  const box = new Box3()
+  bone.traverse((object) => {
+    if (object instanceof Mesh && object.material instanceof MeshStandardMaterial) {
+      box.expandByObject(object)
+    }
+  })
+  return box
+}
+
+// Shows only one bone, or every bone when given null.
+export function showOnlyBone(skeleton: Object3D, boneId: string | null) {
+  for (const bone of skeleton.children) {
+    bone.visible = boneId === null || bone.name === boneId
+  }
 }
 
 // Highlights a whole bone and returns how to undo it. The bones share materials,
