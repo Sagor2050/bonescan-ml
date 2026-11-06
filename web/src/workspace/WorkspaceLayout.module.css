@@ -42,3 +42,13 @@
   text-underline-offset: 0.3rem;
   text-decoration-thickness: 2px;
 }
+
+.signOut {
+  padding: 0;
+  border: none;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-decoration: underline;
+  cursor: pointer;
+}
