@@ -9,7 +9,7 @@
   box-sizing: border-box;
   width: max-content;
   padding: 0.25rem 0.5rem;
-  transform: translate(1rem, calc(-50% + var(--stack, 0) * 5.5rem));
+  transform: translate(1rem, calc(-50% + var(--stack, 0) * 7.5rem));
   border: 2px solid #111111;
   border-radius: 0.375rem;
   background: #ffffff;
@@ -24,7 +24,14 @@
 }
 
 .label[data-flip='true'] {
-  transform: translate(calc(-100% - 1rem), calc(-50% + var(--stack, 0) * 5.5rem));
+  transform: translate(calc(-100% - 1rem), calc(-50% + var(--stack, 0) * 7.5rem));
+}
+
+.healing {
+  margin-top: 0.125rem;
+  padding-top: 0.125rem;
+  border-top: 1px solid #111111;
+  font-weight: 600;
 }
 
 .uncertain {

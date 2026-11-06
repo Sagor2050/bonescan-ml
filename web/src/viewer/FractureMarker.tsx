@@ -118,6 +118,11 @@ function FractureMarker({
           </strong>
           <span>{marker.boneName}</span>
           <span>{marker.sideLabel}</span>
+          {marker.healing.map((line) => (
+            <span key={line} className={styles.healing}>
+              {line}
+            </span>
+          ))}
           {marker.enteredByPatient && <em>Entered by you</em>}
         </button>
       </Html>

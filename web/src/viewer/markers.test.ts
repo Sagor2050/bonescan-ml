@@ -54,6 +54,13 @@ describe('the Appendix B reports', () => {
     expect(markers).toHaveLength(1)
     expect(markers[0].boneId).toBe('radius_left')
   })
+
+  test('only B.2 carries a healing status, in the report’s words', () => {
+    expect(markersFor(savedSample(b1), bones)[0].healing).toEqual([])
+    expect(markersFor(savedSample(b2), bones)[0].healing).toEqual([
+      'Healing: “interval callus formation”, “healing”',
+    ])
+  })
 })
 
 describe('where a marker goes', () => {

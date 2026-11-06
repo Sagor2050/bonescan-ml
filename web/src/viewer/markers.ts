@@ -1,5 +1,6 @@
 import type { Certainty } from '../findings/types.ts'
 import { boneId } from '../findings/types.ts'
+import { healingLines } from '../workspace/healingStatus.ts'
 import type { SavedFinding } from '../workspace/reportStore.ts'
 import { boneLabel, type Bone, type Point } from './bones.ts'
 
@@ -12,6 +13,8 @@ export type MarkerSpec = {
   title: string
   boneName: string
   sideLabel: string
+  // The report's healing words with their labels; empty if it has none (S5.3).
+  healing: string[]
   enteredByPatient: boolean
   // How many earlier markers sit on the same spot, so labels can stack.
   stackIndex: number
@@ -57,6 +60,7 @@ export function markersFor(findings: SavedFinding[], bones: Bone[]) {
       title: CERTAINTY_TITLES[finding.certainty],
       boneName: boneLabel(bone),
       sideLabel: `Your ${bone.side} side`,
+      healing: healingLines(finding.healing_words),
       enteredByPatient: finding.entered_by_patient,
       stackIndex,
     })
