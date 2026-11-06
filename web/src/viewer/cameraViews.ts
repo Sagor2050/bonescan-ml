@@ -25,6 +25,36 @@ export const VIEWS: { name: ViewName; label: string; azimuth: number }[] = [
   { name: 'right', label: 'Your right side', azimuth: -Math.PI / 2 },
 ]
 
+// How the camera looks at one fracture (S3.3): from the front and outer side,
+// where other bones are least likely to be in the way, and slightly from above.
+// The bone's size sets how close, with a limit for the smallest bones.
+const FRONT_BIAS = 0.15
+const FOCUS_ELEVATION = 0.15
+const BONE_FILLS_VIEW = 0.6
+
+export function focusView(
+  target: [number, number, number],
+  boneRadius: number,
+) {
+  const [x, y, z] = target
+  const halfHeightPerDistance = Math.tan(((FIELD_OF_VIEW / 2) * Math.PI) / 180)
+  const distance = Math.min(
+    MAX_DISTANCE,
+    Math.max(
+      MIN_DISTANCE,
+      boneRadius / (halfHeightPerDistance * BONE_FILLS_VIEW),
+    ),
+  )
+  const azimuth = Math.atan2(x, z + FRONT_BIAS)
+  const polar = Math.PI / 2 - FOCUS_ELEVATION
+  const position: [number, number, number] = [
+    x + distance * Math.sin(polar) * Math.sin(azimuth),
+    y + distance * Math.cos(polar),
+    z + distance * Math.sin(polar) * Math.cos(azimuth),
+  ]
+  return { position, target, distance }
+}
+
 // The camera's angle keeps growing as it circles, so turning straight to an
 // angle could spin the long way round. This gives the nearest equal angle.
 export function nearestAzimuth(current: number, wanted: number) {

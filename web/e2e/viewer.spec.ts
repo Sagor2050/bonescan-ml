@@ -53,7 +53,7 @@ test('dragging turns the model, and the starting view returns', async ({
   page,
 }) => {
   await openViewer(page)
-  const box = await page.locator('canvas').boundingBox()
+  const box = await page.getByRole('region', { name: '3D skeleton' }).locator('canvas').boundingBox()
   if (!box) throw new Error('No canvas')
   const middle = { x: box.x + box.width / 2, y: box.y + box.height / 2 }
 

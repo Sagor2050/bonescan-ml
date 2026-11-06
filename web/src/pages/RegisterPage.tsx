@@ -1,22 +1,34 @@
+import { useEffect, useState, type SubmitEvent } from 'react'
+import { createAccount, MIN_PASSWORD_LENGTH } from '../account/auth.ts'
+import AuthCard from '../account/AuthCard.tsx'
+import styles from '../account/AuthCard.module.css'
+import { useSession } from '../account/session.ts'
+import Link from '../routing/Link.tsx'
+import { paths } from '../routing/paths.ts'
+import { navigate } from '../routing/router.ts'
 
-import { useState, type SubmitEvent } from 'react'
-import '../App.css'
-
-type Page = 'register' | 'verify' | 'success'
-
-function RegisterPage()  {
-  const [page, setPage] = useState<Page>('register')
+// Plan A.2. It asks for an email address and a password, and nothing else (S6.1).
+function RegisterPage() {
+  const session = useSession()
+  const [sentTo, setSentTo] = useState<string | null>(null)
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
   const [error, setError] = useState('')
+  const [busy, setBusy] = useState(false)
 
-  function handleRegister(event: SubmitEvent<HTMLFormElement>) {
+  useEffect(() => {
+    if (session.status === 'signed-in') {
+      navigate(paths.reports, { replace: true })
+    }
+  }, [session.status])
+
+  async function handleRegister(event: SubmitEvent<HTMLFormElement>) {
     event.preventDefault()
     setError('')
 
-    if (password.length < 8) {
-      setError('Password must be at least 8 characters.')
+    if (password.length < MIN_PASSWORD_LENGTH) {
+      setError(`Password must be at least ${MIN_PASSWORD_LENGTH} characters.`)
       return
     }
 
@@ -25,125 +37,82 @@ function RegisterPage()  {
       return
     }
 
-    setPage('verify')
+    setBusy(true)
+    try {
+      await createAccount(email, password)
+      setSentTo(email)
+    } catch (problem) {
+      setError((problem as Error).message)
+    } finally {
+      setBusy(false)
+    }
+  }
+
+  if (sentTo) {
+    return (
+      <AuthCard title="Check your email">
+        <p>We sent a link to confirm your email address to:</p>
+        <p className={styles.email}>{sentTo}</p>
+        <p>
+          Open it to finish creating your account. You can't save reports until
+          you do. If this address already has an account, no new one was
+          created, and you can <Link href={paths.signIn}>sign in</Link> instead.
+        </p>
+      </AuthCard>
+    )
   }
 
   return (
-    <div className="app">
-      <header className="header">
-        <h1>3D Medical Report Viewer</h1>
-      </header>
+    <AuthCard
+      title="Create account"
+      subtitle="We only ask for an email address and a password."
+    >
+      <form onSubmit={handleRegister}>
+        <label htmlFor="email">Email address</label>
+        <input
+          id="email"
+          type="email"
+          autoComplete="email"
+          value={email}
+          onChange={(event) => setEmail(event.target.value)}
+          required
+        />
 
-      <main className="main-content">
-        {page === 'register' && (
-          <section className="auth-card">
-            <h2>Create Account</h2>
-            <p className="subtitle">
-              Start tracking your medical reports.
-            </p>
+        <label htmlFor="password">Password</label>
+        <input
+          id="password"
+          type="password"
+          autoComplete="new-password"
+          value={password}
+          onChange={(event) => setPassword(event.target.value)}
+          required
+        />
 
-            <form onSubmit={handleRegister}>
-              <label htmlFor="email">Email Address</label>
-              <input
-                id="email"
-                type="email"
-                placeholder="you@example.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-              />
+        <label htmlFor="confirmPassword">Confirm password</label>
+        <input
+          id="confirmPassword"
+          type="password"
+          autoComplete="new-password"
+          value={confirmPassword}
+          onChange={(event) => setConfirmPassword(event.target.value)}
+          required
+        />
 
-              <label htmlFor="password">Password</label>
-              <input
-                id="password"
-                type="password"
-                placeholder="Create password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-              />
-
-              <label htmlFor="confirmPassword">
-                Confirm Password
-              </label>
-              <input
-                id="confirmPassword"
-                type="password"
-                placeholder="Confirm password"
-                value={confirmPassword}
-                onChange={(e) =>
-                  setConfirmPassword(e.target.value)
-                }
-                required
-              />
-
-              {error && <p className="error" role="alert">{error}</p>}
-
-              <button type="submit" className="primary-button">
-                Create Account
-              </button>
-            </form>
-
-            <p className="auth-footer">
-              Already have an account?{' '}
-              <span className="link-placeholder">Sign In</span>
-            </p>
-          </section>
+        {error && (
+          <p className={styles.error} role="alert">
+            {error}
+          </p>
         )}
 
-        {page === 'verify' && (
-          <section className="auth-card center">
-            <div className="status-icon">✉</div>
-            <h2>Check Your Email</h2>
-            <p>
-              In a real registration, a verification link
-              would be sent to:
-            </p>
-            <p className="email-display">{email}</p>
-            <p className="subtitle">
-              Demo only — no email has been sent.
-            </p>
+        <button type="submit" className={styles.primary} disabled={busy}>
+          Create account
+        </button>
+      </form>
 
-            <button
-              className="primary-button"
-              onClick={() => setPage('success')}
-            >
-              Simulate Email Verification
-            </button>
-
-            <button
-              className="text-button"
-              onClick={() => setPage('register')}
-            >
-              Back to Registration
-            </button>
-          </section>
-        )}
-
-        {page === 'success' && (
-          <section className="auth-card center">
-            <div className="status-icon success-icon">✓</div>
-            <h2>Verification Complete</h2>
-            <p>
-              Demo only — this is what a successful
-              email verification screen would look like.
-            </p>
-            <button
-              className="primary-button"
-              onClick={() => {
-                setPage('register')
-                setEmail('')
-                setPassword('')
-                setConfirmPassword('')
-                setError('')
-              }}
-            >
-              Back to Registration
-            </button>
-          </section>
-        )}
-      </main>
-    </div>
+      <p className={styles.footer}>
+        Already have an account? <Link href={paths.signIn}>Sign in</Link>
+      </p>
+    </AuthCard>
   )
 }
 

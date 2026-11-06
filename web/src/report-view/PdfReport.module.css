@@ -1,0 +1,39 @@
+.pages {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1rem;
+}
+
+.page {
+  position: relative;
+  align-self: center;
+  line-height: 0;
+  background: #ffffff;
+  box-shadow: var(--shadow);
+}
+
+.message {
+  margin: 0;
+}
+
+/* Drawn over the page, which stays exactly as added (NFR4). The underline means
+   the marking doesn't rest on color (NFR12). */
+button.highlight {
+  position: absolute;
+  padding: 0;
+  border: 0;
+  border-bottom: 2px solid #8a6d00;
+  border-radius: 0;
+  background: rgb(255 204 0 / 28%);
+}
+
+button.highlight:hover {
+  border-color: #8a6d00;
+  background: rgb(255 204 0 / 45%);
+}
+
+button.highlight[aria-pressed='true'] {
+  outline: 2px solid var(--ink);
+  background: rgb(255 180 0 / 45%);
+}

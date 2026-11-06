@@ -4,6 +4,7 @@ export const paths = {
   home: '/', // A.1
   signIn: '/sign-in', // A.2
   createAccount: '/create-account', // A.2
+  resetPassword: '/reset-password', // A.2
   addReport: '/add-report', // A.3
   verifyFindings: '/verify-findings', // A.4
   report: '/reports/:reportId', // A.5
