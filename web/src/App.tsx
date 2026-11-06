@@ -1,4 +1,5 @@
 import VerifyFindingsScreen from './add-report/VerifyFindingsScreen.tsx'
+import RegisterPage from './pages/RegisterPage.tsx'
 import HomePage from './pages/HomePage.tsx'
 import NotFoundScreen from './routing/NotFoundScreen.tsx'
 import { paths } from './routing/paths.ts'
@@ -24,12 +25,7 @@ const routes: Route[] = [
   },
   {
     path: paths.createAccount,
-    render: () => (
-      <PlaceholderScreen
-        title="Create account"
-        links={[{ href: paths.signIn, label: 'Sign in' }]}
-      />
-    ),
+  render: () => <RegisterPage />,
   },
   {
     path: paths.addReport,

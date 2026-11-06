@@ -1,6 +1,8 @@
 
 import { useState, type SubmitEvent } from 'react'
 import '../App.css'
+import { paths } from '../routing/paths.ts'
+import Link from '../routing/Link.tsx'
 
 type Page = 'register' | 'verify' | 'success'
 
@@ -31,7 +33,7 @@ function RegisterPage()  {
   return (
     <div className="app">
       <header className="header">
-        <h1>3D Medical Report Viewer</h1>
+        <h1>Create account</h1>
       </header>
 
       <main className="main-content">
@@ -86,7 +88,7 @@ function RegisterPage()  {
 
             <p className="auth-footer">
               Already have an account?{' '}
-              <span className="link-placeholder">Sign In</span>
+              <Link href={paths.signIn}>Sign in</Link>
             </p>
           </section>
         )}
