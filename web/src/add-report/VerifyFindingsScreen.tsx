@@ -15,7 +15,8 @@ import {
   examDateProblem,
   localToday,
   newFinding,
-  STATUS_REASONS,
+  noMarkerReason,
+  unplacedTitle,
 } from './findingEdits.ts'
 import { saveReport } from './saveReport.ts'
 import styles from './VerifyFindingsScreen.module.css'
@@ -55,7 +56,7 @@ function FindingCard({
   const choices = uniqueBones(bones)
   const chosen = choices.find((bone) => bone.bone === finding.bone)
   const parts = chosen ? Object.keys(chosen.parts) : []
-  const reason = STATUS_REASONS[finding.status]
+  const reason = noMarkerReason(finding)
   const name = `Finding ${number}`
 
   function changeBone(bone: string) {
@@ -75,7 +76,7 @@ function FindingCard({
     <li className={styles.card} aria-label={name}>
       <div className={styles.cardHeader}>
         <h3>
-          {chosen ? boneLabel(chosen) : 'Bone not chosen'}
+          {chosen ? boneLabel(chosen) : unplacedTitle(finding)}
           {finding.side && `, ${finding.side} side`}
         </h3>
         <button type="button" onClick={onRemove}>
