@@ -1,16 +1,13 @@
+import VerifyFindingsScreen from './add-report/VerifyFindingsScreen.tsx'
 import RegisterPage from './pages/RegisterPage.tsx'
 import HomePage from './pages/HomePage.tsx'
 import NotFoundScreen from './routing/NotFoundScreen.tsx'
-import { paths, reportPath } from './routing/paths.ts'
+import { paths } from './routing/paths.ts'
 import PlaceholderScreen from './routing/PlaceholderScreen.tsx'
 import Routes, { type Route } from './routing/Routes.tsx'
 import ReportScreen from './workspace/ReportScreen.tsx'
 import WorkspaceController from './workspace/WorkspaceController.tsx'
 import WorkspaceLayout from './workspace/WorkspaceLayout.tsx'
-
-
-// Stands in for a real report until reports can be saved (Milestone 4).
-const sampleReportPath = reportPath('sample-b1')
 
 const routes: Route[] = [
   { path: paths.home, render: () => <HomePage /> },
@@ -45,10 +42,7 @@ const routes: Route[] = [
     path: paths.verifyFindings,
     render: () => (
       <WorkspaceLayout>
-        <PlaceholderScreen
-          title="Check the findings"
-          links={[{ href: sampleReportPath, label: 'See it on the skeleton' }]}
-        />
+        <VerifyFindingsScreen />
       </WorkspaceLayout>
     ),
   },
