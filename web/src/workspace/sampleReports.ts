@@ -157,7 +157,7 @@ export async function loadSampleReport(
           part: ['shaft'],
           certainty: 'uncertain',
         }),
-        finding({ bone: 'humerus', side: 'left' }),
+        finding({ bone: 'humerus', side: 'left', healing_words: ['healed'] }),
         finding({
           bone: 'fibula',
           side: 'right',

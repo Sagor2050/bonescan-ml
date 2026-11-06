@@ -2,6 +2,7 @@ import type { Finding, Status } from '../findings/types.ts'
 import { boneId } from '../findings/types.ts'
 import { boneLabel, type Bone } from '../viewer/bones.ts'
 import { CERTAINTY_TITLES } from '../viewer/markers.ts'
+import { healingLines } from './healingStatus.ts'
 
 // S2.4: why a finding has no marker, in the requirements' own terms.
 const NO_MARKER_REASONS: Record<Exclude<Status, 'placed'>, string> = {
@@ -32,6 +33,7 @@ export function findingSummary(finding: Finding, bones: Bone[]) {
     sideLabel: placedBone ? `Your ${placedBone.side} side` : null,
     parts: finding.part.map(partWords).join(', '),
     reportWords: finding.type_words.join(', '),
+    healing: healingLines(finding.healing_words),
     noMarkerReason: placedBone
       ? null
       : finding.status === 'placed'

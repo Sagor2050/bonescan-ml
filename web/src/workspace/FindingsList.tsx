@@ -86,6 +86,11 @@ function FindingsList({ findings }: { findings: SavedFinding[] }) {
                         Report says: {summary.reportWords}
                       </span>
                     )}
+                    {summary.healing.map((line) => (
+                      <span key={line} className={styles.healing}>
+                        {line}
+                      </span>
+                    ))}
                     {summary.reportSentence && (
                       <span className={styles.detail}>
                         Report says: “{summary.reportSentence}”

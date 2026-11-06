@@ -48,6 +48,13 @@ describe('findingSummary', () => {
     })
   })
 
+  test('shows healing words only when the report has them', () => {
+    expect(findingSummary(saved({}), bones).healing).toEqual([])
+    expect(
+      findingSummary(saved({ healing_words: ['healed'] }), bones).healing,
+    ).toEqual(['Healed: “healed”'])
+  })
+
   test('titles an uncertain finding as possible', () => {
     expect(findingSummary(saved({ certainty: 'uncertain' }), bones).title).toBe(
       'Possible fracture',

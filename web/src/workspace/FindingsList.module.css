@@ -72,6 +72,11 @@ button.finding[aria-pressed='true'] {
   color: var(--ink-soft);
 }
 
+.healing {
+  margin-top: 0.125rem;
+  font-weight: 600;
+}
+
 .finding em {
   margin-top: 0.25rem;
   font-style: normal;
