@@ -124,7 +124,18 @@ export async function loadSampleReport(
       return appendixReport(id, b2Pasted, '2026-10-13T12:00:00Z')
     case 'sample-two-pages':
       return {
-        ...handWrittenReport(id, []),
+        ...handWrittenReport(id, [
+          finding({
+            part: ['distal'],
+            wording: [
+              {
+                page: 2,
+                boxes: [[72, 70, 260, 98]],
+                text: 'Sample page two',
+              },
+            ],
+          }),
+        ]),
         source: 'pdf',
         file_path: TWO_PAGE_PDF,
       }
