@@ -1,3 +1,4 @@
+import AccountScreen from './account/AccountScreen.tsx'
 import AddReportScreen from './add-report/AddReportScreen.tsx'
 import VerifyFindingsScreen from './add-report/VerifyFindingsScreen.tsx'
 import HomePage from './pages/HomePage.tsx'
@@ -65,7 +66,7 @@ const routes: Route[] = [
     path: paths.account,
     render: () => (
       <WorkspaceLayout>
-        <PlaceholderScreen title="Account" />
+        <AccountScreen />
       </WorkspaceLayout>
     ),
   },
