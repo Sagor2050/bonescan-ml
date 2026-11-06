@@ -16,6 +16,8 @@ function WorkspaceController({ children }: { children: ReactNode }) {
       clearSelection: () => dispatch({ type: 'clearSelection' }),
       showReport: (reportId: string) =>
         dispatch({ type: 'showReport', reportId }),
+      forgetReport: (reportId: string) =>
+        dispatch({ type: 'forgetReport', reportId }),
     }),
     [state],
   )

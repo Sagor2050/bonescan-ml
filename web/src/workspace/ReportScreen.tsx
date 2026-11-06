@@ -2,6 +2,7 @@ import { lazy, Suspense, useState } from 'react'
 import ReportPane from '../report-view/ReportPane.tsx'
 import Link from '../routing/Link.tsx'
 import { paths } from '../routing/paths.ts'
+import DeleteReport from './DeleteReport.tsx'
 import { formatExamDate } from './examDate.ts'
 import FindingsList from './FindingsList.tsx'
 import styles from './ReportScreen.module.css'
@@ -36,6 +37,7 @@ function ReportScreen({ reportId }: { reportId: string }) {
             {showReport ? 'Hide the report' : 'Show the report'}
           </button>
         )}
+        {report.status === 'ready' && <DeleteReport report={report.report} />}
       </div>
       {report.status === 'loading' && <p>Loading your report…</p>}
       {report.status === 'missing' && <p>We can't find that report.</p>}

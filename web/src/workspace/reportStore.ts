@@ -1,3 +1,4 @@
+import type { SupabaseClient } from '@supabase/supabase-js'
 import { REPORTS_BUCKET, supabase } from '../account/supabase.ts'
 import type { Finding } from '../findings/types.ts'
 
@@ -24,7 +25,7 @@ const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
 
 // The fictional reports in sampleReports.ts exist only in development. Production
 // builds leave them out.
-function isSample(id: string) {
+export function isSample(id: string) {
   return import.meta.env.DEV && id.startsWith('sample-')
 }
 
@@ -88,4 +89,40 @@ export async function loadReportPdf(report: SavedReport): Promise<ArrayBuffer> {
     .download(report.file_path)
   if (error) throw new Error('The report could not be loaded.')
   return data.arrayBuffer()
+}
+
+// Deletes a report for good (S1.3). The file goes first: if that fails, the row
+// is still there to try again from. The other way round could leave the file
+// online with nothing pointing to it (NFR10). The database removes the findings
+// along with the report.
+export async function deleteReport(
+  report: Pick<SavedReport, 'id' | 'file_path'>,
+  client: SupabaseClient | null = supabase,
+): Promise<void> {
+  const failed = new Error('The report could not be deleted.')
+  if (!client) throw failed
+
+  if (report.file_path) {
+    const files = client.storage.from(REPORTS_BUCKET)
+    const { error } = await files.remove([report.file_path])
+    if (error) throw failed
+
+    // Storage reports no error when the access rules stop a delete, so check
+    // that the file has gone.
+    const slash = report.file_path.lastIndexOf('/')
+    const folder = report.file_path.slice(0, slash)
+    const name = report.file_path.slice(slash + 1)
+    const { data: left, error: listError } = await files.list(folder, {
+      search: name,
+    })
+    if (listError || left.some((file) => file.name === name)) throw failed
+  }
+
+  // The same goes for the row, so count what was deleted.
+  const { data, error } = await client
+    .from('reports')
+    .delete()
+    .eq('id', report.id)
+    .select('id')
+  if (error || data.length === 0) throw failed
 }
