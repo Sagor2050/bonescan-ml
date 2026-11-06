@@ -1,6 +1,6 @@
 import type { SupabaseClient } from '@supabase/supabase-js'
 import { setDraftReport } from '../add-report/draftReport.ts'
-import { supabase } from './supabase.ts'
+import { REPORTS_BUCKET, supabase } from './supabase.ts'
 
 // Every message here is written in advance. Supabase's own error text is never
 // shown, and none of them says whether an email address has an account (NFR8).
@@ -90,4 +90,62 @@ export async function signOut(
   setDraftReport(null)
   await client?.auth.signOut({ scope: 'local' })
   leave()
+}
+
+// Every original file in the account's folder (Plan B.1). A page at a time, since
+// a page can't list more than this. Storage reports no error when access rules
+// stop a delete, so removing nothing counts as failing.
+async function removeAllFiles(client: SupabaseClient, userId: string) {
+  const files = client.storage.from(REPORTS_BUCKET)
+  for (;;) {
+    const { data: listed, error: listError } = await files.list(userId, {
+      limit: 100,
+    })
+    if (listError) throw new Error(TRY_AGAIN)
+    if (listed.length === 0) return
+
+    const { data: removed, error } = await files.remove(
+      listed.map((file) => `${userId}/${file.name}`),
+    )
+    if (error || removed.length === 0) throw new Error(TRY_AGAIN)
+  }
+}
+
+/**
+ * Delete the account and everything in it, for good (S6.3). Signing in again is
+ * what proves it's the patient, and the database function checks that it just
+ * happened. The files go first, because the account's sign-in is what allows
+ * removing them. The database then removes the reports and findings with the
+ * account. If a step fails, trying again picks up where this stopped.
+ */
+export async function deleteAccount(
+  password: string,
+  client: Client = supabase,
+  leave?: () => void,
+): Promise<void> {
+  if (!client) throw new Error(NOT_SET_UP)
+  const {
+    data: { user },
+    error: userError,
+  } = await client.auth.getUser()
+  if (userError || !user?.email) throw new Error(TRY_AGAIN)
+
+  const { error: signInError } = await client.auth.signInWithPassword({
+    email: user.email,
+    password,
+  })
+  if (signInError) {
+    throw new Error(
+      signInError.code === 'invalid_credentials'
+        ? "That password isn't right."
+        : TRY_AGAIN,
+    )
+  }
+
+  await removeAllFiles(client, user.id)
+
+  const { error } = await client.rpc('delete_my_account')
+  if (error) throw new Error(TRY_AGAIN)
+
+  await signOut(client, leave)
 }
