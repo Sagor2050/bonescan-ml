@@ -1,15 +1,24 @@
-import { lazy, Suspense, useState } from 'react'
+import { lazy, Suspense, useMemo, useState } from 'react'
 import ReportPane from '../report-view/ReportPane.tsx'
 import Link from '../routing/Link.tsx'
 import { paths } from '../routing/paths.ts'
+import { useBones } from '../viewer/bones.ts'
+import { markersFor } from '../viewer/markers.ts'
 import DeleteReport from './DeleteReport.tsx'
 import { formatExamDate } from './examDate.ts'
 import FindingsList from './FindingsList.tsx'
 import styles from './ReportScreen.module.css'
+import type { SavedFinding } from './reportStore.ts'
 import { useReport } from './useReport.ts'
 
 // The 3D code is large, so only this screen loads it.
 const SkeletonViewer = lazy(() => import('../viewer/SkeletonViewer.tsx'))
+
+function ReportModel({ findings }: { findings: SavedFinding[] }) {
+  const bones = useBones()
+  const markers = useMemo(() => markersFor(findings, bones), [findings, bones])
+  return <SkeletonViewer markers={markers} />
+}
 
 // The split view (Plan A.5): the original report, the model, and the findings.
 function ReportScreen({ reportId }: { reportId: string }) {
@@ -51,7 +60,7 @@ function ReportScreen({ reportId }: { reportId: string }) {
             <div className={styles.reportPane} hidden={!showReport}>
               <ReportPane report={report.report} />
             </div>
-            <SkeletonViewer findings={report.report.findings} />
+            <ReportModel findings={report.report.findings} />
             <FindingsList findings={report.report.findings} />
           </div>
         </Suspense>

@@ -1,5 +1,5 @@
 import { expect, test, type Page } from '@playwright/test'
-import { markerInfo, openViewer } from './viewer.ts'
+import { cameraState, markerInfo, openViewer, waitForCameraToStop } from './viewer.ts'
 
 const reportButton = (page: Page, date: string) =>
   page.getByRole('button', { name: new RegExp(date) })
@@ -67,4 +67,23 @@ test('opens a report beside the original', async ({ page }) => {
   await expect(
     page.getByRole('region', { name: 'Your original report' }),
   ).toBeVisible()
+})
+
+test('moving to another report keeps the angle the patient was looking from', async ({
+  page,
+}) => {
+  await page.getByRole('button', { name: 'Back', exact: true }).click()
+  // The camera eases into place, so wait until it has all but arrived.
+  await expect
+    .poll(async () => Math.abs((await cameraState(page)).azimuth))
+    .toBeCloseTo(Math.PI, 1)
+  await waitForCameraToStop(page)
+  const before = await cameraState(page)
+
+  await page.getByRole('button', { name: 'Older', exact: true }).click()
+  await expect(reportButton(page, 'Sep 14, 2026')).toHaveAttribute(
+    'aria-pressed',
+    'true',
+  )
+  expect((await cameraState(page)).azimuth).toBeCloseTo(before.azimuth, 1)
 })
