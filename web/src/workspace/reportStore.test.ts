@@ -1,3 +1,4 @@
+import type { SupabaseClient } from '@supabase/supabase-js'
 import { beforeEach, describe, expect, test, vi } from 'vitest'
 
 const REPORT_ID = '11111111-2222-3333-4444-555555555555'
@@ -26,7 +27,7 @@ vi.mock('../account/supabase.ts', () => ({
   },
 }))
 
-const { inExamOrder, loadReport, loadReportPdf } = await import(
+const { deleteReport, inExamOrder, loadReport, loadReportPdf } = await import(
   './reportStore.ts'
 )
 
@@ -138,5 +139,103 @@ describe('inExamOrder', () => {
     const given = [later, earlier]
     inExamOrder(given)
     expect(ids(given)).toEqual(['later', 'earlier'])
+  })
+})
+
+describe('deleteReport', () => {
+  const USER_ID = 'aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee'
+  const filePath = `${USER_ID}/${REPORT_ID}.pdf`
+  const pdfReport = { id: REPORT_ID, file_path: filePath }
+  const pastedReport = { id: REPORT_ID, file_path: '' }
+
+  // Records the order of the calls, because the file has to go before the row.
+  function fakeClient({
+    removeError = null as unknown,
+    left = [] as { name: string }[],
+    listError = null as unknown,
+    deleted = [{ id: REPORT_ID }] as { id: string }[] | null,
+    deleteError = null as unknown,
+  } = {}) {
+    const calls: string[] = []
+    const eq = vi.fn(() => ({
+      select: async () => {
+        calls.push('delete row')
+        return { data: deleted, error: deleteError }
+      },
+    }))
+    const remove = vi.fn(async () => {
+      calls.push('remove file')
+      return { data: [], error: removeError }
+    })
+    const list = vi.fn(async () => {
+      calls.push('check file')
+      return { data: left, error: listError }
+    })
+    const client = {
+      from: vi.fn(() => ({ delete: () => ({ eq }) })),
+      storage: { from: vi.fn(() => ({ remove, list })) },
+    } as unknown as SupabaseClient
+    return { client, calls, eq, remove, list }
+  }
+
+  test('removes the file, checks it has gone, then deletes the row', async () => {
+    const { client, calls, eq, remove, list } = fakeClient()
+
+    await deleteReport(pdfReport, client)
+
+    expect(calls).toEqual(['remove file', 'check file', 'delete row'])
+    expect(remove).toHaveBeenCalledWith([filePath])
+    expect(list).toHaveBeenCalledWith(USER_ID, { search: `${REPORT_ID}.pdf` })
+    expect(eq).toHaveBeenCalledWith('id', REPORT_ID)
+  })
+
+  test('a pasted report has no file to remove', async () => {
+    const { client, calls } = fakeClient()
+
+    await deleteReport(pastedReport, client)
+
+    expect(calls).toEqual(['delete row'])
+  })
+
+  test('keeps the row when the file can’t be removed', async () => {
+    const { client, calls } = fakeClient({ removeError: new Error('down') })
+
+    await expect(deleteReport(pdfReport, client)).rejects.toThrow()
+
+    expect(calls).toEqual(['remove file'])
+  })
+
+  test('keeps the row when the file is still there with no error', async () => {
+    const { client, calls } = fakeClient({
+      left: [{ name: `${REPORT_ID}.pdf` }],
+    })
+
+    await expect(deleteReport(pdfReport, client)).rejects.toThrow()
+
+    expect(calls).not.toContain('delete row')
+  })
+
+  test('keeps the row when it can’t check the file', async () => {
+    const { client, calls } = fakeClient({ listError: new Error('down') })
+
+    await expect(deleteReport(pdfReport, client)).rejects.toThrow()
+
+    expect(calls).not.toContain('delete row')
+  })
+
+  test('fails when the database deleted nothing', async () => {
+    const { client } = fakeClient({ deleted: [] })
+
+    await expect(deleteReport(pastedReport, client)).rejects.toThrow()
+  })
+
+  test('fails when the database refuses', async () => {
+    const { client } = fakeClient({ deleted: null, deleteError: new Error('no') })
+
+    await expect(deleteReport(pastedReport, client)).rejects.toThrow()
+  })
+
+  test('fails when accounts aren’t set up', async () => {
+    await expect(deleteReport(pastedReport, null)).rejects.toThrow()
   })
 })

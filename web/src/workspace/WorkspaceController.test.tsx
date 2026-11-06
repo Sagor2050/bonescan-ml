@@ -139,3 +139,24 @@ test('useWorkspace outside the controller is an error', () => {
     console.error = consoleError
   }
 })
+
+test('forgetting the report the timeline shows starts it on the latest again', () => {
+  const state = {
+    ...initialWorkspaceState,
+    timelineReportId: 'report-1',
+    selectedFindingId: 'finding-1',
+  }
+
+  expect(
+    workspaceReducer(state, { type: 'forgetReport', reportId: 'report-1' }),
+  ).toMatchObject({ timelineReportId: null, selectedFindingId: null })
+})
+
+test('forgetting another report leaves the timeline where it is', () => {
+  const state = { ...initialWorkspaceState, timelineReportId: 'report-2' }
+
+  expect(
+    workspaceReducer(state, { type: 'forgetReport', reportId: 'report-1' })
+      .timelineReportId,
+  ).toBe('report-2')
+})

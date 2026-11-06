@@ -17,6 +17,7 @@ export type WorkspaceAction =
   | { type: 'selectFinding'; findingId: string }
   | { type: 'clearSelection' }
   | { type: 'showReport'; reportId: string }
+  | { type: 'forgetReport'; reportId: string }
 
 export const initialWorkspaceState: WorkspaceState = {
   selectedFindingId: null,
@@ -44,6 +45,17 @@ export function workspaceReducer(
         timelineReportId: action.reportId,
         selectedFindingId: null,
       }
+    case 'forgetReport':
+      // A deleted report's findings are gone, and the timeline goes back to
+      // starting on the latest report.
+      return {
+        ...state,
+        timelineReportId:
+          state.timelineReportId === action.reportId
+            ? null
+            : state.timelineReportId,
+        selectedFindingId: null,
+      }
   }
 }
 
@@ -63,6 +75,7 @@ export type Workspace = WorkspaceState & {
   selectFinding: (findingId: string) => void
   clearSelection: () => void
   showReport: (reportId: string) => void
+  forgetReport: (reportId: string) => void
 }
 
 export const WorkspaceContext = createContext<Workspace | null>(null)
