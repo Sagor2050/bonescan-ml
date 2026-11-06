@@ -11,8 +11,9 @@
   padding: 0.25rem 0.5rem;
   transform: translate(1rem, calc(-50% + var(--stack, 0) * 5.5rem));
   border: 2px solid #111111;
-  border-radius: 0.25rem;
+  border-radius: 0.375rem;
   background: #ffffff;
+  box-shadow: 0 2px 8px rgb(0 0 0 / 35%);
   color: #111111;
   font: inherit;
   font-size: 0.875rem;

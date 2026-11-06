@@ -8,7 +8,7 @@ import { markerPosition } from './skeletonObjects.ts'
 
 // How big a marker looks, as a share of its distance from the camera. It keeps
 // the same size on screen, so it doesn't hide a finger when zoomed in.
-const SCREEN_SIZE = 0.011
+const SCREEN_SIZE = 0.008
 const CLICK_DRAG_LIMIT = 4
 
 const OUTLINE_COLOR = '#111111'

@@ -10,7 +10,7 @@
   align-self: center;
   line-height: 0;
   background: #ffffff;
-  box-shadow: 0 0 0 1px #c0c0c0;
+  box-shadow: var(--shadow);
 }
 
 .message {
