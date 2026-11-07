@@ -1,9 +1,16 @@
 import { expect, test, type Page } from '@playwright/test'
-import { markerInfo, openViewer, waitForCameraToStop } from './viewer.ts'
+import {
+  markerInfo,
+  openFindingsTab,
+  openReportTab,
+  openViewer,
+  waitForCameraToStop,
+} from './viewer.ts'
 
 const reportPane = (page: Page) =>
   page.getByRole('region', { name: 'Your original report' })
 const findings = (page: Page) => page.getByRole('region', { name: 'Findings' })
+const model = (page: Page) => page.getByRole('region', { name: '3D skeleton' })
 
 async function expectCentered(page: Page, findingId: string) {
   await waitForCameraToStop(page)
@@ -63,11 +70,11 @@ test.describe('the B.1 PDF', () => {
     await wording.click()
     await expect(wording).toHaveAttribute('aria-pressed', 'true')
     await expectCentered(page, findingId)
+    await openFindingsTab(page)
     await expect(findings(page).getByRole('button', { pressed: true })).toHaveCount(1)
 
+    await openReportTab(page)
     await page.getByRole('button', { name: 'Starting view' }).click()
-    await waitForCameraToStop(page)
-    await findings(page).getByRole('button', { name: /radius/ }).click()
     await waitForCameraToStop(page)
     const marker = await markerInfo(page, findingId)
     await page.mouse.click(marker.screenX, marker.screenY)
@@ -75,7 +82,7 @@ test.describe('the B.1 PDF', () => {
   })
 })
 
-test('choosing a finding scrolls the report to its wording on a later page', async ({
+test('choosing a marker scrolls the report to its wording on a later page', async ({
   page,
 }) => {
   await openViewer(page, '/reports/sample-two-pages')
@@ -85,7 +92,23 @@ test('choosing a finding scrolls the report to its wording on a later page', asy
   await expect(wording).toHaveCount(1)
   await expect(wording).not.toBeInViewport()
 
+  await model(page).getByRole('button', { name: /radius/ }).click()
+
+  await expect(wording).toBeInViewport()
+})
+
+test('a finding chosen from the list has its wording in view when the report opens', async ({
+  page,
+}) => {
+  await openViewer(page, '/reports/sample-two-pages')
+  const wording = reportPane(page).getByRole('button', {
+    name: /Sample page two/,
+  })
+  await expect(wording).toHaveCount(1)
+
+  await openFindingsTab(page)
   await findings(page).getByRole('button', { name: /radius/ }).click()
+  await openReportTab(page)
 
   await expect(wording).toBeInViewport()
 })

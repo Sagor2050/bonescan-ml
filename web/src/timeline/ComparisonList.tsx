@@ -126,7 +126,11 @@ function ComparisonList({
               aria-label={PRESENCE_TITLES[presence]}
             >
               <h3>
-                <span aria-hidden="true">
+                <span
+                  className={styles.glyph}
+                  style={{ color: presenceLook(presence, 'certain').fill }}
+                  aria-hidden="true"
+                >
                   {presenceLook(presence, 'certain').glyph}
                 </span>{' '}
                 {PRESENCE_TITLES[presence]}
@@ -144,13 +148,13 @@ function ComparisonList({
             </div>
           )
         })}
+        <p className={styles.note}>
+          A hollow shape means a possible fracture. This shows what each report
+          says, not how you are healing. Reports are matched by bone and side,
+          so two breaks in one bone show as one.
+        </p>
       </div>
 
-      <p className={styles.note}>
-        A hollow shape means a possible fracture. This shows what each report
-        says, not how you are healing. Reports are matched by bone and side, so
-        two breaks in one bone show as one.
-      </p>
       <p className={styles.careTeam}>
         Questions about what this means? Ask your care team.
       </p>

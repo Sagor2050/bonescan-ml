@@ -4,6 +4,7 @@ import { expect, test, type Page } from '@playwright/test'
 import {
   boneOnScreen,
   markerInfo,
+  openReportTab,
   openViewer,
   waitForCameraToStop,
 } from './viewer.ts'
@@ -201,11 +202,21 @@ test('a possible fracture has its own style of line', async ({ page }) => {
   await expect(model(page).locator('svg[class*="uncertain"]')).toHaveCount(1)
 })
 
+test('a possible fracture’s line has no box around it', async ({ page }) => {
+  await openViewer(page, '/reports/sample-mixed')
+  const line = model(page).locator('svg[class*="uncertain"]')
+  await expect(line).toHaveCSS('border-top-style', 'none')
+  await expect(
+    model(page).getByRole('button', { name: /tibia/ }),
+  ).toHaveCSS('border-top-style', 'dashed')
+})
+
 test('the line is on the same side as the label', async ({ page }) => {
   await openViewer(page, '/reports/sample-b1')
   const model_ = model(page)
-  await expect(model_.locator('svg')).toHaveAttribute('data-flip', /true|false/)
-  const flip = await model_.locator('svg').getAttribute('data-flip')
+  const line = model_.locator('svg[data-flip]')
+  await expect(line).toHaveAttribute('data-flip', /true|false/)
+  const flip = await line.getAttribute('data-flip')
   const label = model_.getByRole('button', { name: /radius/ })
   await expect(label).toHaveAttribute('data-flip', flip ?? '')
 })
@@ -242,8 +253,11 @@ test('a label sits well clear of its marker, and further with more room', async 
   // It sits above the marker, not level with it.
   expect((await distances()).up).toBeGreaterThan(50)
 
-  await page.getByRole('button', { name: 'Hide the report' }).click()
+  // This report has a finding with no marker, so it opens on the findings, which
+  // leave the model more room than the report does.
   await expect.poll(async () => (await distances()).across).toBeGreaterThan(120)
+  await openReportTab(page)
+  await expect.poll(async () => (await distances()).apart).toBeGreaterThan(80)
 })
 
 test('a label points away from the middle of the body, even when zoomed in', async ({

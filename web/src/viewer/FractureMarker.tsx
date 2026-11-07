@@ -1,8 +1,9 @@
 import { Html } from '@react-three/drei'
 import { createPortal, useFrame, useThree, type ThreeEvent } from '@react-three/fiber'
-import { useCallback, useMemo, useRef, type CSSProperties } from 'react'
+import { useCallback, useEffect, useMemo, useRef, type CSSProperties } from 'react'
 import { Group, Vector3, type Object3D } from 'three'
 import styles from './FractureMarker.module.css'
+import { linePoints, type PlacedLabel } from './labelSpacing.ts'
 import {
   LABEL_FAR_GAP,
   LABEL_RISE,
@@ -19,25 +20,12 @@ import { markerPosition } from './skeletonObjects.ts'
 const SCREEN_SIZE = 0.0045
 // The area around the dot that counts as clicking it, as a share of the dot.
 const CLICK_AREA = 3
-// Where the line to the label starts, in pixels from the dot's center.
-const LINE_START = 9
-// How far before the label the line bends to run straight into it, in pixels.
-const LINE_BEND = 20
 const CLICK_DRAG_LIMIT = 4
 
 const OUTLINE_COLOR = '#111111'
 
 const worldPosition = new Vector3()
 const bodyCenter = new Vector3()
-
-// The line from the dot to its label: up and out to a bend, then straight across.
-function linePoints(gap: number, labelHeight: number) {
-  const bendX = gap - LINE_BEND
-  const length = Math.hypot(bendX, labelHeight)
-  const startX = (bendX / length) * LINE_START
-  const startY = (labelHeight / length) * LINE_START
-  return `${startX},${startY} ${bendX},${labelHeight} ${gap},${labelHeight}`
-}
 
 function MarkerShape({ shape }: { shape: MarkerLook['shape'] }) {
   switch (shape) {
@@ -57,6 +45,8 @@ type FractureMarkerProps = {
   bone: Object3D
   selected: boolean
   onSelect: (findingId: string) => void
+  // Where this frame's labels would like to go, for LabelLayout to settle.
+  labels: Map<string, PlacedLabel>
 }
 
 // The marker is a child of its bone, so it stays on that bone from every angle
@@ -66,6 +56,7 @@ function FractureMarker({
   bone,
   selected,
   onSelect,
+  labels,
 }: FractureMarkerProps) {
   const position = useMemo(
     () => markerPosition(bone, marker.point),
@@ -86,6 +77,15 @@ function FractureMarker({
   const lineRef = useRef<SVGSVGElement>(null)
   const drop = marker.stackIndex * LABEL_STACK_GAP
 
+  const { findingId } = marker
+  useEffect(
+    () => () => {
+      labels.delete(findingId)
+    },
+    [labels, findingId],
+  )
+
+  // Runs before LabelLayout, which goes last and settles all the labels together.
   useFrame(({ camera, size }) => {
     const shape = shapeRef.current
     if (!shape) return
@@ -113,15 +113,19 @@ function FractureMarker({
         line.dataset.flip = flip
       }
 
-      const height = drop - labelRise(y, size.height, label.offsetHeight)
       label.style.maxWidth = `${placement.maxWidth}px`
       label.style.setProperty('--gap', `${placement.gap}px`)
-      label.style.setProperty('--height', `${height}px`)
-      line
-        .querySelector('polyline')
-        ?.setAttribute('points', linePoints(placement.gap, height))
+      labels.set(findingId, {
+        label,
+        line,
+        x: ((x + 1) / 2) * size.width,
+        y: ((1 - y) / 2) * size.height,
+        gap: placement.gap,
+        goesLeft: placement.goesLeft,
+        height: drop - labelRise(y, size.height, label.offsetHeight),
+      })
     }
-  })
+  }, -1)
 
   function handleClick(event: ThreeEvent<MouseEvent>) {
     if (event.delta > CLICK_DRAG_LIMIT) return
@@ -194,7 +198,17 @@ function FractureMarker({
           }}
         >
           <strong>
-            <span aria-hidden="true">{marker.look.glyph} </span>
+            <span
+              className={styles.glyph}
+              // A hollow shape is white on the model. On the white label it takes
+              // the label's own color, or it wouldn't show.
+              style={{
+                color: marker.look.fill === '#ffffff' ? undefined : marker.look.fill,
+              }}
+              aria-hidden="true"
+            >
+              {marker.look.glyph}
+            </span>{' '}
             {marker.title}
           </strong>
           {marker.subtitle && <span>{marker.subtitle}</span>}

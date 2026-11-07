@@ -47,6 +47,43 @@ test('the safe choice has the focus when it asks', () => {
   )
 })
 
+test('it asks over the screen, as a dialog that says what it’s about', () => {
+  openConfirmation()
+
+  const dialog = screen.getByRole('alertdialog', { name: 'Delete this report' })
+  expect(dialog.getAttribute('aria-modal')).toBe('true')
+  expect(
+    document.getElementById(dialog.getAttribute('aria-describedby') ?? '')
+      ?.textContent,
+  ).toMatch(/You can't get it back/)
+})
+
+test('Escape keeps the report, and focus goes back to where it started', () => {
+  openConfirmation()
+
+  fireEvent.keyDown(screen.getByRole('alertdialog'), { key: 'Escape' })
+
+  expect(screen.queryByRole('alertdialog')).toBeNull()
+  expect(mocks.deleteReport).not.toHaveBeenCalled()
+  expect(document.activeElement).toBe(
+    screen.getByRole('button', { name: 'Delete this report' }),
+  )
+})
+
+test('Tab stays inside the question while it’s open', () => {
+  openConfirmation()
+  const keep = screen.getByRole('button', { name: 'Keep the report' })
+  const yes = screen.getByRole('button', { name: 'Yes, delete it' })
+  const dialog = screen.getByRole('alertdialog')
+
+  keep.focus()
+  fireEvent.keyDown(dialog, { key: 'Tab', shiftKey: true })
+  expect(document.activeElement).toBe(yes)
+
+  fireEvent.keyDown(dialog, { key: 'Tab' })
+  expect(document.activeElement).toBe(keep)
+})
+
 test('keeping the report deletes nothing', () => {
   openConfirmation()
 

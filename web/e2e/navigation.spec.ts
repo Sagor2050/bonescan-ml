@@ -156,6 +156,19 @@ test.describe('the top bar', () => {
     ).toHaveAttribute('aria-current', 'page')
   })
 
+  test('adding a report is the one main action, in the same place on each screen', async ({
+    page,
+  }) => {
+    for (const path of ['/reports', '/reports/sample-b1', '/account']) {
+      await page.goto(path)
+      await expect(
+        page.getByRole('navigation', { name: 'Main' }).getByRole('link', {
+          name: 'Add a report',
+        }),
+      ).toHaveClass(/btn-primary/)
+    }
+  })
+
   test('the logo says BoneScan3D', async ({ page }) => {
     await page.goto('/')
     await expect(page.getByRole('banner')).toContainText('BoneScan3D')

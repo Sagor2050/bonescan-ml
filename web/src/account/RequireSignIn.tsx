@@ -14,7 +14,13 @@ function RequireSignIn({ children }: { children: ReactNode }) {
     }
   }, [session.status])
 
-  if (session.status === 'loading') return <p role="status">Loading…</p>
+  if (session.status === 'loading') {
+    return (
+      <p className="page-message" role="status">
+        Loading…
+      </p>
+    )
+  }
   if (session.status === 'signed-out') return null
   return children
 }

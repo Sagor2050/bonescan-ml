@@ -3,6 +3,7 @@ import {
   boneIsVisible,
   cameraState,
   markerInfo,
+  openFindingsTab,
   openViewer,
   waitForCameraToStop,
 } from './viewer.ts'
@@ -77,8 +78,9 @@ test.describe('a report with several findings', () => {
   test('shows an injured bone on its own and brings back the skeleton', async ({
     page,
   }) => {
+    // It's only offered once there's a bone to show.
     const alone = page.getByRole('button', { name: 'Show this bone on its own' })
-    await expect(alone).toBeDisabled()
+    await expect(alone).toHaveCount(0)
 
     await findings(page).getByRole('button', { name: /femur/ }).click()
     await alone.click()
@@ -108,6 +110,7 @@ test.describe('a report with several findings', () => {
 
 test('a fracture on a small bone is brought close', async ({ page }) => {
   await openViewer(page, '/reports/sample-all-bones')
+  await openFindingsTab(page)
   const list = findings(page).getByRole('listitem')
   const index = await list.evaluateAll((items) =>
     items.findIndex((item) => /little finger|fifth finger/.test(item.textContent)),

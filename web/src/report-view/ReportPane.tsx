@@ -15,7 +15,14 @@ function isInView(element: Element, container: Element) {
 
 // The original report, exactly as added (NFR4). The app's own words stay outside
 // the page, and highlights are drawn on top of it.
-function ReportPane({ report }: { report: SavedReport }) {
+function ReportPane({
+  report,
+  visible = true,
+}: {
+  report: SavedReport
+  // Whether the pane is showing. Wording can't be scrolled to while it's hidden.
+  visible?: boolean
+}) {
   const { selectedFindingId, selectionCount } = useWorkspace()
   const pageRef = useRef<HTMLDivElement>(null)
 
@@ -29,7 +36,7 @@ function ReportPane({ report }: { report: SavedReport }) {
   // is already showing. So clicking the Impression doesn't jump to the Findings.
   useEffect(() => {
     const page = pageRef.current
-    if (!page || !selectedFindingId) return
+    if (!page || !selectedFindingId || !visible) return
     const pieces = Array.from(
       page.querySelectorAll(`[data-finding="${CSS.escape(selectedFindingId)}"]`),
     )
@@ -37,11 +44,10 @@ function ReportPane({ report }: { report: SavedReport }) {
       return
     }
     pieces[0].scrollIntoView({ block: 'center', behavior: 'smooth' })
-  }, [selectedFindingId, selectionCount])
+  }, [selectedFindingId, selectionCount, visible])
 
   return (
     <section className={styles.pane} aria-label="Your original report">
-      <h2>Your original report</h2>
       {enteredWithNoWording && (
         <p className={styles.note}>
           Entered by you. This finding has no wording in the report.
@@ -56,6 +62,9 @@ function ReportPane({ report }: { report: SavedReport }) {
           <PastedReport report={report} />
         )}
       </div>
+      <p className={styles.careTeam}>
+        Questions about what this means? Ask your care team.
+      </p>
     </section>
   )
 }

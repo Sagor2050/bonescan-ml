@@ -13,7 +13,7 @@ import styles from './PdfReport.module.css'
 GlobalWorkerOptions.workerSrc = workerUrl
 
 // Space between a page and the edges of the pane.
-const PAGE_MARGIN = 16
+const PAGE_MARGIN = 10
 
 function PdfPage({
   pdf,

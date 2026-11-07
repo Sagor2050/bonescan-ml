@@ -8,6 +8,7 @@ import type { SavedFinding } from '../workspace/reportStore.ts'
 import type { Bone } from './bones.ts'
 import {
   LABEL_FAR_GAP,
+  LABEL_MAX_WIDTH,
   LABEL_MIN_GAP,
   LABEL_MIN_WIDTH,
   labelPlacement,
@@ -161,7 +162,7 @@ describe('where a label goes', () => {
   })
 
   test('never grows past its widest size', () => {
-    expect(labelPlacement(0, 2000).maxWidth).toBe(208)
+    expect(labelPlacement(0, 2000).maxWidth).toBe(LABEL_MAX_WIDTH)
   })
 })
 

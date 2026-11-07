@@ -2,6 +2,8 @@ import { Suspense, useState } from 'react'
 import Link from '../routing/Link.tsx'
 import { paths, reportPath } from '../routing/paths.ts'
 import { navigate } from '../routing/router.ts'
+import Steps from '../ui/Steps.tsx'
+import { formatExamDate } from '../workspace/examDate.ts'
 import {
   setDraftReport,
   useDraftReport,
@@ -27,35 +29,43 @@ function ExamDate({
 }) {
   return (
     <section className={styles.date}>
-      <h2>Date of the exam</h2>
-      {draft.readerExamDate ? (
-        <p>We found this date in your report. You can change it.</p>
-      ) : draft.candidateDates.length > 1 ? (
-        <p>Your report has several dates. Enter the date of this exam.</p>
-      ) : (
-        <p>We couldn't find one exam date in your report. Please enter it.</p>
-      )}
-      {!draft.readerExamDate && draft.candidateDates.length > 0 && (
-        <ul className={styles.dateChoices}>
-          {draft.candidateDates.map((date) => (
-            <li key={date}>
-              <button type="button" onClick={() => onChange(date)}>
-                Use {date}
-              </button>
-            </li>
-          ))}
-        </ul>
-      )}
-      <label>
-        Exam date
-        <input
-          type="date"
-          max={today}
-          value={value}
-          onChange={(event) => onChange(event.target.value)}
-        />
-      </label>
-      {problem && <p role="alert">{problem}</p>}
+      <div className={styles.dateText}>
+        <h2>Date of the exam</h2>
+        {draft.readerExamDate ? (
+          <p>We found this date in your report. You can change it.</p>
+        ) : draft.candidateDates.length > 1 ? (
+          <p>Your report has several dates. Enter the date of this exam.</p>
+        ) : (
+          <p>We couldn't find one exam date in your report. Please enter it.</p>
+        )}
+        {!draft.readerExamDate && draft.candidateDates.length > 0 && (
+          <ul className={styles.dateChoices}>
+            {draft.candidateDates.map((date) => (
+              <li key={date}>
+                <button type="button" onClick={() => onChange(date)}>
+                  Use {formatExamDate(date)}
+                </button>
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+      <div className={styles.dateField}>
+        <label>
+          Exam date
+          <input
+            type="date"
+            max={today}
+            value={value}
+            onChange={(event) => onChange(event.target.value)}
+          />
+        </label>
+        {problem && (
+          <p className={styles.dateProblem} role="alert">
+            {problem}
+          </p>
+        )}
+      </div>
     </section>
   )
 }
@@ -70,10 +80,13 @@ function VerifyFindingsScreen() {
   if (!draft) {
     return (
       <main className={styles.screen}>
+        <Steps current={2} />
         <h1>Check the findings</h1>
-        <p>There's no report to check right now.</p>
+        <p className={styles.lead}>There's no report to check right now.</p>
         <p>
-          <Link href={paths.addReport}>Add a report</Link>
+          <Link className="btn" href={paths.addReport}>
+            Add a report
+          </Link>
         </p>
       </main>
     )
@@ -107,8 +120,9 @@ function VerifyFindingsScreen() {
 
   return (
     <main className={styles.screen}>
+      <Steps current={2} />
       <h1>Check the findings</h1>
-      <p>
+      <p className={styles.lead}>
         We read your report and listed each fracture it describes. Please check
         them before they go on the skeleton, because reading can make mistakes.
         Your care team can answer questions about your results.
@@ -123,8 +137,10 @@ function VerifyFindingsScreen() {
       />
 
       <section>
-        <h2>Fractures in your report</h2>
-        <Suspense fallback={<p>Loading the list of bones…</p>}>
+        <h2 className={styles.sectionTitle}>Fractures in your report</h2>
+        <Suspense
+          fallback={<p className="page-message">Loading the list of bones…</p>}
+        >
           <FindingsEditor
             findings={current.findings}
             onChange={(findings) => setDraftReport({ ...current, findings })}
@@ -133,15 +149,22 @@ function VerifyFindingsScreen() {
       </section>
 
       <div className={styles.actions}>
-        <button
-          type="button"
-          className={styles.primary}
-          disabled={Boolean(problem) || saving}
-          onClick={confirm}
-        >
-          {saving ? 'Saving…' : 'Confirm and see the skeleton'}
-        </button>
-        {saveError && <p role="alert">{saveError}</p>}
+        <div className={styles.actionsRow}>
+          <p>Nothing is saved until you confirm.</p>
+          <button
+            type="button"
+            className="btn-primary btn-large"
+            disabled={Boolean(problem) || saving}
+            onClick={confirm}
+          >
+            {saving ? 'Saving…' : 'Confirm and see the skeleton'}
+          </button>
+        </div>
+        {saveError && (
+          <p className={styles.saveError} role="alert">
+            {saveError}
+          </p>
+        )}
       </div>
     </main>
   )

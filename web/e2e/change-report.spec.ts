@@ -1,5 +1,5 @@
 import { expect, test, type Page } from '@playwright/test'
-import { markerInfo, openViewer } from './viewer.ts'
+import { markerInfo, openFindingsTab, openViewer } from './viewer.ts'
 
 const reportButton = (page: Page, date: string) =>
   page.getByRole('button', { name: new RegExp(date) })
@@ -11,6 +11,10 @@ async function openChange(page: Page, path = '/reports/sample-b1') {
     page.getByRole('heading', { name: 'Change the date or findings' }),
   ).toBeVisible()
 }
+
+// A finding that has a marker keeps its form closed until it's asked for.
+const openForm = (page: Page, number = 1) =>
+  page.getByRole('button', { name: `Change finding ${number}` }).click()
 
 const save = (page: Page) =>
   page.getByRole('button', { name: 'Save my changes' }).click()
@@ -47,6 +51,7 @@ test('changing a side moves the marker and labels it as the patient’s', async 
   page,
 }) => {
   await openChange(page)
+  await openForm(page)
   await page.getByLabel('Side for finding 1').selectOption('right')
   await save(page)
 
@@ -56,6 +61,7 @@ test('changing a side moves the marker and labels it as the patient’s', async 
   expect((await markerInfo(page, 'sample-b1-finding-1')).bone).toBe(
     'radius_right',
   )
+  await openFindingsTab(page)
   await expect(
     page.getByRole('region', { name: 'Findings' }).getByText('Entered by you'),
   ).toBeVisible()
@@ -66,6 +72,7 @@ test('the original report’s words are still there after a correction', async (
 }) => {
   await openChange(page, '/reports/sample-b1-pasted')
   const original = 'Mildly angulated distal left radius fracture.'
+  await openForm(page)
   await page.getByLabel('Side for finding 1').selectOption('right')
   await save(page)
   await expect(

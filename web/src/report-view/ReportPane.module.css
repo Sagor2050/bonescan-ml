@@ -6,53 +6,59 @@
   min-height: 0;
 }
 
-.pane h2 {
-  margin: 0;
-  font-size: 1.125rem;
-  line-height: 1.75rem;
-}
-
 .page {
   flex: 1;
   min-height: 0;
   overflow-y: auto;
-  border: 1px solid var(--line);
   border-radius: var(--radius);
-  background: #e6eaed;
+  background: var(--surface-sunken);
 }
 
 .pasted {
   box-sizing: border-box;
   min-height: 100%;
   margin: 0;
-  padding: 1rem;
+  padding: 1.25rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
   background: #ffffff;
   font: inherit;
   white-space: pre-wrap;
   overflow-wrap: anywhere;
 }
 
+.careTeam {
+  flex: none;
+  margin: 0;
+  padding: 0.5rem 0.75rem;
+  border-radius: var(--radius-control);
+  background: var(--brand-tint);
+  font-size: 0.875rem;
+  line-height: 1.35;
+}
+
 .note {
   margin: 0;
-  padding: 0.375rem 0.75rem;
-  border-left: 3px solid var(--brand);
-  background: var(--surface);
+  padding: 0.5rem 0.75rem;
+  border-radius: var(--radius-control);
+  background: var(--brand-tint);
   font-size: 0.9375rem;
 }
 
 /* Marked by the underline too, so the marking doesn't rest on color (NFR12). */
 .wording {
-  border-bottom: 2px solid #8a6d00;
-  background: #fff1b8;
+  border-bottom: 1px solid #8a6d00;
+  background: #fff3c4;
   color: inherit;
   cursor: pointer;
 }
 
 .wording:hover {
-  background: #ffe68a;
+  background: #ffe9a0;
 }
 
 .wording[aria-pressed='true'] {
+  border-bottom-width: 2px;
   outline: 2px solid var(--ink);
-  background: #ffd84d;
+  background: #ffdf70;
 }

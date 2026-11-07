@@ -1,18 +1,19 @@
 .footer {
   display: grid;
+  flex: none;
   grid-template-columns: minmax(0, 1fr) auto auto;
-  gap: 1rem 3rem;
+  gap: 1rem 3.5rem;
   margin-top: auto;
-  padding: 1rem 1.5rem;
+  padding: 1.25rem 1.5rem;
   border-top: 1px solid var(--line);
   background: var(--surface);
   color: var(--ink-soft);
-  font-size: 0.875rem;
-  line-height: 1.4;
+  font-size: 0.8125rem;
+  line-height: 1.45;
 }
 
 .about {
-  max-width: 40rem;
+  max-width: 38rem;
 }
 
 .about p {
@@ -30,7 +31,9 @@
 .column h2 {
   margin: 0 0 0.25rem;
   color: var(--ink);
-  font-size: 0.875rem;
+  font-size: 0.8125rem;
+  font-weight: 650;
+  letter-spacing: 0;
 }
 
 .column ul {
@@ -41,5 +44,14 @@
 
 .team {
   margin: 0;
-  font-weight: 600;
+}
+
+.names {
+  display: flex;
+  flex-wrap: wrap;
+  max-width: 13rem;
+}
+
+.names li:not(:last-child)::after {
+  content: ',\00a0';
 }

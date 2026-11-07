@@ -191,6 +191,46 @@ describe('FindingsList', () => {
     expect(next.disabled).toBe(true)
   })
 
+  test('a row keeps its details short until it’s chosen', async () => {
+    const region = await renderList([
+      saved({ bone: 'femur', part: ['neck'], type_words: ['oblique'] }, 'a'),
+      saved({ bone: 'tibia', healing_words: ['healed'] }, 'b'),
+    ])
+    expect(region.textContent).not.toMatch(/Part: neck/)
+    expect(region.textContent).not.toMatch(/Report says: oblique/)
+    // What the patient must always see stays in the short row.
+    expect(region.textContent).toMatch(/Healed: “healed”/)
+
+    fireEvent.click(within(region).getByRole('button', { name: /femur/ }))
+
+    expect(region.textContent).toMatch(/Part: neck/)
+    expect(region.textContent).toMatch(/Report says: oblique/)
+  })
+
+  test('a report with one finding shows its details, with nothing to step through', async () => {
+    const region = await renderList([
+      saved({ bone: 'femur', part: ['neck'], type_words: ['oblique'] }, 'a'),
+    ])
+    expect(region.textContent).toMatch(/Part: neck/)
+    expect(region.textContent).toMatch(/Report says: oblique/)
+    expect(within(region).queryByRole('button', { name: 'Next' })).toBeNull()
+  })
+
+  test('the heading can be left out when a tab already names the list', async () => {
+    await act(async () => {
+      render(
+        <WorkspaceController>
+          <Suspense fallback="loading">
+            <FindingsList findings={findings} showHeading={false} />
+          </Suspense>
+        </WorkspaceController>,
+      )
+    })
+    const region = screen.getByRole('region', { name: 'Findings' })
+    expect(within(region).queryByRole('heading')).toBeNull()
+    expect(within(region).getByRole('button', { name: 'Next' })).toBeDefined()
+  })
+
   test('says so when a report has no findings', async () => {
     const region = await renderList([])
     expect(region.textContent).toMatch(/no findings to show/)

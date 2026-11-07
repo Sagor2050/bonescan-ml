@@ -35,7 +35,7 @@ function Footer() {
       <section className={styles.column} aria-labelledby="footer-team">
         <h2 id="footer-team">Team</h2>
         <p className={styles.team}>{TEAM_NAME}</p>
-        <ul>
+        <ul className={styles.names}>
           {DEVELOPERS.map((name) => (
             <li key={name}>{name}</li>
           ))}

@@ -1,6 +1,7 @@
-import { lazy, Suspense, useMemo } from 'react'
+import { lazy, Suspense, useMemo, type ReactNode } from 'react'
 import Link from '../routing/Link.tsx'
 import { paths, reportPath } from '../routing/paths.ts'
+import { ChevronLeftIcon, ChevronRightIcon } from '../ui/icons.tsx'
 import { useBones } from '../viewer/bones.ts'
 import { markersFor } from '../viewer/markers.ts'
 import { formatExamDate } from '../workspace/examDate.ts'
@@ -47,9 +48,9 @@ function ReportHistory({
             >
               <strong>
                 {formatExamDate(report.exam_date)}
-                {tag && <span className={styles.tag}> ({tag})</span>}
+                {tag && <span className={styles.tag}>{tag}</span>}
               </strong>
-              <span>
+              <span className={styles.bones}>
                 {names.length > 0 ? names.join(', ') : 'No bones listed'}
               </span>
             </button>
@@ -96,7 +97,13 @@ function ReportPicker({
   )
 }
 
-function Timeline({ reports }: { reports: SavedReport[] }) {
+function Timeline({
+  reports,
+  heading,
+}: {
+  reports: SavedReport[]
+  heading: ReactNode
+}) {
   const bones = useBones()
   const {
     timelineReportId,
@@ -132,13 +139,32 @@ function Timeline({ reports }: { reports: SavedReport[] }) {
 
   return (
     <div className={styles.layout}>
-      <div className={styles.side}>
-        <h2>Oldest exam first</h2>
+      <div className={styles.panel}>
+        {heading}
+        <h2 className={styles.order}>Oldest exam first</h2>
         <ReportHistory
           reports={reports}
           shownId={shown.id}
           comparison={comparison}
         />
+        {!comparison && (
+          <div className={styles.compare}>
+            <button
+              disabled={!comparePartner}
+              onClick={() => compareReports(comparePartner.id, shown.id)}
+            >
+              Compare reports
+            </button>
+            {!comparePartner && <p>Add another report to compare.</p>}
+          </div>
+        )}
+        <div className={styles.findings}>
+          {comparison ? (
+            <ComparisonList comparison={comparison} markers={markers} />
+          ) : (
+            <FindingsList findings={shown.findings} />
+          )}
+        </div>
       </div>
 
       <section
@@ -176,37 +202,28 @@ function Timeline({ reports }: { reports: SavedReport[] }) {
             <span className={styles.position}>
               Report {shownIndex + 1} of {reports.length}
             </span>
-            <button disabled={!older} onClick={() => showReport(older.id)}>
-              Older
-            </button>
-            <button disabled={!newer} onClick={() => showReport(newer.id)}>
-              Newer
-            </button>
-            <button
-              disabled={!comparePartner}
-              onClick={() => compareReports(comparePartner.id, shown.id)}
+            <div className={styles.step}>
+              <button disabled={!older} onClick={() => showReport(older.id)}>
+                <ChevronLeftIcon />
+                Older
+              </button>
+              <button disabled={!newer} onClick={() => showReport(newer.id)}>
+                Newer
+                <ChevronRightIcon />
+              </button>
+            </div>
+            <Link
+              className={`btn ${styles.open}`}
+              href={reportPath(shown.id)}
             >
-              Compare reports
-            </button>
-            {!comparePartner && (
-              <span className={styles.position}>
-                Add another report to compare.
-              </span>
-            )}
-            <Link className={styles.open} href={reportPath(shown.id)}>
               Open with the original report
             </Link>
           </div>
         )}
         {/* One skeleton for both reports, so they are always seen from the same
             angle (S5.2). It stays mounted when a comparison starts or stops. */}
-        <div className={styles.panes}>
+        <div className={styles.model}>
           <SkeletonViewer markers={markers} />
-          {comparison ? (
-            <ComparisonList comparison={comparison} markers={markers} />
-          ) : (
-            <FindingsList findings={shown.findings} />
-          )}
         </div>
       </section>
     </div>
@@ -217,30 +234,44 @@ function Timeline({ reports }: { reports: SavedReport[] }) {
 // whichever report is shown (S5.1), or both of two reports being compared (S5.2).
 function TimelineScreen() {
   const reports = useReports()
+  const heading = <h1 className={styles.title}>My reports</h1>
+
+  if (reports.status === 'ready' && reports.reports.length > 0) {
+    return (
+      <main className={styles.screen}>
+        <Suspense
+          fallback={
+            <>
+              {heading}
+              <p className="page-message">Loading the skeleton…</p>
+            </>
+          }
+        >
+          <Timeline reports={reports.reports} heading={heading} />
+        </Suspense>
+      </main>
+    )
+  }
 
   return (
     <main className={styles.screen}>
-      <div className={styles.heading}>
-        <h1>My reports</h1>
-        <Link className={styles.add} href={paths.addReport}>
-          Add a report
-        </Link>
-      </div>
-
-      {reports.status === 'loading' && <p>Loading your reports…</p>}
-      {reports.status === 'failed' && (
-        <p>We couldn't load your reports. Please try again.</p>
+      {heading}
+      {reports.status === 'loading' && (
+        <p className="page-message">Loading your reports…</p>
       )}
-      {reports.status === 'ready' && reports.reports.length === 0 && (
+      {reports.status === 'failed' && (
+        <p className="page-message">
+          We couldn't load your reports. Please try again.
+        </p>
+      )}
+      {reports.status === 'ready' && (
         <div className={styles.empty}>
           <h2>No reports yet</h2>
           <p>Add your first report to see it on the skeleton.</p>
+          <Link className="btn btn-primary btn-large" href={paths.addReport}>
+            Add a report
+          </Link>
         </div>
-      )}
-      {reports.status === 'ready' && reports.reports.length > 0 && (
-        <Suspense fallback={<p>Loading the skeleton…</p>}>
-          <Timeline reports={reports.reports} />
-        </Suspense>
       )}
     </main>
   )

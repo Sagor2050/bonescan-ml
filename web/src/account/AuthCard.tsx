@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react'
 import Link from '../routing/Link.tsx'
 import { paths } from '../routing/paths.ts'
-import BrandMark from '../ui/BrandMark.tsx'
+import TopBar from '../ui/TopBar.tsx'
 import styles from './AuthCard.module.css'
 import { useSession } from './session.ts'
 
@@ -18,11 +18,7 @@ function AuthCard({
   const session = useSession()
   return (
     <>
-      <header className={styles.header}>
-        <Link className={styles.brand} href={paths.home}>
-          <BrandMark />
-        </Link>
-      </header>
+      <TopBar brandHref={paths.home} />
       <main className={styles.main}>
         <section className={styles.card}>
           <h1>{title}</h1>

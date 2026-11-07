@@ -1,5 +1,5 @@
 import { expect, test, type Page } from '@playwright/test'
-import { openViewer } from './viewer.ts'
+import { openFindingsTab, openReportTab, openViewer } from './viewer.ts'
 
 const reportPane = (page: Page) =>
   page.getByRole('region', { name: 'Your original report' })
@@ -73,13 +73,13 @@ test('the model can be viewed on its own and the report brought back', async ({
   await expect(pdfPage).toHaveAttribute('data-drawn', 'true')
   const widthBefore = (await canvas.boundingBox())?.width ?? 0
 
-  await page.getByRole('button', { name: 'Hide the report' }).click()
+  await openFindingsTab(page)
   await expect(reportPane(page)).toBeHidden()
   await expect
     .poll(async () => (await canvas.boundingBox())?.width ?? 0)
     .toBeGreaterThan(widthBefore)
 
-  await page.getByRole('button', { name: 'Show the report' }).click()
+  await openReportTab(page)
   await expect(pdfPage).toBeInViewport()
   await expect(canvas).toBeInViewport()
 })
@@ -99,6 +99,41 @@ test('a marker’s label fits inside the narrower model pane', async ({ page }) 
       )
     })
     .toBe(true)
+})
+
+test('the findings come first when one has no marker, so the reason is not hidden', async ({
+  page,
+}) => {
+  await openViewer(page, '/reports/sample-mixed')
+  await expect(page.getByRole('tab', { name: /^Findings/ })).toHaveAttribute(
+    'aria-selected',
+    'true',
+  )
+  await expect(page.getByText(/^Side not stated/)).toBeVisible()
+})
+
+test('the report and the findings both point back to the care team', async ({
+  page,
+}) => {
+  await openViewer(page, '/reports/sample-b1')
+  await expect(reportPane(page)).toContainText('Ask your care team')
+  await openFindingsTab(page)
+  await expect(
+    page.getByRole('region', { name: 'Findings' }),
+  ).toContainText('Ask your care team')
+})
+
+test('the arrow keys move between the report and the findings', async ({
+  page,
+}) => {
+  await openViewer(page, '/reports/sample-b1')
+  await page.getByRole('tab', { name: 'Your original report' }).focus()
+  await page.keyboard.press('ArrowRight')
+  const findingsTab = page.getByRole('tab', { name: /^Findings/ })
+  await expect(findingsTab).toBeFocused()
+  await expect(findingsTab).toHaveAttribute('aria-selected', 'true')
+  await page.keyboard.press('ArrowLeft')
+  await expect(reportPane(page)).toBeVisible()
 })
 
 test('a report that does not exist says so', async ({ page }) => {

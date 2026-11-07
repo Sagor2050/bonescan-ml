@@ -3,12 +3,12 @@
   width: 100%;
   max-width: 40rem;
   margin: 0 auto;
-  padding: 2rem 1.5rem;
+  padding: 2.5rem 1.5rem 3rem;
 }
 
 .panel {
   margin-bottom: 1rem;
-  padding: 1rem 1.25rem;
+  padding: 1.25rem 1.5rem;
   border: 1px solid var(--line);
   border-radius: var(--radius);
   background: var(--surface);
@@ -18,20 +18,39 @@
   margin: 0;
 }
 
+.signedIn {
+  color: var(--ink-soft);
+}
+
+.signedIn strong {
+  color: var(--ink);
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
 .screen h1 {
-  margin: 0 0 0.75rem;
-  font-size: 1.5rem;
+  margin: 0 0 1.25rem;
+  font-size: 1.75rem;
+  font-weight: 700;
 }
 
 .screen h2 {
-  margin: 0 0 0.75rem;
-  font-size: 1.125rem;
+  margin: 0 0 0.25rem;
+  font-size: 1.0625rem;
+}
+
+.panel .warning {
+  margin: 0 0 1rem;
+  color: var(--ink-soft);
+  font-size: 0.9375rem;
 }
 
 .confirm {
-  padding: 0.75rem 1rem;
+  margin-top: 0.75rem;
+  padding: 1rem;
   border: 1px solid var(--danger);
-  border-radius: 0.5rem;
+  border-radius: var(--radius-control);
+  background: var(--danger-tint);
 }
 
 .confirm p {
@@ -41,15 +60,14 @@
 .confirm label {
   display: block;
   margin-bottom: 0.25rem;
-  font-weight: 500;
+  font-size: 0.875rem;
+  font-weight: 550;
 }
 
 .confirm input {
   display: block;
-  box-sizing: border-box;
   width: 100%;
   max-width: 20rem;
-  padding: 0.5rem;
   margin-bottom: 0.75rem;
 }
 
