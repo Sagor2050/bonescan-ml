@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test'
+import { expect, test, type Page } from '@playwright/test'
 
 test('goes from the homepage through every screen without reloading', async ({
   page,
@@ -98,3 +98,68 @@ for (const path of ['/', '/reports', '/reset-password']) {
     ).toBeVisible()
   })
 }
+
+test.describe('on every page', () => {
+  const pages = [
+    '/',
+    '/sign-in',
+    '/create-account',
+    '/reset-password',
+    '/add-report',
+    '/verify-findings',
+    '/reports',
+    '/reports/sample-b1',
+    '/reports/sample-b1/change',
+    '/account',
+    '/no-such-page',
+  ]
+
+  for (const path of pages) {
+    test(`${path} has the same footer, with the team and the app's name`, async ({
+      page,
+    }) => {
+      await page.goto(path)
+      const footer = page.getByRole('contentinfo')
+      await expect(footer).toContainText('BoneScan3D')
+      await expect(footer).toContainText('The White Coats')
+      for (const name of ['Aliz', 'Jennifer', 'Justin', 'Sagor']) {
+        await expect(footer.getByText(name, { exact: true })).toBeVisible()
+      }
+      await expect(
+        footer.getByRole('link', { name: 'Source code' }),
+      ).toBeVisible()
+    })
+  }
+})
+
+test.describe('the top bar', () => {
+  async function looksLikeAButton(page: Page, name: string) {
+    const item = page.getByRole('navigation').getByRole('link', { name })
+    await expect(item).toHaveClass(/nav-button/)
+    await expect(item).toBeVisible()
+  }
+
+  test('on the homepage, About and Sign in are buttons', async ({ page }) => {
+    await page.goto('/')
+    await looksLikeAButton(page, 'About')
+    await looksLikeAButton(page, 'Sign in')
+  })
+
+  test('after signing in, My reports and Account are buttons', async ({
+    page,
+  }) => {
+    await page.goto('/reports')
+    await looksLikeAButton(page, 'My reports')
+    await looksLikeAButton(page, 'Account')
+    await expect(
+      page.getByRole('navigation').getByRole('link', { name: 'My reports' }),
+    ).toHaveAttribute('aria-current', 'page')
+  })
+
+  test('the logo says BoneScan3D', async ({ page }) => {
+    await page.goto('/')
+    await expect(page.getByRole('banner')).toContainText('BoneScan3D')
+    await page.goto('/reports')
+    await expect(page.getByRole('banner')).toContainText('BoneScan3D')
+  })
+})

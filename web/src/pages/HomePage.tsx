@@ -43,8 +43,12 @@ function HomePage() {
           <BrandMark />
         </span>
         <nav className={styles.nav}>
-          <a href="#about">About</a>
-          <Link href={paths.signIn}>Sign in</Link>
+          <a className="nav-button" href="#about">
+            About
+          </a>
+          <Link className="nav-button" href={paths.signIn}>
+            Sign in
+          </Link>
         </nav>
       </header>
 

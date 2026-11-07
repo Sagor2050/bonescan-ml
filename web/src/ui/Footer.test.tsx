@@ -10,10 +10,25 @@ test('says what the app is not, and points back to the care team', () => {
   expect(footer.textContent).toContain('Ask your care team')
 })
 
-test('says who made it and links to the source code', () => {
+test('lists the team and its developers', () => {
   render(<Footer />)
-  expect(screen.getByRole('contentinfo').textContent).toContain('The White Coats')
-  expect(
-    screen.getByRole('link', { name: 'Source code' }).getAttribute('href'),
-  ).toContain('github.com')
+  const team = screen.getByRole('region', { name: 'Team' })
+  expect(team.textContent).toContain('The White Coats')
+  for (const name of ['Aliz', 'Jennifer', 'Justin', 'Sagor']) {
+    expect(screen.getByText(name).tagName).toBe('LI')
+  }
+})
+
+test.each([
+  ['Source code', /github\.com\/Sagor2050\/bonescan-ml$/],
+  ['Requirements', /docs\/requirements\.pdf$/],
+  ['Project plan', /docs\/project-plan\.pdf$/],
+])('links to the %s', (name, href) => {
+  render(<Footer />)
+  expect(screen.getByRole('link', { name }).getAttribute('href')).toMatch(href)
+})
+
+test('uses the app’s name', () => {
+  render(<Footer />)
+  expect(screen.getByRole('contentinfo').textContent).toContain('BoneScan3D')
 })

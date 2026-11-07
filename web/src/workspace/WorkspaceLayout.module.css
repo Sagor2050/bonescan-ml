@@ -21,34 +21,5 @@
 
 .nav {
   display: flex;
-  gap: 0.25rem;
-}
-
-.nav a {
-  padding: 0.25rem 0.75rem;
-  border-radius: 0.5rem;
-  color: var(--ink);
-  text-decoration: none;
-}
-
-.nav a:hover {
-  background: var(--page);
-}
-
-/* Marked by weight and an underline, not only by color (NFR12). */
-.nav a[aria-current='page'] {
-  font-weight: 600;
-  text-decoration: underline;
-  text-underline-offset: 0.3rem;
-  text-decoration-thickness: 2px;
-}
-
-.signOut {
-  padding: 0;
-  border: none;
-  background: none;
-  color: inherit;
-  font: inherit;
-  text-decoration: underline;
-  cursor: pointer;
+  gap: 0.5rem;
 }

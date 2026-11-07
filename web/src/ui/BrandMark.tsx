@@ -17,7 +17,7 @@ function BrandMark() {
           <circle cx="19" cy="15.5" r="3.5" />
         </g>
       </svg>
-      <span>BoneScan</span>
+      <span>BoneScan3D</span>
     </>
   )
 }
