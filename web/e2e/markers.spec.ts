@@ -192,7 +192,7 @@ test.describe('a report with several kinds of finding', () => {
 test('a line joins each marker to its label', async ({ page }) => {
   await openViewer(page, '/reports/sample-mixed')
   // One for each of the four findings that can be placed.
-  await expect(model(page).locator('svg line')).toHaveCount(4)
+  await expect(model(page).locator('svg polyline')).toHaveCount(4)
 })
 
 test('a possible fracture has its own style of line', async ({ page }) => {
@@ -220,4 +220,41 @@ test('a small marker is still easy to click', async ({ page }) => {
   await expect(
     model(page).getByRole('button', { name: /femur/ }),
   ).toHaveAttribute('aria-pressed', 'true')
+})
+
+test('a label sits well clear of its marker, and further with more room', async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 1440, height: 900 })
+  await openViewer(page, '/reports/sample-mixed')
+  const label = model(page).getByRole('button', { name: /tibia/ })
+
+  async function distances() {
+    const marker = await markerInfo(page, 'sample-mixed-finding-2')
+    const box = await label.boundingBox()
+    if (!box) throw new Error('No label')
+    const across = box.x - marker.screenX
+    const up = marker.screenY - (box.y + box.height / 2)
+    return { across, up, apart: Math.hypot(across, up) }
+  }
+
+  await expect.poll(async () => (await distances()).apart).toBeGreaterThan(80)
+  // It sits above the marker, not level with it.
+  expect((await distances()).up).toBeGreaterThan(50)
+
+  await page.getByRole('button', { name: 'Hide the report' }).click()
+  await expect.poll(async () => (await distances()).across).toBeGreaterThan(120)
+})
+
+test('a label points away from the middle of the body, even when zoomed in', async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 1440, height: 900 })
+  await openViewer(page, '/reports/sample-mixed')
+  await model(page).getByRole('button', { name: /tibia/ }).click()
+  await waitForCameraToStop(page)
+  // The left tibia, with the label on the viewer's right: away from the other leg.
+  await expect(
+    model(page).getByRole('button', { name: /tibia/ }),
+  ).toHaveAttribute('data-flip', 'false')
 })

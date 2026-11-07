@@ -93,12 +93,20 @@ export function markersFor(findings: SavedFinding[], bones: Bone[]) {
   return withStackIndexes(markers)
 }
 
-// How far a label sits from its marker, across the line joining them, and the
-// label's width limits, in pixels.
-export const LABEL_GAP = 40
-const LABEL_EDGE_MARGIN = 6
-const LABEL_MIN_WIDTH = 110
+// How far a label sits from its marker, in pixels: well clear of the bone when
+// there's room, and closer when there isn't. Its width limits, too.
+export const LABEL_FAR_GAP = 140
+export const LABEL_MIN_GAP = 40
+export const LABEL_MIN_WIDTH = 110
 const LABEL_MAX_WIDTH = 208
+// The room to leave for a typical label when deciding how far out it can go.
+const LABEL_USUAL_WIDTH = 176
+const LABEL_EDGE_MARGIN = 6
+
+// How far above its marker a label sits, in pixels, when there's room.
+export const LABEL_RISE = 72
+// Keeps a label clear of the notice across the top of the view, in pixels.
+const LABEL_TOP_CLEARANCE = 64
 
 // How far down each label sits from the one above it when markers share a spot.
 export const LABEL_STACK_GAP = 120
@@ -108,33 +116,49 @@ export const LABEL_STACK_GAP = 120
 // jump from side to side as the camera moves (#87).
 const LABEL_KEEP_SIDE = 48
 
-// Away from the middle of the view, so a label covers fewer bones. Only when there's
-// too little room for that does it point inward.
-function preferredSide(x: number, viewWidth: number) {
-  const fromCenter = (Math.abs(x) * viewWidth) / 2
-  const outside = viewWidth / 2 - fromCenter - LABEL_GAP
-  const pointsOutward = outside >= LABEL_MIN_WIDTH
-  return x < 0 ? pointsOutward : !pointsOutward
+function roomOnSide(goesLeft: boolean, x: number, viewWidth: number) {
+  return ((goesLeft ? 1 + x : 1 - x) * viewWidth) / 2
 }
 
-// Where a label goes, and how wide it can be before the edge cuts it off. `x` runs
-// from -1 to 1 across the view. `currentlyLeft` is the side it's on now, if any.
+// Away from the middle of the body, so a label doesn't land on the other arm or leg.
+// Only when there's too little room for that does it point inward.
+function preferredSide(x: number, viewWidth: number, bodyCenter: number) {
+  const outwardLeft = x < bodyCenter
+  const fits =
+    roomOnSide(outwardLeft, x, viewWidth) - LABEL_MIN_GAP >= LABEL_MIN_WIDTH
+  return fits ? outwardLeft : !outwardLeft
+}
+
+// Where a label goes, how far from its marker, and how wide it can be before the
+// edge cuts it off. `x` and `bodyCenter` run from -1 to 1 across the view.
+// `currentlyLeft` is the side it's on now, if any.
 export function labelPlacement(
   x: number,
   viewWidth: number,
   currentlyLeft?: boolean,
+  bodyCenter = 0,
 ) {
   const shift = (2 * LABEL_KEEP_SIDE) / viewWidth
   const keepsSide =
-    preferredSide(x - shift, viewWidth) === currentlyLeft ||
-    preferredSide(x + shift, viewWidth) === currentlyLeft
+    preferredSide(x - shift, viewWidth, bodyCenter) === currentlyLeft ||
+    preferredSide(x + shift, viewWidth, bodyCenter) === currentlyLeft
   const goesLeft = keepsSide
     ? (currentlyLeft as boolean)
-    : preferredSide(x, viewWidth)
+    : preferredSide(x, viewWidth, bodyCenter)
 
-  const room = ((goesLeft ? 1 + x : 1 - x) * viewWidth) / 2 - LABEL_GAP
-  return {
-    goesLeft,
-    maxWidth: Math.min(LABEL_MAX_WIDTH, room - LABEL_EDGE_MARGIN),
-  }
+  const room = roomOnSide(goesLeft, x, viewWidth) - LABEL_EDGE_MARGIN
+  const gap = Math.min(
+    LABEL_FAR_GAP,
+    Math.max(LABEL_MIN_GAP, room - LABEL_USUAL_WIDTH),
+  )
+  return { goesLeft, gap, maxWidth: Math.min(LABEL_MAX_WIDTH, room - gap) }
+}
+
+// How far above its marker a label sits, in pixels. It's lower near the top of the
+// view, and below the marker when it has to be, so it never covers the notice saying
+// this is a standard skeleton (NFR5). `y` runs from -1 at the bottom to 1 at the top.
+export function labelRise(y: number, viewHeight: number, labelHeight: number) {
+  const fromTop = ((1 - y) * viewHeight) / 2
+  const room = fromTop - LABEL_TOP_CLEARANCE - labelHeight / 2
+  return Math.max(-LABEL_RISE, Math.min(LABEL_RISE, room))
 }

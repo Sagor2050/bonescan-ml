@@ -137,6 +137,26 @@ test.describe('three reports', () => {
       ).toHaveAttribute('aria-pressed', 'true')
     })
 
+    test('no label covers the standard skeleton notice', async ({ page }) => {
+      const notice = await model(page)
+        .getByText('This is a standard adult skeleton')
+        .boundingBox()
+      if (!notice) throw new Error('No notice')
+      const labels = model(page).getByRole('button', { name: /report/ })
+      await expect(labels).toHaveCount(5)
+      await expect
+        .poll(async () => {
+          const tops = await Promise.all(
+            (await labels.all()).map(async (label) => {
+              const box = await label.boundingBox()
+              return box?.y ?? 0
+            }),
+          )
+          return Math.min(...tops)
+        })
+        .toBeGreaterThanOrEqual(notice.y + notice.height - 1)
+    })
+
     test('a chosen label comes in front of the others', async ({ page }) => {
       const stacking = (name: RegExp) =>
         model(page)

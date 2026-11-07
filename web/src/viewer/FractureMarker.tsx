@@ -1,12 +1,14 @@
 import { Html } from '@react-three/drei'
-import { createPortal, useFrame, type ThreeEvent } from '@react-three/fiber'
-import { useMemo, useRef, type CSSProperties } from 'react'
+import { createPortal, useFrame, useThree, type ThreeEvent } from '@react-three/fiber'
+import { useCallback, useMemo, useRef, type CSSProperties } from 'react'
 import { Group, Vector3, type Object3D } from 'three'
 import styles from './FractureMarker.module.css'
 import {
-  LABEL_GAP,
+  LABEL_FAR_GAP,
+  LABEL_RISE,
   LABEL_STACK_GAP,
   labelPlacement,
+  labelRise,
   type MarkerLook,
   type MarkerSpec,
 } from './markers.ts'
@@ -19,11 +21,23 @@ const SCREEN_SIZE = 0.0045
 const CLICK_AREA = 3
 // Where the line to the label starts, in pixels from the dot's center.
 const LINE_START = 9
+// How far before the label the line bends to run straight into it, in pixels.
+const LINE_BEND = 20
 const CLICK_DRAG_LIMIT = 4
 
 const OUTLINE_COLOR = '#111111'
 
 const worldPosition = new Vector3()
+const bodyCenter = new Vector3()
+
+// The line from the dot to its label: up and out to a bend, then straight across.
+function linePoints(gap: number, labelHeight: number) {
+  const bendX = gap - LINE_BEND
+  const length = Math.hypot(bendX, labelHeight)
+  const startX = (bendX / length) * LINE_START
+  const startY = (labelHeight / length) * LINE_START
+  return `${startX},${startY} ${bendX},${labelHeight} ${gap},${labelHeight}`
+}
 
 function MarkerShape({ shape }: { shape: MarkerLook['shape'] }) {
   switch (shape) {
@@ -58,10 +72,19 @@ function FractureMarker({
     [bone, marker.point],
   )
   const shapeRef = useRef<Group>(null)
-  const labelRef = useRef<HTMLButtonElement>(null)
+  const labelRef = useRef<HTMLButtonElement | null>(null)
+  const invalidate = useThree((state) => state.invalidate)
+  // The label appears after the first frame, and frames only draw on demand, so ask
+  // for two: one to place the label, and one more now that it's at its final width.
+  const connectLabel = useCallback(
+    (element: HTMLButtonElement | null) => {
+      labelRef.current = element
+      if (element) invalidate(2)
+    },
+    [invalidate],
+  )
   const lineRef = useRef<SVGSVGElement>(null)
-  const lineHeight = marker.stackIndex * LABEL_STACK_GAP
-  const lineLength = Math.hypot(LABEL_GAP, lineHeight)
+  const drop = marker.stackIndex * LABEL_STACK_GAP
 
   useFrame(({ camera, size }) => {
     const shape = shapeRef.current
@@ -72,19 +95,31 @@ function FractureMarker({
     )
 
     const label = labelRef.current
-    if (label) {
+    const line = lineRef.current
+    if (label && line) {
+      // The skeleton stands on the model's center line, at x and z of 0.
+      bodyCenter.set(0, worldPosition.y, 0).project(camera)
+      const { x, y } = worldPosition.project(camera)
       const flipped = label.dataset.flip
       const placement = labelPlacement(
-        worldPosition.project(camera).x,
+        x,
         size.width,
         flipped === undefined ? undefined : flipped === 'true',
+        bodyCenter.x,
       )
       const flip = String(placement.goesLeft)
-      label.style.maxWidth = `${placement.maxWidth}px`
       if (flipped !== flip) {
         label.dataset.flip = flip
-        if (lineRef.current) lineRef.current.dataset.flip = flip
+        line.dataset.flip = flip
       }
+
+      const height = drop - labelRise(y, size.height, label.offsetHeight)
+      label.style.maxWidth = `${placement.maxWidth}px`
+      label.style.setProperty('--gap', `${placement.gap}px`)
+      label.style.setProperty('--height', `${height}px`)
+      line
+        .querySelector('polyline')
+        ?.setAttribute('points', linePoints(placement.gap, height))
     }
   })
 
@@ -140,20 +175,15 @@ function FractureMarker({
           width="1"
           height="1"
         >
-          <line
-            x1={(LABEL_GAP / lineLength) * LINE_START}
-            y1={(lineHeight / lineLength) * LINE_START}
-            x2={LABEL_GAP}
-            y2={lineHeight}
-          />
+          <polyline points={linePoints(LABEL_FAR_GAP, -LABEL_RISE + drop)} />
         </svg>
         <button
-          ref={labelRef}
+          ref={connectLabel}
           className={`${styles.label} ${styles[marker.certainty]}`}
           style={
             {
-              '--gap': `${LABEL_GAP}px`,
-              '--drop': `${lineHeight}px`,
+              '--gap': `${LABEL_FAR_GAP}px`,
+              '--height': `${-LABEL_RISE + drop}px`,
             } as CSSProperties
           }
           aria-pressed={selected}
