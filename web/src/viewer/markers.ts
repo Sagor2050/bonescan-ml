@@ -98,15 +98,17 @@ export function markersFor(findings: SavedFinding[], bones: Bone[]) {
 export const LABEL_FAR_GAP = 140
 export const LABEL_MIN_GAP = 40
 export const LABEL_MIN_WIDTH = 110
-const LABEL_MAX_WIDTH = 208
+// Wide enough to keep most bone names on one line, since every wrapped line makes
+// the labels harder to fit beside each other, most of all in a wider font.
+export const LABEL_MAX_WIDTH = 260
 // The room to leave for a typical label when deciding how far out it can go.
-const LABEL_USUAL_WIDTH = 176
+const LABEL_USUAL_WIDTH = 244
 const LABEL_EDGE_MARGIN = 6
 
 // How far above its marker a label sits, in pixels, when there's room.
 export const LABEL_RISE = 72
 // Keeps a label clear of the notice across the top of the view, in pixels.
-const LABEL_TOP_CLEARANCE = 64
+export const LABEL_TOP_CLEARANCE = 64
 
 // How far down each label sits from the one above it when markers share a spot.
 export const LABEL_STACK_GAP = 120

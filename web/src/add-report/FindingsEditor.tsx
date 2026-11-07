@@ -1,4 +1,6 @@
+import { useState } from 'react'
 import { type Finding, type Side } from '../findings/types.ts'
+import { CheckIcon, PlusIcon } from '../ui/icons.tsx'
 import { boneLabel, useBones, type Bone } from '../viewer/bones.ts'
 import type { DraftFinding } from './draftReport.ts'
 import {
@@ -46,6 +48,12 @@ function FindingCard({
   const parts = chosen ? Object.keys(chosen.parts) : []
   const reason = noMarkerReason(finding)
   const name = `Finding ${number}`
+  // The form stays closed until it's needed, so a long list can be read through.
+  // It starts open when the finding can't be marked until the patient answers.
+  const [changing, setChanging] = useState(
+    finding.status === 'side_not_stated' ||
+      finding.status === 'bone_not_stated',
+  )
 
   function changeBone(bone: string) {
     const entry = choices.find((choice) => choice.bone === bone)
@@ -67,91 +75,142 @@ function FindingCard({
           {chosen ? boneLabel(chosen) : unplacedTitle(finding)}
           {finding.side && `, ${finding.side} side`}
         </h3>
-        <button type="button" className="btn-danger-quiet" onClick={onRemove}>
-          Remove {name.toLowerCase()}
-        </button>
+        <div className={styles.cardActions}>
+          <button
+            type="button"
+            className="btn-quiet"
+            aria-expanded={changing}
+            aria-label={`${changing ? 'Done changing' : 'Change'} ${name.toLowerCase()}`}
+            onClick={() => setChanging(!changing)}
+          >
+            {changing ? 'Done' : 'Change'}
+          </button>
+          <button
+            type="button"
+            className="btn-danger-quiet"
+            aria-label={`Remove ${name.toLowerCase()}`}
+            onClick={onRemove}
+          >
+            Remove
+          </button>
+        </div>
       </div>
 
       <ul className={styles.labels}>
         <li>
-          {finding.certainty === 'uncertain'
-            ? 'Possible fracture'
-            : 'Fracture'}
+          {finding.certainty === 'uncertain' ? (
+            <>
+              <span className={styles.uncertain} aria-hidden="true">
+                ◆
+              </span>{' '}
+              Possible fracture
+            </>
+          ) : (
+            <>
+              <span className={styles.certain} aria-hidden="true">
+                ●
+              </span>{' '}
+              Fracture
+            </>
+          )}
         </li>
-        {finding.entered_by_patient && <li>Entered by you</li>}
-        <li>
-          {finding.status === 'placed'
-            ? 'Will be marked on the skeleton'
-            : 'No marker'}
-        </li>
+        {finding.status === 'placed' ? (
+          <li>
+            <CheckIcon />
+            Will be marked on the skeleton
+          </li>
+        ) : (
+          <li>
+            <span aria-hidden="true">○</span> No marker
+          </li>
+        )}
+        {finding.entered_by_patient && (
+          <li className={styles.entered}>Entered by you</li>
+        )}
       </ul>
 
       {reason && <p className={styles.reason}>{reason}</p>}
 
       {finding.wording.length > 0 && (
-        <div>
+        <div className={styles.source}>
           <p className={styles.sourceLabel}>Your report says:</p>
           {reportWording(finding).map((text) => (
-            <blockquote key={text}>{text}</blockquote>
+            <blockquote key={text} className={styles.quote}>
+              {text}
+            </blockquote>
           ))}
         </div>
       )}
 
+      {finding.bone && (
+        <p className={styles.words}>
+          Part:{' '}
+          {finding.part.length > 0
+            ? finding.part.map(partLabel).join(', ')
+            : 'the whole bone'}
+        </p>
+      )}
       {finding.type_words.length > 0 && (
-        <p>Words used: {finding.type_words.join(', ')}</p>
+        <p className={styles.words}>
+          Words used: {finding.type_words.join(', ')}
+        </p>
       )}
       {finding.healing_words.length > 0 && (
-        <p>Healing words in your report: {finding.healing_words.join(', ')}</p>
+        <p className={styles.words}>
+          Healing words in your report: {finding.healing_words.join(', ')}
+        </p>
       )}
 
-      <div className={styles.controls}>
-        <label>
-          Bone
-          <select
-            aria-label={`Bone for ${name.toLowerCase()}`}
-            value={finding.bone}
-            onChange={(event) => changeBone(event.target.value)}
-          >
-            <option value="">Not chosen</option>
-            {choices.map((bone) => (
-              <option key={bone.bone} value={bone.bone}>
-                {boneLabel(bone)}
-              </option>
-            ))}
-          </select>
-        </label>
-        <label>
-          Side (your own left or right)
-          <select
-            aria-label={`Side for ${name.toLowerCase()}`}
-            value={finding.side}
-            onChange={(event) =>
-              onChange(
-                editFinding(finding, { side: event.target.value as Side }),
-              )
-            }
-          >
-            <option value="">Not chosen</option>
-            <option value="left">Left</option>
-            <option value="right">Right</option>
-          </select>
-        </label>
-      </div>
+      {changing && (
+        <div className={styles.controls}>
+          <label>
+            Bone
+            <select
+              aria-label={`Bone for ${name.toLowerCase()}`}
+              value={finding.bone}
+              onChange={(event) => changeBone(event.target.value)}
+            >
+              <option value="">Not chosen</option>
+              {choices.map((bone) => (
+                <option key={bone.bone} value={bone.bone}>
+                  {boneLabel(bone)}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label>
+            Side (your own left or right)
+            <select
+              aria-label={`Side for ${name.toLowerCase()}`}
+              value={finding.side}
+              onChange={(event) =>
+                onChange(
+                  editFinding(finding, { side: event.target.value as Side }),
+                )
+              }
+            >
+              <option value="">Not chosen</option>
+              <option value="left">Left</option>
+              <option value="right">Right</option>
+            </select>
+          </label>
 
-      {parts.length > 0 && (
-        <fieldset className={styles.parts}>
-          <legend>Part of the bone (none means the whole bone)</legend>
-          {parts.map((part) => (
-            <label key={part}>
-              <input
-                type="checkbox"
-                checked={finding.part.includes(part)}
-                onChange={(event) => togglePart(part, event.target.checked)}
-              />
-              {partLabel(part)}
-            </label>
-          ))}
-        </fieldset>
+          {parts.length > 0 && (
+            <fieldset className={styles.parts}>
+              <legend>Part of the bone (none means the whole bone)</legend>
+              {parts.map((part) => (
+                <label key={part}>
+                  <input
+                    type="checkbox"
+                    checked={finding.part.includes(part)}
+                    onChange={(event) => togglePart(part, event.target.checked)}
+                  />
+                  {partLabel(part)}
+                </label>
+              ))}
+            </fieldset>
+          )}
+        </div>
       )}
     </li>
   )
@@ -176,7 +235,7 @@ function FindingsEditor({
   return (
     <>
       {findings.length === 0 && (
-        <p className={styles.reason}>{emptyMessage}</p>
+        <p className={styles.emptyReason}>{emptyMessage}</p>
       )}
       <ol className={styles.list}>
         {findings.map((finding, index) => (
@@ -200,6 +259,7 @@ function FindingsEditor({
         type="button"
         onClick={() => onChange([...findings, newFinding()])}
       >
+        <PlusIcon />
         Add a finding we missed
       </button>
     </>

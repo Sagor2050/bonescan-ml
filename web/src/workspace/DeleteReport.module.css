@@ -1,16 +1,38 @@
-/* Takes its own row under the heading, so nothing else has to move aside. */
-.confirm {
-  flex-basis: 100%;
-  padding: 0.75rem 1rem;
-  border: 1px solid var(--line);
-  border-radius: 0.5rem;
+.backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: grid;
+  place-items: center;
+  padding: 1.5rem;
+  background: rgb(21 32 43 / 40%);
 }
 
-.confirm p {
-  margin: 0 0 0.5rem;
+.dialog {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 26rem;
+  padding: 1.5rem;
+  border-radius: var(--radius);
+  background: var(--surface);
+  box-shadow: var(--shadow);
+}
+
+.dialog p {
+  margin: 0 0 0.75rem;
+  color: var(--ink-soft);
+}
+
+.dialog .question {
+  margin-bottom: 0.5rem;
+  color: var(--ink);
+  font-size: 1.125rem;
+  font-weight: 650;
 }
 
 .actions {
   display: flex;
+  justify-content: flex-end;
   gap: 0.5rem;
+  margin-top: 1.25rem;
 }

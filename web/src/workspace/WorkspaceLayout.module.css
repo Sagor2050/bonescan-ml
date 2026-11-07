@@ -1,25 +1,4 @@
-.header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  box-sizing: border-box;
-  height: 3.25rem;
-  padding: 0 1.5rem;
-  border-bottom: 1px solid var(--line);
-  background: var(--surface);
-}
-
-.brand {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  color: var(--brand);
-  font-size: 1.125rem;
-  font-weight: 700;
-  text-decoration: none;
-}
-
-.nav {
-  display: flex;
-  gap: 0.5rem;
+/* Set apart from the links beside it, as the screen's main action. */
+.add {
+  margin-left: 0.5rem;
 }

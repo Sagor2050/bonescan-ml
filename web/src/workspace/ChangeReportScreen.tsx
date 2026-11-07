@@ -2,10 +2,10 @@ import { Suspense, useState } from 'react'
 import type { DraftFinding } from '../add-report/draftReport.ts'
 import { examDateProblem, localToday } from '../add-report/findingEdits.ts'
 import FindingsEditor from '../add-report/FindingsEditor.tsx'
+import verifyStyles from '../add-report/VerifyFindingsScreen.module.css'
 import Link from '../routing/Link.tsx'
 import { reportPath } from '../routing/paths.ts'
 import { navigate } from '../routing/router.ts'
-import styles from './ChangeReportScreen.module.css'
 import { saveReportChanges, type SavedReport } from './reportStore.ts'
 import { useReport } from './useReport.ts'
 import { useWorkspace } from './workspaceState.ts'
@@ -44,24 +44,34 @@ function ChangeForm({ report }: { report: SavedReport }) {
 
   return (
     <>
-      <section className={styles.date}>
-        <h2>Date of the exam</h2>
-        <p>Your reports are listed in order of this date.</p>
-        <label>
-          Exam date
-          <input
-            type="date"
-            max={today}
-            value={examDate}
-            onChange={(event) => setExamDate(event.target.value)}
-          />
-        </label>
-        {problem && <p role="alert">{problem}</p>}
+      <section className={verifyStyles.date}>
+        <div className={verifyStyles.dateText}>
+          <h2>Date of the exam</h2>
+          <p>Your reports are listed in order of this date.</p>
+        </div>
+        <div className={verifyStyles.dateField}>
+          <label>
+            Exam date
+            <input
+              type="date"
+              max={today}
+              value={examDate}
+              onChange={(event) => setExamDate(event.target.value)}
+            />
+          </label>
+          {problem && (
+            <p className={verifyStyles.dateProblem} role="alert">
+              {problem}
+            </p>
+          )}
+        </div>
       </section>
 
       <section>
-        <h2>Fractures in this report</h2>
-        <Suspense fallback={<p>Loading the list of bones…</p>}>
+        <h2 className={verifyStyles.sectionTitle}>Fractures in this report</h2>
+        <Suspense
+          fallback={<p className="page-message">Loading the list of bones…</p>}
+        >
           <FindingsEditor
             findings={findings}
             emptyMessage="This report has no findings listed, so the skeleton won't show any markers. You can add a finding below."
@@ -70,17 +80,25 @@ function ChangeForm({ report }: { report: SavedReport }) {
         </Suspense>
       </section>
 
-      <div className={styles.actions}>
-        <button
-          type="button"
-          className={styles.primary}
-          disabled={Boolean(problem) || saving}
-          onClick={save}
-        >
-          {saving ? 'Saving…' : 'Save my changes'}
-        </button>
-        <Link href={reportPath(report.id)}>Cancel</Link>
-        {saveError && <p role="alert">{saveError}</p>}
+      <div className={verifyStyles.actions}>
+        <div className={verifyStyles.actionsRow}>
+          <Link className="btn btn-quiet btn-large" href={reportPath(report.id)}>
+            Cancel
+          </Link>
+          <button
+            type="button"
+            className="btn-primary btn-large"
+            disabled={Boolean(problem) || saving}
+            onClick={save}
+          >
+            {saving ? 'Saving…' : 'Save my changes'}
+          </button>
+        </div>
+        {saveError && (
+          <p className={verifyStyles.saveError} role="alert">
+            {saveError}
+          </p>
+        )}
       </div>
     </>
   )
@@ -92,17 +110,23 @@ function ChangeReportScreen({ reportId }: { reportId: string }) {
   const report = useReport(reportId)
 
   return (
-    <main className={styles.screen}>
+    <main className={verifyStyles.screen}>
       <h1>Change the date or findings</h1>
-      <p>
+      <p className={verifyStyles.lead}>
         You can correct the exam date and the findings here. This doesn't change
         your original report. Anything you add or change is labeled as entered
         by you. Your care team can answer questions about your results.
       </p>
-      {report.status === 'loading' && <p>Loading your report…</p>}
-      {report.status === 'missing' && <p>We can't find that report.</p>}
+      {report.status === 'loading' && (
+        <p className="page-message">Loading your report…</p>
+      )}
+      {report.status === 'missing' && (
+        <p className="page-message">We can't find that report.</p>
+      )}
       {report.status === 'failed' && (
-        <p>We couldn't load your report. Please try again.</p>
+        <p className="page-message">
+          We couldn't load your report. Please try again.
+        </p>
       )}
       {report.status === 'ready' && <ChangeForm report={report.report} />}
     </main>

@@ -3,14 +3,16 @@ import { Canvas, useFrame } from '@react-three/fiber'
 import { useMemo, useRef, useState } from 'react'
 import { Box3, Vector3, type Group } from 'three'
 import { FIELD_OF_VIEW } from '../viewer/cameraViews.ts'
+import SceneLights from '../viewer/SceneLights.tsx'
 import { MODEL_URL, prepareSkeleton } from '../viewer/skeletonObjects.ts'
 import styles from './HomePage.module.css'
 
 // Radians per second, so one full turn takes about 12 seconds.
 const TURN_SPEED = 0.5
 
-// Far enough back and high enough that the notice and the button clear the model.
-const CAMERA_POSITION: [number, number, number] = [0, 0.8, 3.6]
+// Far enough back that the whole model fits with room around it, level with its
+// middle, so it clears the notice at the top for its whole turn.
+const CAMERA_POSITION: [number, number, number] = [0, 0.72, 4.3]
 
 function prefersReducedMotion() {
   return window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false
@@ -60,9 +62,7 @@ function TurningSkeleton() {
             rotation: [0, 0, 0],
           }}
         >
-          <ambientLight intensity={0.8} />
-          <directionalLight position={[1, 2, 3]} intensity={1.8} />
-          <directionalLight position={[-1, 1, -3]} intensity={1} />
+          <SceneLights />
           <Model turning={turning} />
         </Canvas>
       </div>

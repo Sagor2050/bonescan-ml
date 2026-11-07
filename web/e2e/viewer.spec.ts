@@ -49,6 +49,20 @@ test('goes straight to the back, left-side, and right-side views', async ({
   expect((await boneOnScreen(page, 'radius_left')).ndcX).toBeGreaterThan(0)
 })
 
+test('the whole skeleton starts clear of the notice and the view controls', async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 1280, height: 720 })
+  await openViewer(page)
+  const model = page.getByRole('region', { name: '3D skeleton' })
+  const notice = await model.getByText('This is a standard adult skeleton').boundingBox()
+  const views = await model.getByRole('group', { name: 'Views' }).boundingBox()
+  const shoulder = await boneOnScreen(page, 'clavicle_left')
+  const foot = await boneOnScreen(page, 'calcaneus_left')
+  expect(shoulder.y).toBeGreaterThan(notice!.y + notice!.height)
+  expect(foot.y).toBeLessThan(views!.y)
+})
+
 test('dragging turns the model, and the starting view returns', async ({
   page,
 }) => {
@@ -68,7 +82,7 @@ test('dragging turns the model, and the starting view returns', async ({
   await waitForCameraToStop(page)
   const camera = await cameraState(page)
   expect(camera.x).toBeCloseTo(0, 1)
-  expect(camera.distance).toBeCloseTo(3, 1)
+  expect(camera.distance).toBeCloseTo(3.6, 1)
 })
 
 test('the zoom buttons move the camera in and out', async ({ page }) => {

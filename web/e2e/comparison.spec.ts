@@ -15,6 +15,64 @@ async function startComparing(page: Page, path: string) {
   await expect(list(page)).toBeVisible()
 }
 
+// The labels settle over a few frames, and they start out clear of each other, so a
+// check made too soon passes whatever happens next.
+async function waitForLabelsToSettle(page: Page) {
+  const linePoints = () =>
+    page.evaluate(`[...document.querySelectorAll('[aria-label="3D skeleton"] svg polyline')]
+      .map((line) => line.getAttribute('points')).join('|')`)
+  await expect
+    .poll(async () => {
+      const before = await linePoints()
+      await page.waitForTimeout(300)
+      return before === (await linePoints())
+    })
+    .toBe(true)
+}
+
+async function expectNoLabelsOverlapping(page: Page) {
+  const labels = model(page).getByRole('button', { name: /report/ })
+  await expect(labels).toHaveCount(5)
+  await waitForLabelsToSettle(page)
+  const boxes = await Promise.all(
+    (await labels.all()).map((label) => label.boundingBox()),
+  )
+  const overlapping = boxes.filter((a, i) =>
+    boxes.some(
+      (b, j) =>
+        j > i &&
+        a !== null &&
+        b !== null &&
+        a.x < b.x + b.width &&
+        b.x < a.x + a.width &&
+        a.y < b.y + b.height &&
+        b.y < a.y + a.height,
+    ),
+  )
+  expect(overlapping).toEqual([])
+}
+
+// How many pairs of label lines cross. Read in the page, where a line's points can be
+// turned into positions on screen.
+const CROSSING_LINES = `(() => {
+  const lines = [...document.querySelectorAll('[aria-label="3D skeleton"] svg polyline')].map((line) => {
+    const screen = line.getScreenCTM()
+    return [...line.points].map(({ x, y }) => ({
+      x: screen.a * x + screen.c * y + screen.e,
+      y: screen.b * x + screen.d * y + screen.f,
+    }))
+  })
+  const turn = (a, b, c) => (b.x - a.x) * (c.y - a.y) - (b.y - a.y) * (c.x - a.x)
+  const cross = (a, b, c, d) =>
+    turn(a, b, c) * turn(a, b, d) < 0 && turn(c, d, a) * turn(c, d, b) < 0
+  const parts = (line) => line.slice(1).map((point, index) => [line[index], point])
+  return lines.flatMap((line, index) =>
+    lines.slice(index + 1).filter((other) =>
+      parts(line).some(([a, b]) => parts(other).some(([c, d]) => cross(a, b, c, d))),
+    ),
+  ).length
+})()`
+
 test.describe('the Appendix B reports', () => {
   test.beforeEach(async ({ page }) => {
     await startComparing(page, '/reports')
@@ -42,10 +100,10 @@ test.describe('the Appendix B reports', () => {
     page,
   }) => {
     await expect(
-      page.getByRole('button', { name: /Sep 14, 2026 \(Earlier\)/ }),
+      page.getByRole('button', { name: /Sep 14, 2026 Earlier/ }),
     ).toHaveAttribute('aria-pressed', 'true')
     await expect(
-      page.getByRole('button', { name: /Oct 12, 2026 \(Later\)/ }),
+      page.getByRole('button', { name: /Oct 12, 2026 Later/ }),
     ).toHaveAttribute('aria-pressed', 'true')
   })
 
@@ -70,17 +128,17 @@ test.describe('three reports', () => {
 
     await first.selectOption('sample-c1')
     await expect(
-      page.getByRole('button', { name: /Jul 6, 2026 \(Earlier\)/ }),
+      page.getByRole('button', { name: /Jul 6, 2026 Earlier/ }),
     ).toBeVisible()
     await expect(
-      page.getByRole('button', { name: /Oct 1, 2026 \(Later\)/ }),
+      page.getByRole('button', { name: /Oct 1, 2026 Later/ }),
     ).toBeVisible()
 
     // Swapping them changes nothing about which came first.
     await second.selectOption('sample-c2')
     await first.selectOption('sample-c3')
     await expect(
-      page.getByRole('button', { name: /Aug 17, 2026 \(Earlier\)/ }),
+      page.getByRole('button', { name: /Aug 17, 2026 Earlier/ }),
     ).toBeVisible()
   })
 
@@ -122,9 +180,13 @@ test.describe('three reports', () => {
       const uncertain = await markerInfo(page, 'sample-c1-finding-3')
       const certain = await markerInfo(page, 'sample-c1-finding-2')
       expect(uncertain.shape).toBe(certain.shape)
-      await expect(
-        model(page).getByRole('button', { name: /tibia/ }),
-      ).toContainText('Possible fracture')
+      const label = model(page).getByRole('button', { name: /tibia/ })
+      await expect(label).toContainText('Possible fracture')
+      // Its hollow shape shows on the white label.
+      await expect(label.locator('strong span')).not.toHaveCSS(
+        'color',
+        'rgb(255, 255, 255)',
+      )
     })
 
     test('choosing a row goes to its marker', async ({ page }) => {
@@ -155,6 +217,20 @@ test.describe('three reports', () => {
           return Math.min(...tops)
         })
         .toBeGreaterThanOrEqual(notice.y + notice.height - 1)
+    })
+
+    test('no label covers another on a 13-inch laptop', async ({ page }) => {
+      await page.setViewportSize({ width: 1280, height: 720 })
+      await expectNoLabelsOverlapping(page)
+    })
+
+    test('the lines to the labels don’t cross on a 13-inch laptop', async ({
+      page,
+    }) => {
+      await page.setViewportSize({ width: 1280, height: 720 })
+      await expect(model(page).locator('svg polyline')).toHaveCount(5)
+      await waitForLabelsToSettle(page)
+      expect(await page.evaluate(CROSSING_LINES)).toBe(0)
     })
 
     test('a chosen label comes in front of the others', async ({ page }) => {
@@ -212,6 +288,21 @@ test.describe('three reports', () => {
     await startComparing(page, path)
     await expect(list(page).getByText(/^Side not stated/)).toBeVisible()
   })
+})
+
+// Fonts differ between computers, and a wider one wraps labels onto more lines.
+test('no label covers another in a wide font either', async ({ page }) => {
+  await page.addInitScript({
+    content: `addEventListener('DOMContentLoaded', () => {
+      const style = document.createElement('style')
+      style.textContent = ':root { font-family: Verdana, "DejaVu Sans", sans-serif !important; }'
+      document.head.append(style)
+    })`,
+  })
+  await page.setViewportSize({ width: 1280, height: 720 })
+  await startComparing(page, '/reports?samples=comparison')
+  await page.getByLabel('Second report').selectOption('sample-c1')
+  await expectNoLabelsOverlapping(page)
 })
 
 test('with one report, comparing is off and says why', async ({ page }) => {

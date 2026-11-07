@@ -1,5 +1,5 @@
 import { expect, test, type Page } from '@playwright/test'
-import { openViewer } from './viewer.ts'
+import { openFindingsTab, openViewer } from './viewer.ts'
 
 const model = (page: Page) => page.getByRole('region', { name: '3D skeleton' })
 const findings = (page: Page) => page.getByRole('region', { name: 'Findings' })
@@ -11,6 +11,7 @@ test('a report with healing words shows them on the marker and in the list', asy
 }) => {
   await openViewer(page, '/reports/sample-b2')
   await expect(model(page).getByText(B2_STATUS)).toBeVisible()
+  await openFindingsTab(page)
   await expect(findings(page).getByText(B2_STATUS)).toBeVisible()
 })
 

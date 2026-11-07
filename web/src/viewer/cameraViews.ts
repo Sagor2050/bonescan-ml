@@ -4,9 +4,11 @@
 
 export const FIELD_OF_VIEW = 30
 
-// The middle of the skeleton, and far enough back to see all of it.
-export const START_TARGET: [number, number, number] = [0, 0.73, 0]
-export const START_POSITION: [number, number, number] = [0, 0.73, 3]
+// A little below the middle of the skeleton, which lifts it in the view, and far
+// enough back to see all of it, clear of the notice at the top of the view and the
+// controls at the bottom.
+export const START_TARGET: [number, number, number] = [0, 0.66, 0]
+export const START_POSITION: [number, number, number] = [0, 0.66, 3.6]
 
 // Close enough for one finger to fill the view (S3.2).
 export const MIN_DISTANCE = 0.1

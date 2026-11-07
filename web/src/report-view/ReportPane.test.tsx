@@ -113,8 +113,8 @@ test('shows pasted text exactly as added, with its spaces and line breaks', () =
   expect(pane.querySelector('pre')?.textContent).toBe(pasted.raw_text)
 })
 
-test('keeps the app’s own heading outside the report', () => {
+test('keeps the app’s own words outside the report', () => {
   renderPane(pasted)
-  const heading = screen.getByRole('heading', { name: 'Your original report' })
-  expect(heading.closest('pre')).toBeNull()
+  const note = screen.getByText(/Ask your care team/)
+  expect(note.closest('pre')).toBeNull()
 })

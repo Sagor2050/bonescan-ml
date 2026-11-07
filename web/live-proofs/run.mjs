@@ -600,6 +600,7 @@ async function checksThroughApp(project, client, browser, a, b, files) {
       return { ok: true, detail: `first read took ${seconds(time)}` }
     })
     await check('Correcting a finding marks it as entered by the patient', async () => {
+      await computerOne.getByRole('button', { name: 'Change finding 1' }).click()
       await computerOne.getByLabel('Side for finding 1').selectOption('right')
       await computerOne.getByText('Entered by you').first().waitFor({ timeout: 10_000 })
       return true

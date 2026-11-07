@@ -1,65 +1,147 @@
 .screen {
   box-sizing: border-box;
   width: 100%;
-  max-width: 44rem;
+  max-width: 42rem;
   margin: 0 auto;
-  padding: 2rem;
+  padding: 2.5rem 1.5rem 3rem;
 }
 
 .screen h1 {
-  margin: 0 0 1rem;
+  margin: 0 0 0.5rem;
+  font-size: 1.75rem;
+  font-weight: 700;
 }
 
-.screen form {
-  padding: 0.25rem 1.5rem 1.5rem;
+.lead {
+  margin: 0 0 1.5rem;
+  color: var(--ink-soft);
+}
+
+.card {
+  padding: 1.5rem;
   border: 1px solid var(--line);
   border-radius: var(--radius);
   background: var(--surface);
 }
 
+/* One control with two choices. The real radio buttons stay in place, unseen, so
+   the keyboard and screen readers work as usual. */
 .modes {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem 1.5rem;
-  margin: 1.5rem 0;
-  border: 1px solid var(--line);
-  border-radius: 0.5rem;
+  display: inline-flex;
+  margin: 0 0 1.25rem;
+  padding: 0.1875rem;
+  border: 0;
+  border-radius: var(--radius-control);
+  background: var(--surface-sunken);
 }
 
 .modes label {
-  display: inline-flex;
-  gap: 0.375rem;
+  position: relative;
+  cursor: pointer;
+}
+
+.modes input {
+  position: absolute;
+  opacity: 0;
+}
+
+.modes span {
+  display: block;
+  padding: 0.3125rem 0.875rem;
+  border: 1px solid transparent;
+  border-radius: 0.4375rem;
+  color: var(--ink-soft);
+  font-size: 0.9375rem;
+  font-weight: 500;
+}
+
+/* Bolder words and an edge, so the choice isn't shown by color alone (NFR12). */
+.modes input:checked + span {
+  border-color: var(--line-strong);
+  background: var(--surface);
+  box-shadow: var(--shadow-small);
+  color: var(--ink);
+  font-weight: 650;
+}
+
+.modes input:focus-visible + span {
+  outline: 3px solid var(--brand);
+  outline-offset: 2px;
+}
+
+.dropzone {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  margin-bottom: 1.25rem;
+  padding: 2.25rem 1rem;
+  border: 2px dashed var(--line-strong);
+  border-radius: var(--radius);
+  background: var(--page);
+  color: var(--ink-soft);
+  font-size: 0.9375rem;
+  text-align: center;
+  transition:
+    background-color 120ms,
+    border-color 120ms;
+}
+
+.dropzone:hover,
+.dragging {
+  border-color: var(--brand);
+  background: var(--brand-tint);
+}
+
+.dropzone:focus-within {
+  outline: 3px solid var(--brand);
+  outline-offset: 2px;
+}
+
+.dropzone svg {
+  margin-bottom: 0.25rem;
+  color: var(--brand);
+}
+
+.dropzone strong {
+  color: var(--ink);
+  font-size: 1rem;
+  font-weight: 650;
+  overflow-wrap: anywhere;
+}
+
+.dropzone input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
 }
 
 .field {
   display: grid;
-  gap: 0.5rem;
-  margin-bottom: 1.5rem;
-  font-weight: 600;
+  gap: 0.375rem;
+  margin-bottom: 1.25rem;
+  font-size: 0.875rem;
+  font-weight: 550;
 }
 
 .field textarea {
-  box-sizing: border-box;
   width: 100%;
-  padding: 0.75rem;
-  border: 1px solid var(--line-strong);
-  border-radius: 0.5rem;
-  font: inherit;
-  font-weight: 400;
-}
-
-.field input {
-  font: inherit;
-  font-weight: 400;
+  font-size: 1rem;
 }
 
 .problem {
+  margin: 0 0 1.25rem;
   padding: 0.75rem 1rem;
   border-left: 4px solid var(--danger);
+  border-radius: 0.25rem;
   background: var(--danger-tint);
 }
 
-.primary {
-  composes: btn-primary from global;
-  padding: 0.75rem 1.25rem;
+.reading {
+  margin: 0 0 1.25rem;
+  color: var(--ink-soft);
 }

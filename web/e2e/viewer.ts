@@ -48,6 +48,15 @@ export async function openViewer(page: Page, path = '/reports/sample-b1') {
     .toBe(true)
 }
 
+// The panel beside the model holds the report or the findings.
+export async function openFindingsTab(page: Page) {
+  await page.getByRole('tab', { name: /^Findings/ }).click()
+}
+
+export async function openReportTab(page: Page) {
+  await page.getByRole('tab', { name: 'Your original report' }).click()
+}
+
 export async function waitForCameraToStop(page: Page) {
   await expect
     .poll(() =>

@@ -12,9 +12,14 @@ function DeleteAccount() {
 
   if (!open) {
     return (
-      <button className="btn-danger" onClick={() => setOpen(true)}>
-        Delete my account
-      </button>
+      <>
+        <p className={styles.warning}>
+          This deletes your account and every report in it.
+        </p>
+        <button className="btn-danger-outline" onClick={() => setOpen(true)}>
+          Delete my account
+        </button>
+      </>
     )
   }
 
@@ -73,7 +78,7 @@ function AccountScreen() {
       {session.status === 'signed-in' && (
         <>
           <section className={styles.panel}>
-            <p>
+            <p className={styles.signedIn}>
               Signed in as <strong>{session.session.user.email}</strong>
             </p>
           </section>

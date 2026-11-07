@@ -46,6 +46,65 @@ test('the skeleton turns, and stops when asked', async ({ page }) => {
   await expect(page.getByRole('button', { name: 'Start turning' })).toBeVisible()
 })
 
+// How far the model reaches into the box over part of a turn, from its pixels, as
+// shares of the box. The canvas is see-through, so only the bones have any alpha.
+function modelExtent(page: Page) {
+  return page.evaluate(`(async () => {
+    const canvas = document.querySelector('figure canvas')
+    let top = 1
+    let bottom = 0
+    let left = 1
+    let right = 0
+    for (let frame = 0; frame < 8; frame += 1) {
+      await new Promise((done) => {
+        requestAnimationFrame(() => {
+          const copy = document.createElement('canvas')
+          copy.width = canvas.width
+          copy.height = canvas.height
+          const context = copy.getContext('2d')
+          context.drawImage(canvas, 0, 0)
+          const { data } = context.getImageData(0, 0, copy.width, copy.height)
+          for (let y = 0; y < copy.height; y += 2) {
+            for (let x = 0; x < copy.width; x += 2) {
+              if (data[(y * copy.width + x) * 4 + 3] > 200) {
+                top = Math.min(top, y / copy.height)
+                bottom = Math.max(bottom, y / copy.height)
+                left = Math.min(left, x / copy.width)
+                right = Math.max(right, x / copy.width)
+              }
+            }
+          }
+          done()
+        })
+      })
+      await new Promise((done) => setTimeout(done, 800))
+    }
+    return { top, bottom, left, right }
+  })()`) as Promise<{ top: number; bottom: number; left: number; right: number }>
+}
+
+for (const [width, height] of [
+  [1280, 720],
+  [1920, 1080],
+  [1000, 700],
+]) {
+  test(`the whole skeleton fits in its box with room around it at ${width}×${height}`, async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width, height })
+    await page.goto('/')
+    await modelReady(page)
+    const { top, bottom, left, right } = await modelExtent(page)
+    // It found the model, which fills a good part of the box's height.
+    expect(bottom - top).toBeGreaterThan(0.5)
+    // Below the notice, above the bottom edge, and clear of both sides.
+    expect(top).toBeGreaterThan(0.12)
+    expect(bottom).toBeLessThan(0.88)
+    expect(left).toBeGreaterThan(0.1)
+    expect(right).toBeLessThan(0.9)
+  })
+}
+
 test('it stays still for people who ask for reduced motion', async ({ page }) => {
   await page.emulateMedia({ reducedMotion: 'reduce' })
   await page.goto('/')

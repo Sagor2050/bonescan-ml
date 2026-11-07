@@ -39,6 +39,13 @@ function card(number = 1) {
   return within(screen.getByRole('listitem', { name: `Finding ${number}` }))
 }
 
+// A finding that already has a marker keeps its form closed until it's asked for.
+function openForm(number = 1) {
+  fireEvent.click(
+    card(number).getByRole('button', { name: `Change finding ${number}` }),
+  )
+}
+
 function confirmButton() {
   return screen.getByRole('button', { name: 'Confirm and see the skeleton' })
 }
@@ -94,9 +101,27 @@ test('a finding can be removed', async () => {
   expect(screen.queryByRole('listitem', { name: 'Finding 1' })).toBeNull()
 })
 
+test('a finding that has a marker keeps its form closed, and still says what was read', async () => {
+  showDraft()
+  await renderScreen()
+  expect(card().queryByLabelText('Side for finding 1')).toBeNull()
+  expect(card().getByText('Part: distal, metaphysis')).toBeDefined()
+  openForm()
+  expect(card().getByLabelText('Side for finding 1')).toBeDefined()
+  fireEvent.click(card().getByRole('button', { name: 'Done changing finding 1' }))
+  expect(card().queryByLabelText('Side for finding 1')).toBeNull()
+})
+
+test('a finding with no part says it means the whole bone', async () => {
+  showDraft(withFinding({ part: [] }))
+  await renderScreen()
+  expect(card().getByText('Part: the whole bone')).toBeDefined()
+})
+
 test('changing the side labels the finding as entered by the patient', async () => {
   showDraft()
   await renderScreen()
+  openForm()
   fireEvent.change(card().getByLabelText('Side for finding 1'), {
     target: { value: 'right' },
   })
@@ -110,6 +135,7 @@ test('changing the side labels the finding as entered by the patient', async () 
 test('changing the bone keeps only the parts that bone has', async () => {
   showDraft()
   await renderScreen()
+  openForm()
   fireEvent.change(card().getByLabelText('Bone for finding 1'), {
     target: { value: 'scaphoid' },
   })
@@ -121,6 +147,7 @@ test('changing the bone keeps only the parts that bone has', async () => {
 test('a part can be chosen', async () => {
   showDraft()
   await renderScreen()
+  openForm()
   fireEvent.click(card().getByLabelText('shaft'))
   expect(card().getByLabelText('shaft')).toHaveProperty('checked', true)
   expect(card().getByText('Entered by you')).toBeDefined()
@@ -256,7 +283,7 @@ test('several dates let the patient choose one', async () => {
     candidate_dates: ['2026-09-14', '2026-10-12'],
   })
   await renderScreen()
-  fireEvent.click(screen.getByRole('button', { name: 'Use 2026-10-12' }))
+  fireEvent.click(screen.getByRole('button', { name: 'Use Oct 12, 2026' }))
   expect(dateInput()).toHaveProperty('value', '2026-10-12')
   fireEvent.click(confirmButton())
   await waitFor(() => expect(saveReport).toHaveBeenCalled())

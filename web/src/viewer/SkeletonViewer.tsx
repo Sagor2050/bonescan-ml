@@ -2,6 +2,7 @@ import { CameraControls, useGLTF } from '@react-three/drei'
 import { Canvas, useThree, type ThreeEvent } from '@react-three/fiber'
 import { Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Sphere, Vector3, type Object3D } from 'three'
+import { InfoIcon, MinusIcon, PlusIcon, ResetViewIcon } from '../ui/icons.tsx'
 import { useWorkspace } from '../workspace/workspaceState.ts'
 import { boneLabel, useBones, type Bone } from './bones.ts'
 import {
@@ -16,7 +17,10 @@ import {
   ZOOM_STEP,
 } from './cameraViews.ts'
 import FractureMarker from './FractureMarker.tsx'
+import LabelLayout from './LabelLayout.tsx'
+import type { PlacedLabel } from './labelSpacing.ts'
 import type { MarkerSpec } from './markers.ts'
+import SceneLights from './SceneLights.tsx'
 import {
   boneBox,
   boneIdOf,
@@ -71,6 +75,7 @@ function Skeleton({
     [bones],
   )
   const ids = useMemo(() => new Set(byId.keys()), [byId])
+  const labels = useMemo(() => new Map<string, PlacedLabel>(), [])
 
   // A finding with no named part marks the whole bone (S3.1).
   const wholeBoneIds = useMemo(
@@ -146,9 +151,11 @@ function Skeleton({
             bone={bone}
             selected={marker.findingId === selectedFindingId}
             onSelect={onSelectFinding}
+            labels={labels}
           />
         ) : null
       })}
+      <LabelLayout labels={labels} />
     </>
   )
 }
@@ -224,7 +231,10 @@ function SkeletonViewer({ markers }: { markers: MarkerSpec[] }) {
     <section className={styles.viewer} aria-label="3D skeleton">
       <div className={styles.stage}>
         <p className={styles.notice}>
-          This is a standard adult skeleton, not a model of your own bones.
+          <InfoIcon />
+          <span>
+            This is a standard adult skeleton, not a model of your own bones.
+          </span>
         </p>
         <ViewerErrorBoundary
           fallback={
@@ -248,9 +258,7 @@ function SkeletonViewer({ markers }: { markers: MarkerSpec[] }) {
               }}
               onPointerMissed={() => setSelectedBone(null)}
             >
-              <ambientLight intensity={0.8} />
-              <directionalLight position={[1, 2, 3]} intensity={1.8} />
-              <directionalLight position={[-1, 1, -3]} intensity={1} />
+              <SceneLights />
               <Skeleton
                 bones={bones}
                 markers={markers}
@@ -273,46 +281,56 @@ function SkeletonViewer({ markers }: { markers: MarkerSpec[] }) {
             </Canvas>
           </Suspense>
         </ViewerErrorBoundary>
-      </div>
 
-      <div className={styles.controls}>
-        <div role="group" aria-label="Views">
+        {/* On the model, like a map's controls, so the model keeps the room. */}
+        <div className={styles.views} role="group" aria-label="Views">
           {VIEWS.map((view) => (
             <button key={view.name} onClick={() => goToView(view.azimuth)}>
               {view.label}
             </button>
           ))}
         </div>
-        <div role="group" aria-label="Zoom">
-          <button onClick={() => zoom(1)}>Zoom in</button>
-          <button onClick={() => zoom(-1)}>Zoom out</button>
-          <button onClick={resetView}>Starting view</button>
-        </div>
-        <div role="group" aria-label="Bones shown">
-          {shownAloneId ? (
-            <button onClick={() => setAloneId(null)}>
-              Show the full skeleton
-            </button>
-          ) : (
-            <button
-              disabled={!boneToShowAlone}
-              onClick={() => setAloneId(boneToShowAlone)}
-            >
-              Show this bone on its own
-            </button>
-          )}
+        <div className={styles.zoom} role="group" aria-label="Zoom">
+          <button aria-label="Zoom in" title="Zoom in" onClick={() => zoom(1)}>
+            <PlusIcon />
+          </button>
+          <button aria-label="Zoom out" title="Zoom out" onClick={() => zoom(-1)}>
+            <MinusIcon />
+          </button>
+          <button
+            aria-label="Starting view"
+            title="Starting view"
+            onClick={resetView}
+          >
+            <ResetViewIcon />
+          </button>
         </div>
       </div>
 
-      <p className={styles.help}>
-        <strong aria-live="polite">
-          {selectedBone
-            ? `Your ${selectedBone.side} ${boneLabel(selectedBone)}`
-            : 'Click a bone to see its name.'}
-        </strong>{' '}
-        Drag to turn. Scroll to zoom. Right-drag to move sideways.
-      </p>
-
+      <div className={styles.below}>
+        <p className={styles.help}>
+          <strong aria-live="polite">
+            {selectedBone
+              ? `Your ${selectedBone.side} ${boneLabel(selectedBone)}`
+              : 'Click a bone to see its name.'}
+          </strong>{' '}
+          Drag to turn. Scroll to zoom. Right-drag to move sideways.
+        </p>
+        {/* Only offered once there's a bone to show. */}
+        {(shownAloneId || boneToShowAlone) && (
+          <div role="group" aria-label="Bones shown">
+            {shownAloneId ? (
+              <button onClick={() => setAloneId(null)}>
+                Show the full skeleton
+              </button>
+            ) : (
+              <button onClick={() => setAloneId(boneToShowAlone)}>
+                Show this bone on its own
+              </button>
+            )}
+          </div>
+        )}
+      </div>
     </section>
   )
 }

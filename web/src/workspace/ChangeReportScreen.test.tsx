@@ -98,6 +98,7 @@ test('a correction is labeled as entered by the patient', async () => {
   await open()
   const card = within(screen.getByRole('listitem', { name: 'Finding 1' }))
   expect(card.queryByText('Entered by you')).toBeNull()
+  fireEvent.click(card.getByRole('button', { name: 'Change finding 1' }))
   fireEvent.change(card.getByLabelText('Side for finding 1'), {
     target: { value: 'right' },
   })
