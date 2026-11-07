@@ -34,7 +34,9 @@ npm run dev -- --mode live
 ```
 
 The reader doesn't load `.env` by itself. Without `--env-file` it has no project
-to check tokens against, so it refuses every report with "Sign in first."
+to check tokens against, so it refuses every report. Its startup log warns about
+this and names the missing settings. On a host, the settings are `SUPABASE_URL` and
+`SUPABASE_ANON_KEY`, without the web app's `VITE_` prefix.
 
 Only use fictional reports here, like the ones in `tests/fixtures/`.
 

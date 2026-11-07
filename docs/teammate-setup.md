@@ -138,7 +138,8 @@ The setup is done once the marker appears.
 | --- | --- | --- |
 | "Accounts aren't set up on this copy of the app." | The web app started without `--mode live`, or a file name or value is wrong | Redo steps 4 and 5 |
 | "We couldn't reach the service that reads reports." | The reader isn't running, or the web app isn't on port 5173 | Redo step 5 |
-| "Please sign in again, then add your report." | The reader started without `--env-file .env`, or its values are wrong | Check `reader/.env`, restart the reader, and sign in again |
+| "The service that reads reports isn't working right now" | The reader started without `--env-file .env`, or its values are wrong. Its startup log names any missing setting | Check `reader/.env`, then restart the reader |
+| "Please sign in again, then add your report." | Your sign-in has ended | Sign in again |
 | No confirmation email | Supabase's built-in email only reaches our team | Check spam, then ask Sagor to add your address to the Supabase project |
 | The confirmation link doesn't open the app | The address isn't on the project's allowed list | Ask Sagor to check the redirect URLs |
 
