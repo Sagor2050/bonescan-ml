@@ -98,16 +98,35 @@ const LABEL_GAP = 20
 const LABEL_MIN_WIDTH = 110
 const LABEL_MAX_WIDTH = 208
 
-// A label points away from the middle of the view, so it covers fewer bones, and
-// narrows to fit before the edge cuts it off. Only when even that is too tight
-// does it point inward. `x` runs from -1 to 1 across the view.
-export function labelPlacement(x: number, viewWidth: number) {
+// How far past the point where a label would change sides a marker must move, in
+// pixels, before it does. Without this, a marker near that point makes its label
+// jump from side to side as the camera moves (#87).
+const LABEL_KEEP_SIDE = 48
+
+// Away from the middle of the view, so a label covers fewer bones. Only when there's
+// too little room for that does it point inward.
+function preferredSide(x: number, viewWidth: number) {
   const fromCenter = (Math.abs(x) * viewWidth) / 2
   const outside = viewWidth / 2 - fromCenter - LABEL_GAP
-  const inside = viewWidth / 2 + fromCenter - LABEL_GAP
   const pointsOutward = outside >= LABEL_MIN_WIDTH
-  return {
-    goesLeft: x < 0 ? pointsOutward : !pointsOutward,
-    maxWidth: Math.min(LABEL_MAX_WIDTH, pointsOutward ? outside : inside),
-  }
+  return x < 0 ? pointsOutward : !pointsOutward
+}
+
+// Where a label goes, and how wide it can be before the edge cuts it off. `x` runs
+// from -1 to 1 across the view. `currentlyLeft` is the side it's on now, if any.
+export function labelPlacement(
+  x: number,
+  viewWidth: number,
+  currentlyLeft?: boolean,
+) {
+  const shift = (2 * LABEL_KEEP_SIDE) / viewWidth
+  const keepsSide =
+    preferredSide(x - shift, viewWidth) === currentlyLeft ||
+    preferredSide(x + shift, viewWidth) === currentlyLeft
+  const goesLeft = keepsSide
+    ? (currentlyLeft as boolean)
+    : preferredSide(x, viewWidth)
+
+  const room = ((goesLeft ? 1 + x : 1 - x) * viewWidth) / 2 - LABEL_GAP
+  return { goesLeft, maxWidth: Math.min(LABEL_MAX_WIDTH, room) }
 }
