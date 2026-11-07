@@ -22,12 +22,14 @@ function WorkspaceLayout({ children }: { children: ReactNode }) {
         </Link>
         <nav className={styles.nav}>
           <Link
+            className="nav-button"
             href={paths.reports}
             aria-current={inReports ? 'page' : undefined}
           >
             My reports
           </Link>
           <Link
+            className="nav-button"
             href={paths.account}
             aria-current={path === paths.account ? 'page' : undefined}
           >
@@ -36,7 +38,7 @@ function WorkspaceLayout({ children }: { children: ReactNode }) {
           {session.status === 'signed-in' && (
             <button
               type="button"
-              className={styles.signOut}
+              className="nav-button"
               onClick={() => signOut()}
             >
               Sign out

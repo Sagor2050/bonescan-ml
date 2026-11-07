@@ -18,11 +18,7 @@
 
 .nav {
   display: flex;
-  gap: 1.5rem;
-}
-
-.nav a {
-  color: inherit;
+  gap: 0.5rem;
 }
 
 .hero {

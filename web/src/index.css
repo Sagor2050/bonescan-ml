@@ -59,6 +59,38 @@ button {
 /* The color of an ordinary button. List rows use aria-pressed and keep their plain
    text, so they stay easy to read. :where adds no weight, so a button with its own
    class, such as a marker label, keeps its own colors. */
+/* Navigation that looks like a button. It stays a link when it goes to a page, so
+   it can still be opened in a new tab. */
+.nav-button {
+  display: inline-block;
+  padding: 0.375rem 0.75rem;
+  border: 1px solid var(--line-strong);
+  border-radius: 0.5rem;
+  background: var(--surface);
+  color: var(--brand-dark);
+  font: inherit;
+  font-weight: 500;
+  line-height: 1.25;
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    background-color 120ms,
+    border-color 120ms;
+}
+
+.nav-button:hover {
+  border-color: var(--brand);
+  background: var(--brand-tint);
+}
+
+/* A thicker edge and bolder text as well as the tint (NFR12). */
+.nav-button[aria-current='page'] {
+  border-color: var(--brand);
+  background: var(--brand-tint);
+  box-shadow: inset 0 0 0 1px var(--brand);
+  font-weight: 600;
+}
+
 button:where(:not([aria-pressed])) {
   border-color: var(--line-strong);
   color: var(--brand-dark);
