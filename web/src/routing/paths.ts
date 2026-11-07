@@ -8,10 +8,15 @@ export const paths = {
   addReport: '/add-report', // A.3
   verifyFindings: '/verify-findings', // A.4
   report: '/reports/:reportId', // A.5
+  changeReport: '/reports/:reportId/change',
   reports: '/reports', // A.6
   account: '/account',
 } as const
 
 export function reportPath(reportId: string) {
   return `/reports/${encodeURIComponent(reportId)}`
+}
+
+export function changeReportPath(reportId: string) {
+  return `${reportPath(reportId)}/change`
 }
