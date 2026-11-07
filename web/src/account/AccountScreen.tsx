@@ -11,7 +11,11 @@ function DeleteAccount() {
   const [busy, setBusy] = useState(false)
 
   if (!open) {
-    return <button onClick={() => setOpen(true)}>Delete my account</button>
+    return (
+      <button className="btn-danger" onClick={() => setOpen(true)}>
+        Delete my account
+      </button>
+    )
   }
 
   async function handleSubmit(event: SubmitEvent<HTMLFormElement>) {
@@ -50,7 +54,7 @@ function DeleteAccount() {
         <button type="button" disabled={busy} onClick={() => setOpen(false)}>
           Keep my account
         </button>
-        <button type="submit" disabled={busy}>
+        <button type="submit" className="btn-danger" disabled={busy}>
           {busy ? 'Deleting…' : 'Yes, delete everything'}
         </button>
       </div>
@@ -68,11 +72,15 @@ function AccountScreen() {
       )}
       {session.status === 'signed-in' && (
         <>
-          <p>
-            Signed in as <strong>{session.session.user.email}</strong>
-          </p>
-          <h2>Delete my account</h2>
-          <DeleteAccount />
+          <section className={styles.panel}>
+            <p>
+              Signed in as <strong>{session.session.user.email}</strong>
+            </p>
+          </section>
+          <section className={styles.panel}>
+            <h2>Delete my account</h2>
+            <DeleteAccount />
+          </section>
         </>
       )}
     </main>

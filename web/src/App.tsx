@@ -10,6 +10,7 @@ import NotFoundScreen from './routing/NotFoundScreen.tsx'
 import { paths } from './routing/paths.ts'
 import Routes, { type Route } from './routing/Routes.tsx'
 import ChangeReportScreen from './workspace/ChangeReportScreen.tsx'
+import Footer from './ui/Footer.tsx'
 import ReportScreen from './workspace/ReportScreen.tsx'
 import TimelineScreen from './timeline/TimelineScreen.tsx'
 import WorkspaceController from './workspace/WorkspaceController.tsx'
@@ -101,7 +102,10 @@ const routes: Route[] = [
 function App() {
   return (
     <WorkspaceController>
-      <Routes routes={routes} notFound={<NotFoundScreen />} />
+      <div className="app-shell">
+        <Routes routes={routes} notFound={<NotFoundScreen />} />
+        <Footer />
+      </div>
     </WorkspaceController>
   )
 }

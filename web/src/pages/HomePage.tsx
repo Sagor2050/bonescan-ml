@@ -1,11 +1,15 @@
-import { useEffect } from 'react'
+import { lazy, Suspense, useEffect } from 'react'
 import { useSession } from '../account/session.ts'
 import Link from '../routing/Link.tsx'
 import { paths } from '../routing/paths.ts'
 import { navigate } from '../routing/router.ts'
 import BrandMark from '../ui/BrandMark.tsx'
+import ViewerErrorBoundary from '../viewer/ViewerErrorBoundary.tsx'
 import styles from './HomePage.module.css'
 import skeletonPreview from './skeleton-preview.jpg'
+
+// Loaded after the page, so the words and buttons don't wait for the 3D code.
+const TurningSkeleton = lazy(() => import('./TurningSkeleton.tsx'))
 
 const features = [
   {
@@ -59,18 +63,30 @@ function HomePage() {
               <Link className={styles.secondary} href={paths.signIn}>
                 Sign in
               </Link>
+              <button className={styles.demo} disabled>
+                Quick demo (coming soon)
+              </button>
             </div>
           </div>
-          <figure className={styles.preview}>
-            <img
-              src={skeletonPreview}
-              alt="A 3D skeleton with a labeled marker on the left forearm."
-              width="720"
-              height="620"
-            />
-            <figcaption>
-              An example from a made-up report, on a standard adult skeleton.
+          <figure className={styles.stage}>
+            <figcaption className={styles.notice}>
+              This is a standard adult skeleton, not a model of your own bones.
             </figcaption>
+            <ViewerErrorBoundary
+              fallback={
+                <img
+                  className={styles.still}
+                  src={skeletonPreview}
+                  alt="A 3D skeleton with a labeled marker on the left forearm."
+                />
+              }
+            >
+              <Suspense
+                fallback={<p className={styles.loading}>Loading the skeleton…</p>}
+              >
+                <TurningSkeleton />
+              </Suspense>
+            </ViewerErrorBoundary>
           </figure>
         </section>
 
@@ -102,11 +118,6 @@ function HomePage() {
           </p>
         </section>
       </main>
-
-      <footer className={styles.footer}>
-        BoneScan is a student project. It is not a medical device and does not
-        give medical advice.
-      </footer>
     </>
   )
 }

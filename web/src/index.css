@@ -9,6 +9,10 @@
   --brand: #0f5e66;
   --brand-dark: #0b474d;
   --brand-tint: #e3f1f2;
+  --line-strong: #6f979d;
+  --danger: #b3261e;
+  --danger-dark: #8c1d18;
+  --danger-tint: #fbeae9;
   --stage: #1d242c;
   --radius: 0.625rem;
   --shadow: 0 1px 2px rgb(23 33 43 / 8%), 0 4px 16px rgb(23 33 43 / 6%);
@@ -17,16 +21,27 @@
   line-height: 1.5;
   color: var(--ink);
   background: var(--page);
+  accent-color: var(--brand);
 }
 
 body {
   margin: 0;
 }
 
+/* The footer sits at the bottom of short screens, and below full-height ones. */
+.app-shell {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
 a {
   color: var(--brand);
 }
 
+/* Three kinds of button. An ordinary one, a primary one for the main action on a
+   screen, and a red one for anything that deletes. The words on the button always
+   say what it does, so color is never the only signal (NFR12). */
 button {
   padding: 0.375rem 0.75rem;
   border: 1px solid var(--line);
@@ -41,15 +56,77 @@ button {
     border-color 120ms;
 }
 
+/* The color of an ordinary button. List rows use aria-pressed and keep their plain
+   text, so they stay easy to read. :where adds no weight, so a button with its own
+   class, such as a marker label, keeps its own colors. */
+button:where(:not([aria-pressed])) {
+  border-color: var(--line-strong);
+  color: var(--brand-dark);
+}
+
 button:hover:not(:disabled) {
   border-color: var(--brand);
   background: var(--brand-tint);
 }
 
 button:disabled {
+  border-color: var(--line);
   color: var(--ink-soft);
   background: var(--page);
   cursor: not-allowed;
+}
+
+input[type='file']::file-selector-button {
+  margin-right: 0.75rem;
+  padding: 0.375rem 0.75rem;
+  border: 1px solid var(--line-strong);
+  border-radius: 0.5rem;
+  background: var(--surface);
+  color: var(--brand-dark);
+  font: inherit;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+input[type='file']::file-selector-button:hover {
+  border-color: var(--brand);
+  background: var(--brand-tint);
+}
+
+.btn-primary {
+  border-color: var(--brand);
+  background: var(--brand);
+  color: #ffffff;
+  font-weight: 600;
+}
+
+.btn-primary:hover:not(:disabled) {
+  border-color: var(--brand-dark);
+  background: var(--brand-dark);
+}
+
+.btn-danger {
+  border-color: var(--danger);
+  background: var(--danger);
+  color: #ffffff;
+  font-weight: 600;
+}
+
+.btn-danger:hover:not(:disabled) {
+  border-color: var(--danger-dark);
+  background: var(--danger-dark);
+}
+
+/* For a first step, or beside other buttons, where solid red would shout. */
+.btn-danger-quiet {
+  border-color: var(--danger);
+  color: var(--danger);
+}
+
+.btn-danger-quiet:hover:not(:disabled) {
+  border-color: var(--danger-dark);
+  background: var(--danger-tint);
+  color: var(--danger-dark);
 }
 
 button:focus-visible,

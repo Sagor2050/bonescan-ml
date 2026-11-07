@@ -17,7 +17,11 @@ function DeleteReport({ report }: { report: SavedReport }) {
 
   if (step === 'closed' || step === 'kept') {
     return (
-      <button autoFocus={step === 'kept'} onClick={() => setStep('asking')}>
+      <button
+        className="btn-danger-quiet"
+        autoFocus={step === 'kept'}
+        onClick={() => setStep('asking')}
+      >
         Delete this report
       </button>
     )
@@ -49,7 +53,7 @@ function DeleteReport({ report }: { report: SavedReport }) {
         <button autoFocus disabled={deleting} onClick={() => setStep('kept')}>
           Keep the report
         </button>
-        <button disabled={deleting} onClick={confirm}>
+        <button className="btn-danger" disabled={deleting} onClick={confirm}>
           {deleting ? 'Deleting…' : 'Yes, delete it'}
         </button>
       </div>
