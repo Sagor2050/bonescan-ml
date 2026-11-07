@@ -1,6 +1,28 @@
 import { render, screen } from '@testing-library/react'
-import { expect, test } from 'vitest'
+import { beforeEach, expect, test, vi } from 'vitest'
+import { useSession, type SessionState } from '../account/session.ts'
 import HomePage from './HomePage.tsx'
+
+vi.mock('../account/session.ts', () => ({ useSession: vi.fn() }))
+
+beforeEach(() => {
+  vi.mocked(useSession).mockReturnValue({ status: 'no-accounts' })
+  window.history.replaceState(null, '', '/')
+})
+
+test('a patient signed in by a confirmation link goes to their timeline', async () => {
+  vi.mocked(useSession).mockReturnValue({
+    status: 'signed-in',
+  } as SessionState)
+  render(<HomePage />)
+  await vi.waitFor(() => expect(window.location.pathname).toBe('/reports'))
+})
+
+test('a signed-out visitor stays on the homepage', () => {
+  vi.mocked(useSession).mockReturnValue({ status: 'signed-out' })
+  render(<HomePage />)
+  expect(window.location.pathname).toBe('/')
+})
 
 test('shows the heading and both ways to get started', () => {
   render(<HomePage />)

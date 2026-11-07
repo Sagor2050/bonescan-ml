@@ -55,8 +55,10 @@ function RegisterPage() {
         <p className={styles.email}>{sentTo}</p>
         <p>
           Open it to finish creating your account. You can't save reports until
-          you do. If this address already has an account, no new one was
-          created, and you can <Link href={paths.signIn}>sign in</Link> instead.
+          you do. If you get more than one email, use the newest link, because
+          older links stop working. If this address already has an account, no
+          new one was created, and you can{' '}
+          <Link href={paths.signIn}>sign in</Link> instead.
         </p>
       </AuthCard>
     )

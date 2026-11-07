@@ -1,5 +1,8 @@
+import { useEffect } from 'react'
+import { useSession } from '../account/session.ts'
 import Link from '../routing/Link.tsx'
 import { paths } from '../routing/paths.ts'
+import { navigate } from '../routing/router.ts'
 import BrandMark from '../ui/BrandMark.tsx'
 import styles from './HomePage.module.css'
 import skeletonPreview from './skeleton-preview.jpg'
@@ -20,6 +23,15 @@ const features = [
 ]
 
 function HomePage() {
+  const session = useSession()
+
+  // A confirmation link can land here and sign the patient in (Plan A.2).
+  useEffect(() => {
+    if (session.status === 'signed-in') {
+      navigate(paths.reports, { replace: true })
+    }
+  }, [session.status])
+
   return (
     <>
       <header className={styles.header}>
