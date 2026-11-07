@@ -6,7 +6,15 @@ import { parseReadResponse } from '../findings/parse.ts'
 import type { Finding } from '../findings/types.ts'
 import type { SavedFinding } from '../workspace/reportStore.ts'
 import type { Bone } from './bones.ts'
-import { LABEL_GAP, labelPlacement, markersFor } from './markers.ts'
+import {
+  LABEL_FAR_GAP,
+  LABEL_MIN_GAP,
+  LABEL_MIN_WIDTH,
+  labelPlacement,
+  LABEL_RISE,
+  labelRise,
+  markersFor,
+} from './markers.ts'
 
 const bones = catalog as unknown as Bone[]
 
@@ -185,7 +193,7 @@ describe('a label keeping its side (#87)', () => {
   test('stays put as a marker wobbles where the outer side runs out of room', () => {
     const viewWidth = 450
     // Room for the narrowest label, past the line: where the side choice changes.
-    const edge = 1 - (2 * (110 + LABEL_GAP)) / viewWidth
+    const edge = 1 - (2 * (LABEL_MIN_WIDTH + LABEL_MIN_GAP)) / viewWidth
     expect(jumps(wobble(edge, 0.01), viewWidth)).toBe(0)
   })
 
@@ -201,10 +209,9 @@ describe('a label keeping its side (#87)', () => {
     const viewWidth = 320
     for (const side of [true, false]) {
       for (let x = -0.9; x <= 0.9; x += 0.05) {
-        const { goesLeft, maxWidth } = labelPlacement(x, viewWidth, side)
-        const room =
-          ((goesLeft ? 1 + x : 1 - x) * viewWidth) / 2 - LABEL_GAP
-        expect(maxWidth).toBeLessThanOrEqual(room + 0.001)
+        const { goesLeft, gap, maxWidth } = labelPlacement(x, viewWidth, side)
+        const room = ((goesLeft ? 1 + x : 1 - x) * viewWidth) / 2
+        expect(gap + maxWidth).toBeLessThanOrEqual(room)
         expect(maxWidth).toBeGreaterThan(0)
       }
     }
@@ -212,13 +219,60 @@ describe('a label keeping its side (#87)', () => {
 
   test('a label stops short of the edge of the view', () => {
     const viewWidth = 450
-    const { maxWidth } = labelPlacement(0.3, viewWidth)
-    const edge = ((1 - 0.3) * viewWidth) / 2 - LABEL_GAP
-    expect(maxWidth).toBeLessThan(edge)
+    const { gap, maxWidth } = labelPlacement(0.3, viewWidth)
+    expect(gap + maxWidth).toBeLessThan(((1 - 0.3) * viewWidth) / 2)
   })
 
   test('with no side yet, a label points outward as before', () => {
     expect(labelPlacement(-0.5, 800).goesLeft).toBe(true)
     expect(labelPlacement(0.5, 800).goesLeft).toBe(false)
+  })
+})
+
+describe('a label keeping clear of the bones', () => {
+  test('sits far from its marker when there is room', () => {
+    expect(labelPlacement(0.2, 1000).gap).toBe(LABEL_FAR_GAP)
+  })
+
+  test('moves closer rather than being cut off when there is less room', () => {
+    const { gap, maxWidth } = labelPlacement(0.3, 500)
+    expect(gap).toBeLessThan(LABEL_FAR_GAP)
+    expect(gap).toBeGreaterThanOrEqual(LABEL_MIN_GAP)
+    expect(maxWidth).toBeGreaterThanOrEqual(LABEL_MIN_WIDTH)
+  })
+
+  test('points away from the middle of the body, not the middle of the view', () => {
+    // The left leg, just left of the view's center after zooming in, with the
+    // body's center further left: the label goes right, away from the other leg.
+    expect(labelPlacement(-0.04, 800, undefined, -0.5).goesLeft).toBe(false)
+    expect(labelPlacement(0.04, 800, undefined, 0.5).goesLeft).toBe(true)
+  })
+
+  test('points inward only when the outer side has no room', () => {
+    expect(labelPlacement(0.9, 800, undefined, -0.5).goesLeft).toBe(true)
+  })
+
+  test('rises above its marker when there is room', () => {
+    expect(labelRise(0, 600, 100)).toBe(LABEL_RISE)
+  })
+
+  test('never reaches the notice at the top of the view', () => {
+    const viewHeight = 400
+    for (let y = -1; y <= 1; y += 0.05) {
+      const labelHeight = 118
+      const center = ((1 - y) * viewHeight) / 2 - labelRise(y, viewHeight, labelHeight)
+      if (center >= 64 + labelHeight / 2 - 0.001) continue
+      // Only a marker too near the top to go any lower may come close.
+      expect(labelRise(y, viewHeight, labelHeight)).toBe(-LABEL_RISE)
+    }
+  })
+
+  test('moves smoothly as a marker nears the top, with no jump', () => {
+    let previous = labelRise(-1, 600, 100)
+    for (let y = -0.99; y <= 1; y += 0.01) {
+      const rise = labelRise(y, 600, 100)
+      expect(Math.abs(rise - previous)).toBeLessThanOrEqual(3.01)
+      previous = rise
+    }
   })
 })
