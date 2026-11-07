@@ -49,8 +49,37 @@ with stand-ins for Supabase's auth and storage, then tries everything account B
 must not be able to do to account A's reports, findings, and files. It doesn't
 touch a real project.
 
-Run the same cross-account test through the app on the real project too (Plan,
-Milestone 4), because the stand-ins can't prove how Supabase's own API behaves.
+Run the same cross-account test on the real project too (Plan, Milestone 4),
+because the stand-ins can't prove how Supabase's own API behaves.
+
+## Run the Milestone 4 proofs on the live site
+
+A person runs this by hand, because it needs real accounts. It tries everything
+account B must not be able to do to account A, through the app and directly through
+Supabase's API. It also tries the files that must be turned away, deletes an
+account, and times NFR1 and NFR2.
+
+1. On the live site, make three accounts used only for this, and confirm each one
+   from its email. Account C gets deleted.
+2. From `web/`, run the script. It asks for the accounts, and hides the passwords:
+
+   ```sh
+   node live-proofs/run.mjs
+   ```
+
+3. Do the last steps it prints for the deleted account.
+
+It adds fictional reports only and removes them afterward. It needs no env file,
+because it gets the project address and publishable key from the deployed page, as
+any visitor's browser does. `web/live-proofs/results.json` holds only pass or fail,
+status codes, and timings, so it's safe to share.
+
+`node live-proofs/run.mjs --no-login` runs only the checks that need no account.
+
+These still need a person, because they need an inbox:
+
+- Sign up with an address outside the team, and check the email arrives.
+- Ask for a new password, and use the link to set one.
 
 ## Rules to keep
 

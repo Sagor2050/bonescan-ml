@@ -50,3 +50,6 @@ web/playwright-report/
 __pycache__/
 *.py[cod]
 .pytest_cache/
+
+# Results of web/live-proofs/run.mjs. They hold no secrets, but belong on issues.
+web/live-proofs/results.json
