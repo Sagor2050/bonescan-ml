@@ -6,7 +6,7 @@ import { parseReadResponse } from '../findings/parse.ts'
 import type { Finding } from '../findings/types.ts'
 import type { SavedFinding } from '../workspace/reportStore.ts'
 import type { Bone } from './bones.ts'
-import { labelPlacement, markersFor } from './markers.ts'
+import { LABEL_GAP, labelPlacement, markersFor } from './markers.ts'
 
 const bones = catalog as unknown as Bone[]
 
@@ -142,9 +142,9 @@ describe('where a label goes', () => {
   })
 
   test('narrows to fit before the edge of the view', () => {
-    const { goesLeft, maxWidth } = labelPlacement(0.36, 450)
+    const { goesLeft, maxWidth } = labelPlacement(0.3, 450)
     expect(goesLeft).toBe(false)
-    expect(maxWidth).toBeLessThan(450 / 2 - 0.36 * (450 / 2))
+    expect(maxWidth).toBeLessThan(450 / 2 - 0.3 * (450 / 2))
   })
 
   test('points inward only when the outside is too tight', () => {
@@ -184,8 +184,8 @@ describe('a label keeping its side (#87)', () => {
 
   test('stays put as a marker wobbles where the outer side runs out of room', () => {
     const viewWidth = 450
-    // 110px left of the edge, past the 20px gap: where the side choice changes.
-    const edge = 1 - (2 * 130) / viewWidth
+    // Room for the narrowest label, past the line: where the side choice changes.
+    const edge = 1 - (2 * (110 + LABEL_GAP)) / viewWidth
     expect(jumps(wobble(edge, 0.01), viewWidth)).toBe(0)
   })
 
@@ -203,11 +203,18 @@ describe('a label keeping its side (#87)', () => {
       for (let x = -0.9; x <= 0.9; x += 0.05) {
         const { goesLeft, maxWidth } = labelPlacement(x, viewWidth, side)
         const room =
-          ((goesLeft ? 1 + x : 1 - x) * viewWidth) / 2 - 20
+          ((goesLeft ? 1 + x : 1 - x) * viewWidth) / 2 - LABEL_GAP
         expect(maxWidth).toBeLessThanOrEqual(room + 0.001)
         expect(maxWidth).toBeGreaterThan(0)
       }
     }
+  })
+
+  test('a label stops short of the edge of the view', () => {
+    const viewWidth = 450
+    const { maxWidth } = labelPlacement(0.3, viewWidth)
+    const edge = ((1 - 0.3) * viewWidth) / 2 - LABEL_GAP
+    expect(maxWidth).toBeLessThan(edge)
   })
 
   test('with no side yet, a label points outward as before', () => {

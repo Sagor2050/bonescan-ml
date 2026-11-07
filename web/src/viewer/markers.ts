@@ -93,10 +93,15 @@ export function markersFor(findings: SavedFinding[], bones: Bone[]) {
   return withStackIndexes(markers)
 }
 
-// The gap between a marker and its label, and the label's limits, in pixels.
-const LABEL_GAP = 20
+// How far a label sits from its marker, across the line joining them, and the
+// label's width limits, in pixels.
+export const LABEL_GAP = 40
+const LABEL_EDGE_MARGIN = 6
 const LABEL_MIN_WIDTH = 110
 const LABEL_MAX_WIDTH = 208
+
+// How far down each label sits from the one above it when markers share a spot.
+export const LABEL_STACK_GAP = 120
 
 // How far past the point where a label would change sides a marker must move, in
 // pixels, before it does. Without this, a marker near that point makes its label
@@ -128,5 +133,8 @@ export function labelPlacement(
     : preferredSide(x, viewWidth)
 
   const room = ((goesLeft ? 1 + x : 1 - x) * viewWidth) / 2 - LABEL_GAP
-  return { goesLeft, maxWidth: Math.min(LABEL_MAX_WIDTH, room) }
+  return {
+    goesLeft,
+    maxWidth: Math.min(LABEL_MAX_WIDTH, room - LABEL_EDGE_MARGIN),
+  }
 }
