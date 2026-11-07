@@ -6,7 +6,14 @@ import {
   useDraftReport,
   type DraftReport,
 } from '../add-report/draftReport.ts'
-import { createAccount, deleteAccount, signIn, signOut } from './auth.ts'
+import {
+  createAccount,
+  deleteAccount,
+  EmailNotConfirmedError,
+  resendConfirmation,
+  signIn,
+  signOut,
+} from './auth.ts'
 
 function client(auth: Record<string, unknown>) {
   return { auth } as unknown as SupabaseClient
@@ -22,7 +29,16 @@ describe('messages', () => {
 
   test('an unconfirmed email asks the patient to confirm it', async () => {
     const c = client({ signInWithPassword: failing('email_not_confirmed') })
-    await expect(signIn('a@b.co', 'x', c)).rejects.toThrow('confirm your email')
+    const attempt = signIn('a@b.co', 'x', c)
+    await expect(attempt).rejects.toThrow('confirm your email')
+    await expect(attempt).rejects.toBeInstanceOf(EmailNotConfirmedError)
+  })
+
+  test('a wrong password is not mistaken for an unconfirmed email', async () => {
+    const c = client({ signInWithPassword: failing('invalid_credentials') })
+    await expect(signIn('a@b.co', 'x', c)).rejects.not.toBeInstanceOf(
+      EmailNotConfirmedError,
+    )
   })
 
   test('with no Supabase project it says accounts are not set up', async () => {
@@ -37,6 +53,32 @@ test('a new account returns to the app after confirming', async () => {
     email: 'a@b.co',
     password: 'long enough',
     options: { emailRedirectTo: `${window.location.origin}/reports` },
+  })
+})
+
+describe('sending a new confirmation link', () => {
+  test('returns to the app after confirming, like the first link', async () => {
+    const resend = vi.fn(async () => ({ error: null }))
+    await resendConfirmation('a@b.co', client({ resend }))
+    expect(resend).toHaveBeenCalledWith({
+      type: 'signup',
+      email: 'a@b.co',
+      options: { emailRedirectTo: `${window.location.origin}/reports` },
+    })
+  })
+
+  test('too many emails asks the patient to wait', async () => {
+    const c = client({ resend: failing('over_email_send_rate_limit') })
+    await expect(resendConfirmation('a@b.co', c)).rejects.toThrow('wait a while')
+  })
+
+  test('any other failure never shows Supabase’s own text', async () => {
+    const c = client({ resend: failing('unexpected_failure') })
+    await expect(resendConfirmation('a@b.co', c)).rejects.toThrow('try again')
+  })
+
+  test('with no Supabase project it says accounts are not set up', async () => {
+    await expect(resendConfirmation('a@b.co', null)).rejects.toThrow('set up')
   })
 })
 

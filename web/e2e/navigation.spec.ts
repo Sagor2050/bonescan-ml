@@ -81,3 +81,20 @@ test('a link to a screen that does not exist says so', async ({ page }) => {
   await page.getByRole('link', { name: 'Go to the homepage' }).click()
   await expect(page).toHaveURL('/')
 })
+
+for (const path of ['/', '/reports', '/reset-password']) {
+  test(`a failed email link on ${path} says so on the sign-in screen`, async ({
+    page,
+  }) => {
+    await page.goto(
+      `${path}#error=access_denied&error_code=otp_expired&error_description=Email+link+is+invalid+or+has+expired&sb=`,
+    )
+    await expect(page).toHaveURL('/sign-in?link=failed')
+    await expect(page.getByRole('status')).toContainText(
+      "That email link didn't work.",
+    )
+    await expect(
+      page.getByRole('button', { name: 'Send a new confirmation link' }),
+    ).toBeVisible()
+  })
+}

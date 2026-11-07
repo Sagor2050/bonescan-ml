@@ -16,7 +16,8 @@ are in [`migrations/`](migrations/). Run these steps once per Supabase project.
 5. Under **Authentication > URL Configuration**, set the Site URL to the deployed
    web app. Add these to the redirect URLs, for the deployed app and for
    `http://localhost:5173`: `/reports` (after confirming an email) and
-   `/reset-password` (after asking for a new password).
+   `/reset-password` (after asking for a new password). Any other address falls
+   back to the Site URL, so match these exactly.
 6. Copy `web/.env.example` to `web/.env.live` and `reader/.env.example` to
    `reader/.env`, and fill in the project URL and anon key. Never commit the real
    values, and never put the service role key in either file.

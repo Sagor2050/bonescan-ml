@@ -140,7 +140,8 @@ The setup is done once the marker appears.
 | "We couldn't reach the service that reads reports." | The reader isn't running, or the web app isn't on port 5173 | Redo step 5 |
 | "Please sign in again, then add your report." | The reader started without `--env-file .env`, or its values are wrong | Check `reader/.env`, restart the reader, and sign in again |
 | No confirmation email | Supabase's built-in email only reaches our team | Check spam, then ask Sagor to add your address to the Supabase project |
-| The confirmation link doesn't open the app | The address isn't on the project's allowed list | Ask Sagor to check the redirect URLs |
+| The confirmation link opens the deployed homepage instead of your copy | The address isn't on the project's allowed list, so Supabase uses the Site URL | Ask Sagor to check the redirect URLs |
+| "That email link didn't work." | The link expired, or signing up again replaced it. Only the newest link works | Choose **Send a new confirmation link**, then use that email |
 
 If the keys ever end up in a commit, chat, or screenshot, tell Sagor right away.
 

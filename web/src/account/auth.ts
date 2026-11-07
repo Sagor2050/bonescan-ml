@@ -11,6 +11,13 @@ export const MIN_PASSWORD_LENGTH = 8
 
 type Client = SupabaseClient | null
 
+/** Signing in failed only because the email address isn't confirmed yet. */
+export class EmailNotConfirmedError extends Error {}
+
+function afterConfirming() {
+  return `${window.location.origin}/reports`
+}
+
 /** Create an account. Email confirmation means it can't be used until confirmed. */
 export async function createAccount(
   email: string,
@@ -21,7 +28,7 @@ export async function createAccount(
   const { error } = await client.auth.signUp({
     email,
     password,
-    options: { emailRedirectTo: `${window.location.origin}/reports` },
+    options: { emailRedirectTo: afterConfirming() },
   })
   if (error) {
     throw new Error(
@@ -41,8 +48,8 @@ export async function signIn(
   const { error } = await client.auth.signInWithPassword({ email, password })
   if (!error) return
   if (error.code === 'email_not_confirmed') {
-    throw new Error(
-      'Please confirm your email address first, using the link we sent you.',
+    throw new EmailNotConfirmedError(
+      'Please confirm your email address first, using the newest link we sent you.',
     )
   }
   throw new Error(
@@ -50,6 +57,29 @@ export async function signIn(
       ? "That email address and password don't match."
       : TRY_AGAIN,
   )
+}
+
+/**
+ * Send a new confirmation link, which replaces any earlier one. Supabase answers
+ * the same way for an address with no account or one already confirmed (NFR8).
+ */
+export async function resendConfirmation(
+  email: string,
+  client: Client = supabase,
+): Promise<void> {
+  if (!client) throw new Error(NOT_SET_UP)
+  const { error } = await client.auth.resend({
+    type: 'signup',
+    email,
+    options: { emailRedirectTo: afterConfirming() },
+  })
+  if (error) {
+    throw new Error(
+      error.code === 'over_email_send_rate_limit'
+        ? "We've sent too many emails for now. Please wait a while, then try again."
+        : TRY_AGAIN,
+    )
+  }
 }
 
 /** Send a link for choosing a new password (S6.2). */
