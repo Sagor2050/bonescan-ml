@@ -303,6 +303,25 @@ def _outside_area(word: str) -> str:
     return word
 
 
+def _region_key(word: str) -> str:
+    """Group words for one region, so "pelvis" and "pelvic" are one finding."""
+    word = word.lower()
+    return words.PELVIS_KEY if word in words.PELVIS_WORDS else word
+
+
+def _summed_up_bones(locations: list[Location], bones: list[Draft]) -> list[Draft]:
+    """The Findings bones that an Impression naming only regions is summing up.
+
+    "Both-bone forearm fracture" sums up whatever Findings listed. A pelvic fracture
+    can only sum up the hip bones, so it can't be lost into a radius fracture.
+    """
+    if not locations or any(location.kind != "region" for location in locations):
+        return []
+    if any(location.key == words.PELVIS_KEY for location in locations):
+        return [bone for bone in bones if bone.key == words.PELVIS_COVERED_BONE]
+    return bones
+
+
 def _locations(clause: str, hand_or_foot: str) -> list[Location]:
     """List every bone, uncovered bone, or region a clause names, in order."""
     candidates: list[Location] = []
@@ -364,7 +383,7 @@ def _locations(clause: str, hand_or_foot: str) -> list[Location]:
     if unique:
         return unique
     regions = [
-        Location("region", m.group(1).lower(), m.start(), m.end())
+        Location("region", _region_key(m.group(1)), m.start(), m.end())
         for m in words.REGIONS.finditer(clause)
     ]
     return regions[:1]
@@ -569,13 +588,9 @@ def _read_sentences(text: str, doc, sections, exam_side: str) -> list[Draft]:
                     continue
 
                 bones_so_far = [d for d in drafts if d.kind == "bone"]
-                if (
-                    category == "impression"
-                    and bones_so_far
-                    and all(location.kind == "region" for location in locations)
-                ):
-                    # "Both-bone forearm fracture" sums up what Findings listed.
-                    for target in bones_so_far:
+                summed_up = _summed_up_bones(locations, bones_so_far)
+                if category == "impression" and summed_up:
+                    for target in summed_up:
                         if (start, end) not in target.ranges:
                             target.ranges.append((start, end))
                     continue
@@ -606,7 +621,7 @@ def _read_sentences(text: str, doc, sections, exam_side: str) -> list[Draft]:
                     sides = _sentence_side(window) or _sentence_side(clause)
                     if not sides:
                         sides = _sentence_side(text[start:end])
-                    if not sides and exam_side:
+                    if not sides and exam_side and location.key != words.PELVIS_KEY:
                         sides = [exam_side]
                     for side in sides or [""]:
                         draft = Draft(

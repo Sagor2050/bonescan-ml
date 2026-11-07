@@ -240,9 +240,16 @@ OUTSIDE_COVERAGE = re.compile(
 REGIONS = re.compile(
     r"\b(wrist|ankle|hand|foot|elbow|knee|shoulder|hip|fingers?|toes?|thumb|"
     r"digits?|forearm|arm|leg|thigh|heel|phalanx|phalanges|phalangeal|"
-    r"metacarpals?|metatarsals?|carpals?|tarsals?)\b",
+    r"metacarpals?|metatarsals?|carpals?|tarsals?|pelvis|pelvic)\b",
     re.IGNORECASE,
 )
+
+# The pelvis is both hip bones plus the sacrum and tailbone, so naming it doesn't
+# say which bone or which side (#57). A side only ever comes from the sentence.
+PELVIS_WORDS = ("pelvis", "pelvic")
+PELVIS_KEY = "pelvis"
+# What a pelvic fracture in the Impression can be summing up from Findings.
+PELVIS_COVERED_BONE = "hip_bone"
 
 # Requirements A.4: fingers and toes are numbered from the thumb or big toe.
 ORDINALS = {
