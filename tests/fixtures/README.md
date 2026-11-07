@@ -11,4 +11,12 @@ Everything here is fictional. No real patient data goes in this folder.
 Both `reader/` and `web/` test against these same files, so a change here is a
 change to the contract and needs both sides to agree.
 
-The PDFs were built with `reader/tests/pdf_builder.py`.
+The `report-b1` and `report-b2` PDFs were built with
+`reader/tests/pdf_builder.py`.
+
+`report-femur-fracture.pdf` and `report-humerus-fracture.pdf` are longer,
+hospital-style sample reports, for trying the app by hand. Each one has more
+than one date and plenty of "no fracture" wording. The patient, clinician, and
+hospital names are made up, as the footer on each page and the PDF properties
+say. No test or expected response depends on them yet, so they aren't part of
+the contract above.
