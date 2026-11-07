@@ -188,3 +188,36 @@ test.describe('a report with several kinds of finding', () => {
     await expect(label).toHaveAttribute('aria-pressed', 'false')
   })
 })
+
+test('a line joins each marker to its label', async ({ page }) => {
+  await openViewer(page, '/reports/sample-mixed')
+  // One for each of the four findings that can be placed.
+  await expect(model(page).locator('svg line')).toHaveCount(4)
+})
+
+test('a possible fracture has its own style of line', async ({ page }) => {
+  await openViewer(page, '/reports/sample-mixed')
+  // The style that dashes the line, on one of the four.
+  await expect(model(page).locator('svg[class*="uncertain"]')).toHaveCount(1)
+})
+
+test('the line is on the same side as the label', async ({ page }) => {
+  await openViewer(page, '/reports/sample-b1')
+  const model_ = model(page)
+  await expect(model_.locator('svg')).toHaveAttribute('data-flip', /true|false/)
+  const flip = await model_.locator('svg').getAttribute('data-flip')
+  const label = model_.getByRole('button', { name: /radius/ })
+  await expect(label).toHaveAttribute('data-flip', flip ?? '')
+})
+
+test('a small marker is still easy to click', async ({ page }) => {
+  await openViewer(page, '/reports/sample-mixed')
+  await page.getByRole('button', { name: 'Starting view' }).click()
+  await waitForCameraToStop(page)
+  const marker = await markerInfo(page, 'sample-mixed-finding-1')
+  // Just off the dot, inside the area that counts as clicking it.
+  await page.mouse.click(marker.screenX + 7, marker.screenY)
+  await expect(
+    model(page).getByRole('button', { name: /femur/ }),
+  ).toHaveAttribute('aria-pressed', 'true')
+})

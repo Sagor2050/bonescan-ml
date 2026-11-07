@@ -3,13 +3,39 @@
   pointer-events: none;
 }
 
+/* The line from the dot to its label. A dark edge keeps it visible over the pale
+   bones and the dark background alike. */
+.line {
+  position: absolute;
+  top: 0;
+  left: 0;
+  overflow: visible;
+  transform-origin: 0 0;
+  pointer-events: none;
+}
+
+.line[data-flip='true'] {
+  transform: scaleX(-1);
+}
+
+.line line {
+  stroke: #ffffff;
+  stroke-width: 2px;
+  filter: drop-shadow(0 0 1px #111111) drop-shadow(0 0 1px #111111);
+}
+
+/* A possible fracture has a dashed line, like its dashed label. */
+.line.uncertain line {
+  stroke-dasharray: 4 3;
+}
+
 .label {
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
   width: max-content;
   padding: 0.25rem 0.5rem;
-  transform: translate(1rem, calc(-50% + var(--stack, 0) * 7.5rem));
+  transform: translate(var(--gap), calc(-50% + var(--drop, 0px)));
   border: 2px solid #111111;
   border-radius: 0.375rem;
   background: #ffffff;
@@ -24,7 +50,10 @@
 }
 
 .label[data-flip='true'] {
-  transform: translate(calc(-100% - 1rem), calc(-50% + var(--stack, 0) * 7.5rem));
+  transform: translate(
+    calc(-100% - var(--gap)),
+    calc(-50% + var(--drop, 0px))
+  );
 }
 
 .healing {

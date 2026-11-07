@@ -3,12 +3,22 @@ import { createPortal, useFrame, type ThreeEvent } from '@react-three/fiber'
 import { useMemo, useRef, type CSSProperties } from 'react'
 import { Group, Vector3, type Object3D } from 'three'
 import styles from './FractureMarker.module.css'
-import { labelPlacement, type MarkerLook, type MarkerSpec } from './markers.ts'
+import {
+  LABEL_GAP,
+  LABEL_STACK_GAP,
+  labelPlacement,
+  type MarkerLook,
+  type MarkerSpec,
+} from './markers.ts'
 import { markerPosition } from './skeletonObjects.ts'
 
 // How big a marker looks, as a share of its distance from the camera. It keeps
 // the same size on screen, so it doesn't hide a finger when zoomed in.
-const SCREEN_SIZE = 0.008
+const SCREEN_SIZE = 0.0045
+// The area around the dot that counts as clicking it, as a share of the dot.
+const CLICK_AREA = 3
+// Where the line to the label starts, in pixels from the dot's center.
+const LINE_START = 9
 const CLICK_DRAG_LIMIT = 4
 
 const OUTLINE_COLOR = '#111111'
@@ -49,6 +59,9 @@ function FractureMarker({
   )
   const shapeRef = useRef<Group>(null)
   const labelRef = useRef<HTMLButtonElement>(null)
+  const lineRef = useRef<SVGSVGElement>(null)
+  const lineHeight = marker.stackIndex * LABEL_STACK_GAP
+  const lineLength = Math.hypot(LABEL_GAP, lineHeight)
 
   useFrame(({ camera, size }) => {
     const shape = shapeRef.current
@@ -68,7 +81,10 @@ function FractureMarker({
       )
       const flip = String(placement.goesLeft)
       label.style.maxWidth = `${placement.maxWidth}px`
-      if (flipped !== flip) label.dataset.flip = flip
+      if (flipped !== flip) {
+        label.dataset.flip = flip
+        if (lineRef.current) lineRef.current.dataset.flip = flip
+      }
     }
   })
 
@@ -81,11 +97,7 @@ function FractureMarker({
   return createPortal(
     <group name={`marker:${marker.findingId}`} position={position}>
       <group ref={shapeRef} scale={0.03}>
-        <mesh
-          renderOrder={11}
-          userData={{ findingId: marker.findingId }}
-          onClick={handleClick}
-        >
+        <mesh renderOrder={11}>
           <MarkerShape shape={marker.look.shape} />
           <meshBasicMaterial
             color={marker.look.fill}
@@ -101,16 +113,49 @@ function FractureMarker({
             transparent
           />
         </mesh>
+        {/* Unseen, so a small dot is still easy to click. */}
+        <mesh
+          scale={CLICK_AREA}
+          userData={{ findingId: marker.findingId }}
+          onClick={handleClick}
+        >
+          <sphereGeometry args={[1, 12, 8]} />
+          <meshBasicMaterial
+            depthTest={false}
+            depthWrite={false}
+            opacity={0}
+            transparent
+          />
+        </mesh>
       </group>
       {/* A chosen label comes to the front, in case another was covering it. */}
       <Html
         wrapperClass={styles.anchor}
         zIndexRange={selected ? [20, 11] : [10, 0]}
       >
+        <svg
+          ref={lineRef}
+          className={`${styles.line} ${styles[marker.certainty]}`}
+          aria-hidden="true"
+          width="1"
+          height="1"
+        >
+          <line
+            x1={(LABEL_GAP / lineLength) * LINE_START}
+            y1={(lineHeight / lineLength) * LINE_START}
+            x2={LABEL_GAP}
+            y2={lineHeight}
+          />
+        </svg>
         <button
           ref={labelRef}
           className={`${styles.label} ${styles[marker.certainty]}`}
-          style={{ '--stack': marker.stackIndex } as CSSProperties}
+          style={
+            {
+              '--gap': `${LABEL_GAP}px`,
+              '--drop': `${lineHeight}px`,
+            } as CSSProperties
+          }
           aria-pressed={selected}
           onPointerDown={(event) => event.stopPropagation()}
           onClick={(event) => {
