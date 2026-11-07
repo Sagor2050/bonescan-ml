@@ -156,3 +156,62 @@ describe('where a label goes', () => {
     expect(labelPlacement(0, 2000).maxWidth).toBe(208)
   })
 })
+
+describe('a label keeping its side (#87)', () => {
+  // Plays a marker's path across the view, feeding back the side it chose, and
+  // counts the times the label jumps.
+  function jumps(path: number[], viewWidth: number) {
+    let side: boolean | undefined
+    let count = 0
+    for (const x of path) {
+      const { goesLeft } = labelPlacement(x, viewWidth, side)
+      if (side !== undefined && goesLeft !== side) count += 1
+      side = goesLeft
+    }
+    return count
+  }
+
+  // The camera easing back and forth a little across a spot.
+  const wobble = (around: number, by: number) =>
+    Array.from({ length: 40 }, (_, step) => around + (step % 2 ? by : -by))
+
+  test.each([320, 450, 800])(
+    'stays put as a marker wobbles around the middle of a %ipx view',
+    (viewWidth) => {
+      expect(jumps(wobble(0, 0.01), viewWidth)).toBe(0)
+    },
+  )
+
+  test('stays put as a marker wobbles where the outer side runs out of room', () => {
+    const viewWidth = 450
+    // 110px left of the edge, past the 20px gap: where the side choice changes.
+    const edge = 1 - (2 * 130) / viewWidth
+    expect(jumps(wobble(edge, 0.01), viewWidth)).toBe(0)
+  })
+
+  test('still moves to the outer side once a marker has clearly crossed', () => {
+    const viewWidth = 800
+    const first = labelPlacement(-0.3, viewWidth)
+    expect(first.goesLeft).toBe(true)
+    const after = labelPlacement(0.5, viewWidth, first.goesLeft)
+    expect(after.goesLeft).toBe(false)
+  })
+
+  test('a kept side still fits inside the view', () => {
+    const viewWidth = 320
+    for (const side of [true, false]) {
+      for (let x = -0.9; x <= 0.9; x += 0.05) {
+        const { goesLeft, maxWidth } = labelPlacement(x, viewWidth, side)
+        const room =
+          ((goesLeft ? 1 + x : 1 - x) * viewWidth) / 2 - 20
+        expect(maxWidth).toBeLessThanOrEqual(room + 0.001)
+        expect(maxWidth).toBeGreaterThan(0)
+      }
+    }
+  })
+
+  test('with no side yet, a label points outward as before', () => {
+    expect(labelPlacement(-0.5, 800).goesLeft).toBe(true)
+    expect(labelPlacement(0.5, 800).goesLeft).toBe(false)
+  })
+})

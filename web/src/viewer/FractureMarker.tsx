@@ -60,13 +60,15 @@ function FractureMarker({
 
     const label = labelRef.current
     if (label) {
+      const flipped = label.dataset.flip
       const placement = labelPlacement(
         worldPosition.project(camera).x,
         size.width,
+        flipped === undefined ? undefined : flipped === 'true',
       )
       const flip = String(placement.goesLeft)
       label.style.maxWidth = `${placement.maxWidth}px`
-      if (label.dataset.flip !== flip) label.dataset.flip = flip
+      if (flipped !== flip) label.dataset.flip = flip
     }
   })
 
