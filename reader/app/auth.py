@@ -1,11 +1,32 @@
 """Accept requests only from our site with a signed-in user's token (Plan, M4)."""
 
+import logging
 import os
 import urllib.error
 import urllib.request
 
 DEFAULT_ORIGINS = "http://localhost:5173"
 TIMEOUT_SECONDS = 5
+REQUIRED_SETTINGS = ("SUPABASE_URL", "SUPABASE_ANON_KEY")
+
+logger = logging.getLogger("bonescan.reader")
+
+
+def warn_about_missing_settings() -> None:
+    """Say at startup if the reader can't check anyone's sign-in.
+
+    Without these settings it looks healthy but refuses every report (#86). This
+    names the settings and never prints a value.
+    """
+    for name in REQUIRED_SETTINGS:
+        if os.environ.get(name):
+            continue
+        hint = (
+            f" VITE_{name} is set, but the reader doesn't use that name."
+            if os.environ.get(f"VITE_{name}")
+            else ""
+        )
+        logger.warning("%s isn't set, so every report will be refused.%s", name, hint)
 
 
 def allowed_origins() -> list[str]:

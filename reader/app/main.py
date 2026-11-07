@@ -1,5 +1,8 @@
 """The report reader service (Project Plan, Milestone 2)."""
 
+from collections.abc import AsyncIterator
+from contextlib import asynccontextmanager
+
 from fastapi import Depends, FastAPI, HTTPException, Request
 from fastapi.concurrency import run_in_threadpool
 from fastapi.middleware.cors import CORSMiddleware
@@ -7,7 +10,7 @@ from fastapi.responses import JSONResponse
 from starlette.datastructures import UploadFile
 
 from app import logging_setup  # noqa: F401
-from app.auth import allowed_origins, token_is_valid
+from app.auth import allowed_origins, token_is_valid, warn_about_missing_settings
 from app.contract import ReadResponse, Refusal
 from app.pdf import (
     MAX_BYTES,
@@ -21,7 +24,14 @@ from app.reading import read_report
 # Room for the multipart wrapper around a file that is exactly at the limit.
 MULTIPART_OVERHEAD = 64 * 1024
 
-app = FastAPI(title="BoneScan report reader")
+
+@asynccontextmanager
+async def lifespan(_app: FastAPI) -> AsyncIterator[None]:
+    warn_about_missing_settings()
+    yield
+
+
+app = FastAPI(title="BoneScan report reader", lifespan=lifespan)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=allowed_origins(),
