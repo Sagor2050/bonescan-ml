@@ -1,7 +1,7 @@
 import { lazy, Suspense, useMemo, useState } from 'react'
 import ReportPane from '../report-view/ReportPane.tsx'
 import Link from '../routing/Link.tsx'
-import { paths } from '../routing/paths.ts'
+import { changeReportPath, paths } from '../routing/paths.ts'
 import { useBones } from '../viewer/bones.ts'
 import { markersFor } from '../viewer/markers.ts'
 import DeleteReport from './DeleteReport.tsx'
@@ -45,6 +45,11 @@ function ReportScreen({ reportId }: { reportId: string }) {
           >
             {showReport ? 'Hide the report' : 'Show the report'}
           </button>
+        )}
+        {report.status === 'ready' && (
+          <Link className={styles.change} href={changeReportPath(reportId)}>
+            Change the date or findings
+          </Link>
         )}
         {report.status === 'ready' && <DeleteReport report={report.report} />}
       </div>

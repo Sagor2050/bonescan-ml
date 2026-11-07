@@ -7,7 +7,11 @@ import report2Url from '../../../tests/fixtures/report-b2.pdf?url'
 import { parseReadResponse } from '../findings/parse.ts'
 import type { Finding } from '../findings/types.ts'
 import { BONES_URL, type Bone } from '../viewer/bones.ts'
-import type { SavedFinding, SavedReport } from './reportStore.ts'
+import type {
+  ReportChanges,
+  SavedFinding,
+  SavedReport,
+} from './reportStore.ts'
 
 // Fictional reports for development and the end-to-end tests. Nothing here is
 // real patient data, and production builds never load this file.
@@ -167,9 +171,37 @@ function comparisonSamples() {
   ]
 }
 
+// Corrections to a sample last until the page reloads, because samples aren't
+// saved anywhere.
+const changedSamples = new Map<string, SavedReport>()
+
+export function changeSampleReport(
+  report: SavedReport,
+  { examDate, findings }: ReportChanges,
+) {
+  changedSamples.set(report.id, {
+    ...report,
+    exam_date: examDate,
+    exam_date_source:
+      examDate === report.exam_date ? report.exam_date_source : 'patient',
+    findings: findings.map(({ key, ...finding }, position) => ({
+      ...finding,
+      id: key,
+      report_id: report.id,
+      position,
+    })),
+  })
+}
+
 // The timeline's samples. B.2 was added first, to show that order comes from the
 // exam date and not from when a report was added.
 export async function loadSampleReports() {
+  return timelineSamples().map(
+    (report) => changedSamples.get(report.id) ?? report,
+  )
+}
+
+function timelineSamples() {
   const samples = new URLSearchParams(window.location.search).get('samples')
   if (samples === 'comparison') return comparisonSamples()
   if (samples === 'one') {
@@ -184,6 +216,9 @@ export async function loadSampleReports() {
 export async function loadSampleReport(
   id: string,
 ): Promise<SavedReport | null> {
+  const changed = changedSamples.get(id)
+  if (changed) return changed
+
   switch (id) {
     case 'sample-b1':
       return appendixReport(id, b1, '2026-09-15T12:00:00Z', report1Url)

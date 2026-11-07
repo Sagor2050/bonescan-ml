@@ -1,5 +1,6 @@
 import type { SupabaseClient } from '@supabase/supabase-js'
 import { REPORTS_BUCKET, supabase } from '../account/supabase.ts'
+import type { DraftFinding } from '../add-report/draftReport.ts'
 import type { Finding } from '../findings/types.ts'
 
 // A confirmed report and its findings as the database holds them (Plan B.1).
@@ -125,4 +126,99 @@ export async function deleteReport(
     .eq('id', report.id)
     .select('id')
   if (error || data.length === 0) throw failed
+}
+
+// What changed in a report's findings, so only those rows are written. An existing
+// finding keeps its id as its key in the editor. The report's wording is never
+// among the changes (NFR4), and the database refuses it anyway.
+export function findingChanges(
+  reportId: string,
+  before: SavedFinding[],
+  after: DraftFinding[],
+) {
+  const known = new Map(before.map((finding) => [finding.id, finding]))
+  const kept = new Set(after.map((finding) => finding.key))
+  const added: (Finding & { report_id: string; position: number })[] = []
+  const updated: { id: string; fields: Partial<SavedFinding> }[] = []
+
+  after.forEach(({ key, ...finding }, position) => {
+    const was = known.get(key)
+    if (!was) {
+      added.push({ ...finding, report_id: reportId, position })
+      return
+    }
+    const fields: Partial<SavedFinding> = {}
+    if (finding.bone !== was.bone) fields.bone = finding.bone
+    if (finding.side !== was.side) fields.side = finding.side
+    if (finding.part.join() !== was.part.join()) fields.part = finding.part
+    if (finding.status !== was.status) fields.status = finding.status
+    if (finding.entered_by_patient !== was.entered_by_patient) {
+      fields.entered_by_patient = finding.entered_by_patient
+    }
+    if (position !== was.position) fields.position = position
+    if (Object.keys(fields).length > 0) updated.push({ id: key, fields })
+  })
+
+  return {
+    added,
+    updated,
+    removed: before.filter(({ id }) => !kept.has(id)).map(({ id }) => id),
+  }
+}
+
+export type ReportChanges = { examDate: string; findings: DraftFinding[] }
+
+// Saves a patient's corrections to a confirmed report (S1.2, S2.3). The original
+// report isn't touched (NFR4). Removing comes last, so a failure partway can't lose
+// a finding. Row-level security reports no error when it stops a write, so each
+// write counts the rows it changed.
+export async function saveReportChanges(
+  report: SavedReport,
+  changes: ReportChanges,
+  client: SupabaseClient | null = supabase,
+): Promise<void> {
+  if (isSample(report.id)) {
+    const { changeSampleReport } = await import('./sampleReports.ts')
+    changeSampleReport(report, changes)
+    return
+  }
+  const failed = new Error(
+    'Your changes could not all be saved. Please check this report and try again.',
+  )
+  if (!client) throw failed
+
+  const { added, updated, removed } = findingChanges(
+    report.id,
+    report.findings,
+    changes.findings,
+  )
+
+  if (added.length > 0) {
+    const { error } = await client.from('findings').insert(added)
+    if (error) throw failed
+  }
+  for (const { id, fields } of updated) {
+    const { data, error } = await client
+      .from('findings')
+      .update(fields)
+      .eq('id', id)
+      .select('id')
+    if (error || data.length === 0) throw failed
+  }
+  if (removed.length > 0) {
+    const { data, error } = await client
+      .from('findings')
+      .delete()
+      .in('id', removed)
+      .select('id')
+    if (error || data.length !== removed.length) throw failed
+  }
+  if (changes.examDate !== report.exam_date) {
+    const { data, error } = await client
+      .from('reports')
+      .update({ exam_date: changes.examDate, exam_date_source: 'patient' })
+      .eq('id', report.id)
+      .select('id')
+    if (error || data.length === 0) throw failed
+  }
 }
