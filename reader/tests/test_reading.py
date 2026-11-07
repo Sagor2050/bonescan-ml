@@ -399,7 +399,6 @@ def test_negated_named_fracture_creates_no_finding():
         ("scapular", "scapula"),
         ("patellar", "patella"),
         ("talar", "talus"),
-        ("pelvic", "hip_bone"),
         ("fifth metatarsal", "metatarsal_5"),
         ("first metacarpal", "metacarpal_1"),
     ],
@@ -719,3 +718,113 @@ def test_windows_line_endings_are_read_the_same():
     report = "EXAM: XR LEFT WRIST\r\nFINDINGS: Radius\r\nfracture.\r\n"
     [finding] = read_report(report).findings
     assert (finding.bone, finding.side) == ("radius", "left")
+
+
+# The pelvis is more than one bone, so it can't be placed or given a side (#57).
+
+
+@pytest.mark.parametrize(
+    "body",
+    [
+        "Fracture of the pelvis.",
+        "Pelvic fracture.",
+        "Pelvic ring fracture.",
+        "Fractured pelvis.",
+    ],
+)
+def test_a_pelvis_wide_fracture_says_the_bone_is_not_stated(body):
+    finding = only(body, exam="XR PELVIS")
+    assert finding.status == "bone_not_stated"
+    assert finding.bone == ""
+    assert finding.side == ""
+
+
+def test_a_pelvis_wide_fracture_never_takes_its_side_from_the_exam_line():
+    finding = only("Pelvic ring fracture.", exam="XR LEFT HIP")
+    assert finding.status == "bone_not_stated"
+    assert finding.side == ""
+
+
+def test_a_side_the_sentence_states_is_kept_but_still_not_placed():
+    finding = only("Left pelvic fracture.", exam="XR PELVIS")
+    assert finding.status == "bone_not_stated"
+    assert finding.bone == ""
+    assert finding.side == "left"
+
+
+@pytest.mark.parametrize(
+    "words, part",
+    [
+        ("left acetabular", ["acetabulum"]),
+        ("left iliac", ["ilium"]),
+        ("left ischial", ["ischium"]),
+        ("left pubic", ["pubis"]),
+    ],
+)
+def test_naming_a_part_of_the_hip_bone_still_places_it(words, part):
+    finding = only(f"Fracture of the {words} bone.", exam="XR PELVIS")
+    assert (finding.bone, finding.side, finding.part) == ("hip_bone", "left", part)
+    assert finding.status == "placed"
+
+
+def test_the_pelvis_mentioned_with_a_named_bone_adds_no_finding():
+    finding = only("Pelvic fracture involving the left acetabulum.", exam="XR PELVIS")
+    assert (finding.bone, finding.side) == ("hip_bone", "left")
+
+
+def test_a_pelvic_radiograph_is_not_a_second_fracture():
+    finding = only("Right femoral neck fracture on the pelvic radiograph.", exam="XR PELVIS")
+    assert (finding.bone, finding.side) == ("femur", "right")
+
+
+@pytest.mark.parametrize(
+    "body", ["No pelvic fracture.", "Negative for fracture of the pelvis."]
+)
+def test_a_ruled_out_pelvic_fracture_creates_no_finding(body):
+    assert findings(body, exam="XR PELVIS") == []
+
+
+def test_pelvis_in_findings_and_pelvic_in_impression_are_one_finding():
+    report = (
+        "EXAM: XR PELVIS\n"
+        "FINDINGS: Fracture of the pelvis.\n"
+        "IMPRESSION: Pelvic fracture."
+    )
+    found = read_report(report).findings
+    assert len(found) == 1
+    assert found[0].status == "bone_not_stated"
+    assert len(found[0].wording) == 2
+
+
+def test_a_pelvic_impression_sums_up_a_hip_bone_in_findings():
+    report = (
+        "EXAM: XR PELVIS\n"
+        "FINDINGS: Left acetabular fracture.\n"
+        "IMPRESSION: Pelvic fracture."
+    )
+    found = read_report(report).findings
+    assert [(f.bone, f.side) for f in found] == [("hip_bone", "left")]
+    assert len(found[0].wording) == 2
+
+
+def test_a_pelvic_impression_is_not_lost_into_another_bone():
+    report = (
+        "EXAM: XR PELVIS AND LEFT WRIST\n"
+        "FINDINGS: Left distal radius fracture.\n"
+        "IMPRESSION: Pelvic fracture."
+    )
+    found = read_report(report).findings
+    assert [(f.bone, f.status) for f in found] == [
+        ("radius", "placed"),
+        ("", "bone_not_stated"),
+    ]
+    assert len(found[0].wording) == 1
+
+
+def test_other_regions_in_the_impression_still_sum_up_findings():
+    report = (
+        "EXAM: XR LEFT FOREARM\n"
+        "FINDINGS: Fractures of the left radius and left ulna.\n"
+        "IMPRESSION: Both-bone forearm fracture."
+    )
+    assert [f.bone for f in read_report(report).findings] == ["radius", "ulna"]
