@@ -86,19 +86,16 @@ nobody assumes the left and right bones were modeled separately.
 
 Measured on 2026-11-07, at repository commit `df6546f`.
 
-| Item | Value |
-| --- | --- |
-| Bone nodes | 126 |
-| Meshes | 63 (each used by two nodes) |
-| Triangles in the meshes | 70,816 |
-| Triangles drawn (counting each node) | 141,632 |
-| File size | 1,456,956 bytes (about 1.4 MB) |
+| Item                                 | Value                        |
+| ------------------------------------ | ---------------------------- |
+| Bone nodes                           | 126                          |
+| Meshes                               | 63 (each used by two nodes)  |
+| Triangles in the meshes              | 70,816                       |
+| Triangles drawn (counting each node) | 141,632                      |
+| File size                            | 1,456,956 bytes (&lt;1.4 MB) |
 
-The person who prepared the model remembered about 77,000 triangles. The file
-measures 70,816 per set of meshes. The difference has no known cause, and the
-measured value is the one to rely on.
 
-To check again, run this from `web/`:
+To verify measurements or if the model updates, run this from `web/`:
 
 ```sh
 npm run check:model
