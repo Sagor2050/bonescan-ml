@@ -32,7 +32,7 @@
   gap: 3rem;
   max-width: 68rem;
   margin: 0 auto;
-  padding: 3.5rem 2rem;
+  padding: 2.5rem 2rem;
 }
 
 .heroText h1 {
@@ -50,6 +50,7 @@
 
 .actions {
   display: flex;
+  flex-wrap: wrap;
   gap: 0.75rem;
   margin-top: 2rem;
 }
@@ -82,22 +83,62 @@
   background: var(--brand-tint);
 }
 
-.preview {
-  margin: 0;
+.demo {
+  padding: 0.75rem 1.5rem;
+  border-style: dashed;
+  font-weight: 600;
 }
 
-.preview img {
-  display: block;
-  width: 100%;
-  height: auto;
+/* Tall enough for the whole model, and short enough to fit a 13-inch laptop. */
+.stage {
+  position: relative;
+  height: clamp(24rem, calc(100vh - 8rem), 38rem);
+  margin: 0;
+  overflow: hidden;
   border-radius: var(--radius);
+  background: radial-gradient(circle at 50% 35%, #3a4552, var(--stage) 75%);
   box-shadow: var(--shadow);
 }
 
-.preview figcaption {
-  margin-top: 0.5rem;
-  color: var(--ink-soft);
-  font-size: 0.9375rem;
+/* On the model itself, so no view of it can be without it (NFR5). */
+.notice {
+  position: absolute;
+  top: 0.5rem;
+  left: 0.5rem;
+  right: 0.5rem;
+  z-index: 1;
+  padding: 0.25rem 0.625rem;
+  border-radius: 0.375rem;
+  background: rgb(0 0 0 / 65%);
+  color: #ffffff;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.canvas {
+  width: 100%;
+  height: 100%;
+}
+
+.turn {
+  position: absolute;
+  right: 0.75rem;
+  bottom: 0.75rem;
+  z-index: 1;
+}
+
+.still {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.loading {
+  margin: 0;
+  padding: 6rem 2rem;
+  color: #ffffff;
+  text-align: center;
 }
 
 .features {
@@ -144,7 +185,7 @@
 
 .about {
   max-width: 44rem;
-  margin: 3rem auto 0;
+  margin: 3rem auto;
   padding: 0 2rem;
 }
 
@@ -160,14 +201,4 @@
 .about ul {
   margin: 0.5rem 0;
   padding-left: 1.25rem;
-}
-
-.footer {
-  margin-top: 3rem;
-  padding: 1.25rem 2rem;
-  border-top: 1px solid var(--line);
-  background: var(--surface);
-  color: var(--ink-soft);
-  font-size: 0.9375rem;
-  text-align: center;
 }

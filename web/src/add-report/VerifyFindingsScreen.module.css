@@ -18,7 +18,7 @@
 
 .card {
   padding: 1rem 1.25rem;
-  border: 1px solid #d0d0d0;
+  border: 1px solid var(--line);
   border-radius: 8px;
 }
 
@@ -45,15 +45,15 @@
 
 .labels li {
   padding: 0.125rem 0.625rem;
-  border: 1px solid #1a1a1a;
+  border: 1px solid var(--line-strong);
   border-radius: 999px;
   font-size: 0.875rem;
 }
 
 .reason {
   padding: 0.75rem 1rem;
-  border-left: 4px solid #1a1a1a;
-  background: #f4f4f4;
+  border-left: 4px solid var(--brand);
+  background: var(--brand-tint);
 }
 
 .sourceLabel {
@@ -64,7 +64,7 @@
 blockquote {
   margin: 0 0 0.5rem;
   padding-left: 0.75rem;
-  border-left: 2px solid #d0d0d0;
+  border-left: 2px solid var(--line);
 }
 
 .controls {
@@ -90,7 +90,7 @@ blockquote {
   flex-wrap: wrap;
   gap: 0.25rem 1rem;
   margin: 0.75rem 0 0;
-  border: 1px solid #d0d0d0;
+  border: 1px solid var(--line);
   border-radius: 4px;
 }
 
@@ -128,18 +128,6 @@ blockquote {
 }
 
 .primary {
+  composes: btn-primary from global;
   padding: 0.75rem 1.25rem;
-  border: 1px solid #1a1a1a;
-  border-radius: 6px;
-  background: #1a1a1a;
-  color: #ffffff;
-  font: inherit;
-  cursor: pointer;
-}
-
-.primary:disabled {
-  background: #ffffff;
-  color: #1a1a1a;
-  cursor: not-allowed;
-  opacity: 0.6;
 }

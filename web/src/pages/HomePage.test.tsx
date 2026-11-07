@@ -4,6 +4,8 @@ import { useSession, type SessionState } from '../account/session.ts'
 import HomePage from './HomePage.tsx'
 
 vi.mock('../account/session.ts', () => ({ useSession: vi.fn() }))
+// The 3D model needs a real browser, so e2e/home.spec.ts covers it.
+vi.mock('./TurningSkeleton.tsx', () => ({ default: () => null }))
 
 beforeEach(() => {
   vi.mocked(useSession).mockReturnValue({ status: 'no-accounts' })
@@ -41,7 +43,7 @@ test('shows the heading and both ways to get started', () => {
 test('says the skeleton is not the patient’s own bones', () => {
   render(<HomePage />)
   expect(screen.getByText(/standard adult model/)).toBeDefined()
-  expect(screen.getByText(/not a model of your\s+own bones/)).toBeDefined()
+  expect(screen.getAllByText(/not a model of your\s+own bones/)).toHaveLength(2)
 })
 
 test('says it does not diagnose and points back to the care team', () => {
@@ -60,4 +62,20 @@ test('the About link goes to the section on what the app does', () => {
   expect(container.querySelector('#about h2')?.textContent).toBe(
     'What BoneScan does and does not do',
   )
+})
+
+test('offers a quick demo that is clearly not available yet', () => {
+  render(<HomePage />)
+  const demo = screen.getByRole('button', { name: /Quick demo/ })
+  expect(demo.textContent).toContain('coming soon')
+  expect((demo as HTMLButtonElement).disabled).toBe(true)
+})
+
+test('says beside the skeleton that it is not the patient’s own', () => {
+  render(<HomePage />)
+  expect(
+    screen.getByText(
+      'This is a standard adult skeleton, not a model of your own bones.',
+    ),
+  ).toBeDefined()
 })

@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react'
 import Link from '../routing/Link.tsx'
 import { paths } from '../routing/paths.ts'
+import BrandMark from '../ui/BrandMark.tsx'
 import styles from './AuthCard.module.css'
 import { useSession } from './session.ts'
 
@@ -19,7 +20,7 @@ function AuthCard({
     <>
       <header className={styles.header}>
         <Link className={styles.brand} href={paths.home}>
-          BoneScan
+          <BrandMark />
         </Link>
       </header>
       <main className={styles.main}>

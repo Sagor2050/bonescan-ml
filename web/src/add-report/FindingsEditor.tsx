@@ -67,7 +67,7 @@ function FindingCard({
           {chosen ? boneLabel(chosen) : unplacedTitle(finding)}
           {finding.side && `, ${finding.side} side`}
         </h3>
-        <button type="button" onClick={onRemove}>
+        <button type="button" className="btn-danger-quiet" onClick={onRemove}>
           Remove {name.toLowerCase()}
         </button>
       </div>
