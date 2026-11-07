@@ -51,6 +51,19 @@ describe('the marker points in bones.json', () => {
     expect(parts.head).not.toEqual(parts.base)
   })
 
+  // `distal` is the far part of the bone. The very tip has its own name.
+  test.each([
+    ['radius', 'styloid'],
+    ['ulna', 'styloid'],
+    ['humerus', 'condyle'],
+    ['femur', 'condyle'],
+    ['tibia', 'medial_malleolus'],
+    ['fibula', 'lateral_malleolus'],
+  ])('the distal %s sits above its %s', (name, tip) => {
+    const { parts } = left(name)
+    expect(parts.distal[1]).toBeGreaterThan(parts[tip][1])
+  })
+
   test.each(['scapula', 'hip_bone', 'calcaneus', 'talus'])(
     'every named part of the %s has its own point',
     (name) => {
