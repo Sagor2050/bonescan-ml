@@ -1,13 +1,13 @@
 # BoneScan
 
-BoneScan helps patients understand their own imaging reports. It shows the
-patient's actual bone in 3D with the reported spot marked, translates report
-language into plain English, and lines up scans over time so a patient can see
-their recovery for themselves.
+BoneScan helps patients understand what their imaging reports say. It shows a
+standard adult skeleton with confirmed fractures marked on the bones, alongside
+the original report exactly as written.
 
-> **Status:** Setup. The tech stack is chosen (see the
-> [project plan](docs/project-plan.pdf)), and the web app and report reader
-> are set up, but no features are built yet.
+> **Status:** The [web app](https://bonescan-ml.vercel.app/) is live, and the
+> [report reader](https://bonescan-ml.onrender.com/health) is deployed. The
+> first deployment is tracked in
+> [issue #35](https://github.com/Sagor2050/bonescan-ml/issues/35).
 
 BoneScan is a team project for CISC 3171: Introduction to Software Engineering
 (Fall 2026, instructor Alec Malstrom), based on a pitch by Sagor Sutra Dhor.
@@ -29,12 +29,12 @@ understand it.
 
 ## Planned features
 
-- **Your bone, in 3D.** See your actual bone in an interactive 3D view, with
-  the spot the report describes marked on it.
-- **Reports in plain language.** Read the report in everyday words, and ask
-  about any term to get a plain answer.
-- **A timeline of scans.** See every scan in order, and compare week two with
-  week six side by side.
+- **A standard skeleton, in 3D.** See fractures described in the report
+  marked on the corresponding bones of a standard adult skeleton.
+- **The original report.** Read it as written, then confirm or correct the
+  proposed fracture findings.
+- **A timeline of reports.** See reports in order and compare two reports on
+  one skeleton.
 
 ## What BoneScan does not do
 
@@ -47,11 +47,6 @@ sends patients back to them.
 
 - **Patients** recovering from injuries like fractures, which take months to
   heal and produce a long trail of reports.
-- **Families and caregivers** who end up interpreting those reports for
-  someone they care for.
-- **Surgeons and physician assistants**, who spend appointment minutes
-  sketching on paper or pointing at generic models to rebuild context the
-  patient could already have.
 
 ## Why existing options fall short
 
@@ -59,7 +54,7 @@ sends patients back to them.
 | ------------------------ | ------------------------ | ---------------------------------------------------------- |
 | Patient portals          | Access to the raw report | No images, no explanation, no history                      |
 | Searching online         | Fast                     | Shows someone else's injury, often the worst version of it |
-| Printed diagrams         | A picture of the bone    | Not *your* bone, and not how it looked six weeks in        |
+| Printed diagrams         | A static reference       | Not linked to the report or its fracture findings          |
 | The doctor's appointment | The real answer          | Fifteen minutes, days after the report, and nothing to take home |
 
 ## Project documents
