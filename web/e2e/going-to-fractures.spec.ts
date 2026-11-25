@@ -1,6 +1,7 @@
 import { expect, test, type Page } from '@playwright/test'
 import {
   boneIsVisible,
+  boneOnScreen,
   cameraState,
   markerInfo,
   openFindingsTab,
@@ -95,6 +96,35 @@ test.describe('a report with several findings', () => {
     await page.getByRole('button', { name: 'Show the full skeleton' }).click()
     expect(await boneIsVisible(page, 'femur_left')).toBe(true)
     await expect(model(page).getByRole('button', { name: /tibia/ })).toHaveCount(1)
+  })
+
+  test('shows the bone clicked last on its own, not an earlier finding', async ({
+    page,
+  }) => {
+    const alone = page.getByRole('button', { name: 'Show this bone on its own' })
+    const full = page.getByRole('button', { name: 'Show the full skeleton' })
+    const clickBone = async (id: string) => {
+      await page.getByRole('button', { name: 'Starting view' }).click()
+      await waitForCameraToStop(page)
+      const bone = await boneOnScreen(page, id)
+      await page.mouse.click(bone.x, bone.y)
+    }
+
+    await clickBone('femur_left')
+    await alone.click()
+    expect(await boneIsVisible(page, 'femur_right')).toBe(false)
+    await full.click()
+
+    await findings(page).getByRole('button', { name: /femur/ }).click()
+    await alone.click()
+    expect(await boneIsVisible(page, 'femur_left')).toBe(false)
+    await full.click()
+
+    await clickBone('femur_left')
+    await expect(page.getByText(/^Your left femur/)).toBeVisible()
+    await alone.click()
+    expect(await boneIsVisible(page, 'femur_left')).toBe(true)
+    expect(await boneIsVisible(page, 'femur_right')).toBe(false)
   })
 
   test('choosing a finding on another bone brings the skeleton back', async ({
