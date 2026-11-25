@@ -17,6 +17,23 @@ begin
 end $$;
 grant execute on function testkit.must_be(anyelement, anyelement, text) to authenticated;
 
+-- Passes when the statement is refused or changes no rows, so it tests row-level
+-- security even if a write grant is added later.
+create function testkit.must_change_nothing(statement text, label text)
+returns void language plpgsql as $$
+declare affected int;
+begin
+  execute statement;
+  get diagnostics affected = row_count;
+  if affected <> 0 then
+    raise exception 'NOT REFUSED: % changed % rows', label, affected;
+  end if;
+  raise notice 'changed nothing: %', label;
+exception when insufficient_privilege then
+  raise notice 'refused: %', label;
+end $$;
+grant execute on function testkit.must_change_nothing(text, text) to authenticated;
+
 -- D has two reports, E has one.
 select testkit.act_as('dddddddd-0000-0000-0000-000000000004');
 insert into public.reports (id, source, raw_text, exam_date, exam_date_source) values
@@ -106,7 +123,7 @@ select testkit.must_fail(
 select testkit.must_fail($$update public.share_links set revoked_at = null$$, 'D turns a link back on directly');
 select testkit.must_fail($$delete from public.share_links$$, 'D deletes a link directly');
 select testkit.must_fail(
-  $$insert into public.user_settings values ('dddddddd-0000-0000-0000-000000000004', 1)$$,
+  $$update public.user_settings set default_share_expiry_days = 1$$,
   'D writes settings directly');
 
 -- D can't share E's report, even alongside one of D's own.
@@ -127,6 +144,27 @@ select testkit.must_affect($$select * from public.share_links$$, 0, 'E sees none
 select testkit.must_affect($$select * from public.share_link_reports$$, 0, 'E sees none of what D''s links cover');
 select testkit.must_affect($$select * from public.user_settings$$, 0, 'E sees none of D''s settings');
 select testkit.must_be(public.my_default_share_expiry(), 30, 'E''s default is still 30');
+select testkit.must_fail(
+  $$insert into public.user_settings values ('bbbbbbbb-0000-0000-0000-000000000002', 1)$$,
+  'E makes a settings row for B');
+select testkit.must_change_nothing(
+  $$update public.user_settings set default_share_expiry_days = 1
+    where user_id = 'dddddddd-0000-0000-0000-000000000004'$$,
+  'E changes D''s settings row');
+select testkit.must_change_nothing(
+  $$update public.user_settings set user_id = 'eeeeeeee-0000-0000-0000-000000000005'
+    where user_id = 'dddddddd-0000-0000-0000-000000000004'$$,
+  'E takes over D''s settings row');
+select public.set_default_share_expiry(14);
+select testkit.must_change_nothing(
+  $$update public.user_settings set user_id = 'bbbbbbbb-0000-0000-0000-000000000002'$$,
+  'E hands its settings row to B');
+reset role;
+select testkit.must_be(
+  (select default_share_expiry_days from public.user_settings
+   where user_id = 'dddddddd-0000-0000-0000-000000000004'),
+  null::integer, 'E saving a default leaves D''s untouched');
+select testkit.act_as('eeeeeeee-0000-0000-0000-000000000005');
 reset role;
 select set_config('test.active_link', (
   select id::text from public.share_links
@@ -159,9 +197,72 @@ select testkit.must_be(public.share_link_is_active(current_setting('test.active_
 -- Nobody signed in can use any of it.
 set role anon;
 select testkit.must_fail($$select * from public.share_links$$, 'anon reads links');
+select testkit.must_fail($$select * from public.share_link_reports$$, 'anon reads what links cover');
+select testkit.must_fail($$select * from public.user_settings$$, 'anon reads settings');
 select testkit.must_fail($$select * from public.create_share_link(array['55555555-0000-0000-0000-000000000001']::uuid[], 7)$$, 'anon makes a link');
+select testkit.must_fail(format($$select * from public.set_share_link_expiry(%L, 7)$$, current_setting('test.active_link')), 'anon changes an expiry');
+select testkit.must_fail(format($$select public.revoke_share_link(%L)$$, current_setting('test.active_link')), 'anon turns off a link');
+select testkit.must_fail($$select public.set_default_share_expiry(7)$$, 'anon sets a default');
+select testkit.must_fail($$select public.my_default_share_expiry()$$, 'anon reads a default');
 select testkit.must_fail($$select public.share_link_is_active(gen_random_uuid())$$, 'anon checks a link');
+select testkit.must_fail($$select public.share_token_hash('x')$$, 'anon hashes a token');
 reset role;
+
+-- A signed-in role with no account id is refused by every function itself.
+select testkit.act_as('');
+select testkit.must_fail($$select * from public.create_share_link(array['55555555-0000-0000-0000-000000000001']::uuid[], 7)$$, 'no account id makes a link');
+select testkit.must_fail(format($$select * from public.set_share_link_expiry(%L, 7)$$, current_setting('test.active_link')), 'no account id changes an expiry');
+select testkit.must_fail(format($$select public.revoke_share_link(%L)$$, current_setting('test.active_link')), 'no account id turns off a link');
+select testkit.must_fail($$select public.set_default_share_expiry(7)$$, 'no account id sets a default');
+select testkit.must_fail($$select public.my_default_share_expiry()$$, 'no account id reads a default');
+select testkit.must_fail($$select public.share_link_is_active(gen_random_uuid())$$, 'patient checks any link''s state');
+select testkit.must_fail($$select public.share_token_hash('x')$$, 'patient calls the hash helper');
+reset role;
+
+-- EXECUTE is as narrow as the contract: nothing for PUBLIC or anon, and
+-- authenticated only on the patient functions.
+do $$
+declare
+  fn record;
+  patient_rpcs text[] := array[
+    'create_share_link', 'set_share_link_expiry', 'revoke_share_link',
+    'set_default_share_expiry', 'my_default_share_expiry'];
+begin
+  for fn in
+    select p.oid, p.proname, p.proacl from pg_proc p
+    where p.pronamespace = 'public'::regnamespace
+      and p.proname in ('share_token_hash', 'share_link_is_active', 'share_expiry_from_now',
+                        'my_default_share_expiry', 'set_default_share_expiry',
+                        'create_share_link', 'set_share_link_expiry', 'revoke_share_link')
+  loop
+    if fn.proacl is null or exists (
+      select 1 from aclexplode(fn.proacl) as acl where acl.grantee = 0
+    ) then
+      raise exception 'WRONG: PUBLIC can execute %', fn.proname;
+    end if;
+    if has_function_privilege('anon', fn.oid, 'execute') then
+      raise exception 'WRONG: anon can execute %', fn.proname;
+    end if;
+    if has_function_privilege('authenticated', fn.oid, 'execute')
+       <> (fn.proname = any (patient_rpcs)) then
+      raise exception 'WRONG: authenticated EXECUTE on % is not as the contract says', fn.proname;
+    end if;
+  end loop;
+  raise notice 'ok: EXECUTE grants are narrow';
+end $$;
+
+-- Every function that runs with its owner's rights pins its search path.
+do $$
+declare bad text;
+begin
+  select string_agg(p.proname, ', ') into bad from pg_proc p
+  where p.pronamespace = 'public'::regnamespace and p.prosecdef
+    and not coalesce('search_path=""' = any (p.proconfig), false);
+  if bad is not null then
+    raise exception 'WRONG: security definer without search_path = '''': %', bad;
+  end if;
+  raise notice 'ok: security definer functions pin search_path';
+end $$;
 
 -- Deleting an account deletes its links and settings.
 select testkit.act_as('dddddddd-0000-0000-0000-000000000004');

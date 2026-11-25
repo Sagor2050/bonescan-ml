@@ -50,6 +50,13 @@ create policy "owners read what their share links cover" on public.share_link_re
   );
 create policy "owners read their settings" on public.user_settings
   for select to authenticated using (user_id = auth.uid());
+-- Patients have no write grant on user_settings; set_default_share_expiry() writes
+-- it. These hold even if a write grant is ever added.
+create policy "owners add their settings" on public.user_settings
+  for insert to authenticated with check (user_id = auth.uid());
+create policy "owners change their settings" on public.user_settings
+  for update to authenticated
+  using (user_id = auth.uid()) with check (user_id = auth.uid());
 
 revoke all on public.share_links, public.share_link_reports, public.user_settings
   from anon, authenticated;
@@ -69,6 +76,9 @@ $$;
 
 -- Whether a link still opens its reports. It must not be turned off or expired,
 -- and must still cover at least one report. Every check of a link uses this.
+-- It has no owner check because the public viewer (#126) asks it about links it
+-- doesn't own, so no patient or visitor may call it directly. Only other
+-- functions in the database do.
 create function public.share_link_is_active(link_id uuid)
 returns boolean
 language sql
@@ -118,6 +128,9 @@ as $$
 declare
   days integer;
 begin
+  if auth.uid() is null then
+    raise exception 'Not signed in' using errcode = 'insufficient_privilege';
+  end if;
   select default_share_expiry_days into days
   from public.user_settings
   where user_id = auth.uid();
@@ -212,6 +225,9 @@ as $$
 declare
   link public.share_links;
 begin
+  if auth.uid() is null then
+    raise exception 'Not signed in' using errcode = 'insufficient_privilege';
+  end if;
   update public.share_links as target
   set expires_at = public.share_expiry_from_now(expires_in_days)
   where target.id = link_id
@@ -234,6 +250,9 @@ security definer
 set search_path = ''
 as $$
 begin
+  if auth.uid() is null then
+    raise exception 'Not signed in' using errcode = 'insufficient_privilege';
+  end if;
   update public.share_links as target
   set revoked_at = coalesce(target.revoked_at, now())
   where target.id = link_id and target.owner_user_id = auth.uid();
