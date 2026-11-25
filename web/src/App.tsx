@@ -12,6 +12,8 @@ import Routes, { type Route } from './routing/Routes.tsx'
 import ChangeReportScreen from './workspace/ChangeReportScreen.tsx'
 import Footer from './ui/Footer.tsx'
 import ReportScreen from './workspace/ReportScreen.tsx'
+import SharedLinksScreen from './sharing/SharedLinksScreen.tsx'
+import ShareReportsScreen from './sharing/ShareReportsScreen.tsx'
 import TimelineScreen from './timeline/TimelineScreen.tsx'
 import WorkspaceController from './workspace/WorkspaceController.tsx'
 import WorkspaceLayout from './workspace/WorkspaceLayout.tsx'
@@ -80,6 +82,22 @@ const routes: Route[] = [
     render: () => (
       <WorkspaceLayout>
         <AccountScreen />
+      </WorkspaceLayout>
+    ),
+  },
+  {
+    path: paths.shareReports,
+    render: () => (
+      <WorkspaceLayout>
+        <ShareReportsScreen />
+      </WorkspaceLayout>
+    ),
+  },
+  {
+    path: paths.sharedLinks,
+    render: () => (
+      <WorkspaceLayout>
+        <SharedLinksScreen />
       </WorkspaceLayout>
     ),
   },

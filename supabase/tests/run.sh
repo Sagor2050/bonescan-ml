@@ -14,5 +14,6 @@ initdb -D "$data" -U postgres -A trust >/dev/null
 pg_ctl -D "$data" -o "-p $port -k $data -c listen_addresses=''" -w -l "$data/log" start >/dev/null
 run() { psql -h "$data" -p "$port" -U postgres -d postgres -v ON_ERROR_STOP=1 -q "$@"; }
 run -f tests/supabase_stubs.sql
-run -f migrations/0001_reports_and_findings.sql
+for migration in migrations/*.sql; do run -f "$migration"; done
 run -f tests/access.sql
+run -f tests/sharing.sql

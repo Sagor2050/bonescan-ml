@@ -1,4 +1,5 @@
 import { useState, type SubmitEvent } from 'react'
+import ShareSettings from '../sharing/ShareSettings.tsx'
 import styles from './AccountScreen.module.css'
 import { deleteAccount } from './auth.ts'
 import { useSession } from './session.ts'
@@ -81,6 +82,10 @@ function AccountScreen() {
             <p className={styles.signedIn}>
               Signed in as <strong>{session.session.user.email}</strong>
             </p>
+          </section>
+          <section className={styles.panel}>
+            <h2>Sharing</h2>
+            <ShareSettings />
           </section>
           <section className={styles.panel}>
             <h2>Delete my account</h2>

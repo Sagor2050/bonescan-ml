@@ -11,6 +11,8 @@ export const paths = {
   changeReport: '/reports/:reportId/change',
   reports: '/reports', // A.6
   account: '/account',
+  shareReports: '/share', // S10.1
+  sharedLinks: '/account/shared-links', // S10.1
 } as const
 
 export function reportPath(reportId: string) {

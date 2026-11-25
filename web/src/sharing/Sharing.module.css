@@ -1,0 +1,212 @@
+.screen {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 44rem;
+  margin: 0 auto;
+  padding: 2.5rem 1.5rem 3rem;
+}
+
+.screen h1 {
+  margin: 0 0 0.5rem;
+  font-size: 1.75rem;
+  font-weight: 700;
+}
+
+.screen h2 {
+  margin: 0 0 0.5rem;
+  font-size: 1.125rem;
+}
+
+.lead {
+  margin: 0 0 1.25rem;
+  color: var(--ink-soft);
+}
+
+.back {
+  margin: 0 0 0.5rem;
+  font-size: 0.9375rem;
+}
+
+.soft {
+  color: var(--ink-soft);
+  font-size: 0.875rem;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 1.5rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+
+.card > p {
+  margin: 0;
+}
+
+.choices {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.choices legend {
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+}
+
+.choice {
+  display: flex;
+  gap: 0.625rem;
+  align-items: flex-start;
+  padding: 0.375rem 0;
+  cursor: pointer;
+}
+
+.choice input {
+  width: 1.125rem;
+  height: 1.125rem;
+  margin: 0.1875rem 0 0;
+}
+
+.choice > span {
+  display: flex;
+  flex-direction: column;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.field label {
+  font-weight: 600;
+}
+
+.field select {
+  max-width: 14rem;
+}
+
+/* Read before any link is made. The words carry the meaning, not the color. */
+.warning {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 1rem;
+  border: 1px solid var(--line-strong);
+  border-left: 4px solid var(--brand);
+  border-radius: var(--radius-control);
+  background: var(--brand-tint);
+}
+
+.warning p {
+  margin: 0 0 0.5rem;
+}
+
+.notice {
+  margin: 0;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--danger);
+  border-radius: var(--radius-control);
+  background: var(--danger-tint);
+}
+
+.copyRow {
+  display: flex;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.copyRow input {
+  flex: 1;
+  min-width: 0;
+  font-family: ui-monospace, monospace;
+  font-size: 0.875rem;
+}
+
+.links {
+  margin: 1rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.linkRow {
+  margin-bottom: 0.75rem;
+  padding: 1rem 1.25rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+
+.facts {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 0.75rem;
+  margin: 0 0 0.75rem;
+}
+
+.facts dt {
+  color: var(--ink-soft);
+  font-size: 0.8125rem;
+  font-weight: 600;
+}
+
+.facts dd {
+  margin: 0;
+}
+
+/* Each state has its own words, and a border or line-through as well as color. */
+.state {
+  display: inline-block;
+  padding: 0 0.5rem;
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.active {
+  border-color: var(--brand);
+  background: var(--brand-tint);
+  color: var(--brand-dark);
+}
+
+.expired {
+  border-style: dashed;
+  color: var(--ink-soft);
+}
+
+.turned_off {
+  background: var(--surface-sunken);
+  color: var(--ink-soft);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.inline {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+  padding: 1rem;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-control);
+  background: var(--surface-sunken);
+}
+
+.inline p {
+  margin: 0;
+}
+
+.danger {
+  border-color: var(--danger);
+  background: var(--danger-tint);
+}
