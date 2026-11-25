@@ -146,6 +146,12 @@ button.report[aria-pressed='true']:hover {
   width: 100%;
 }
 
+.compare .share {
+  width: 100%;
+  box-sizing: border-box;
+  margin-top: 0.5rem;
+}
+
 .compare p {
   margin: 0.25rem 0 0;
   color: var(--ink-soft);

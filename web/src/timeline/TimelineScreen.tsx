@@ -156,6 +156,9 @@ function Timeline({
               Compare reports
             </button>
             {!comparePartner && <p>Add another report to compare.</p>}
+            <Link className={`btn ${styles.share}`} href={paths.shareReports}>
+              Share reports
+            </Link>
           </div>
         )}
         <div className={styles.findings}>

@@ -90,5 +90,9 @@ These still need a person, because they need an inbox:
   change its exam date.
 - A finding's `wording` is never edited. Patients can correct everything else, and
   a corrected finding is marked `entered_by_patient`.
-- Every new table turns on row-level security and gets a test in
-  `tests/access.sql`.
+- A share link keeps only a hash of its token, so its address is shown once and
+  can't be rebuilt. Patients only read `share_links`; making, changing, and
+  turning off a link go through the functions in `0003_share_links.sql`, which
+  check the patient owns the link and every report on it (S10.1).
+- Every new table turns on row-level security and gets a test in `tests/`
+  (`access.sql`, or `sharing.sql` for share links).

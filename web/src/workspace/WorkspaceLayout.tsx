@@ -15,6 +15,7 @@ function WorkspaceLayout({ children }: { children: ReactNode }) {
   const session = useSession()
   const path = usePath()
   const inReports = path === paths.reports || path.startsWith(`${paths.reports}/`)
+  const inAccount = path === paths.account || path.startsWith(`${paths.account}/`)
   const addingReport = path === paths.addReport || path === paths.verifyFindings
 
   return (
@@ -30,7 +31,7 @@ function WorkspaceLayout({ children }: { children: ReactNode }) {
         <Link
           className="nav-button"
           href={paths.account}
-          aria-current={path === paths.account ? 'page' : undefined}
+          aria-current={inAccount ? 'page' : undefined}
         >
           Account
         </Link>
