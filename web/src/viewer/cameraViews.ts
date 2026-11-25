@@ -20,12 +20,19 @@ export type ViewName = 'front' | 'back' | 'left' | 'right'
 
 // Each view's camera direction, as an angle around the vertical axis from +Z
 // toward +X. The left and right views look at the patient's own left and right.
-export const VIEWS: { name: ViewName; label: string; azimuth: number }[] = [
-  { name: 'front', label: 'Front', azimuth: 0 },
-  { name: 'back', label: 'Back', azimuth: Math.PI },
-  { name: 'left', label: 'Your left side', azimuth: Math.PI / 2 },
-  { name: 'right', label: 'Your right side', azimuth: -Math.PI / 2 },
+export const VIEWS: { name: ViewName; azimuth: number }[] = [
+  { name: 'front', azimuth: 0 },
+  { name: 'back', azimuth: Math.PI },
+  { name: 'left', azimuth: Math.PI / 2 },
+  { name: 'right', azimuth: -Math.PI / 2 },
 ]
+
+// owner says whose sides they are, as in "Your left side".
+export function viewLabel(name: ViewName, owner: string) {
+  if (name === 'front') return 'Front'
+  if (name === 'back') return 'Back'
+  return `${owner} ${name} side`
+}
 
 // How the camera looks at one fracture (S3.3): from the front and outer side,
 // where other bones are least likely to be in the way, and slightly from above.

@@ -1,6 +1,7 @@
 import type { Certainty } from '../findings/types.ts'
 import { boneId } from '../findings/types.ts'
 import { healingLines } from '../workspace/healingStatus.ts'
+import { PATIENT_WORDING, type Wording } from '../workspace/readOnly.ts'
 import type { SavedFinding } from '../workspace/reportStore.ts'
 import { boneLabel, type Bone, type Point } from './bones.ts'
 
@@ -66,7 +67,11 @@ export function withStackIndexes(markers: MarkerSpec[]) {
 
 // One marker for each finding that can be placed (S3.1). The rest get none, and
 // the findings list says why (S2.4).
-export function markersFor(findings: SavedFinding[], bones: Bone[]) {
+export function markersFor(
+  findings: SavedFinding[],
+  bones: Bone[],
+  wording: Wording = PATIENT_WORDING,
+) {
   const byId = new Map(bones.map((bone) => [bone.id, bone]))
   const markers: MarkerSpec[] = []
 
@@ -84,7 +89,7 @@ export function markersFor(findings: SavedFinding[], bones: Bone[]) {
       title: CERTAINTY_TITLES[finding.certainty],
       subtitle: null,
       boneName: boneLabel(bone),
-      sideLabel: `Your ${bone.side} side`,
+      sideLabel: `${wording.owner} ${bone.side} side`,
       healing: healingLines(finding.healing_words),
       enteredByPatient: finding.entered_by_patient,
       stackIndex: 0,

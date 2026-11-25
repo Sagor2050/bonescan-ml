@@ -45,6 +45,8 @@ type FractureMarkerProps = {
   bone: Object3D
   selected: boolean
   onSelect: (findingId: string) => void
+  // Marks a finding the patient entered or changed.
+  enteredByLabel: string
   // Where this frame's labels would like to go, for LabelLayout to settle.
   labels: Map<string, PlacedLabel>
 }
@@ -56,6 +58,7 @@ function FractureMarker({
   bone,
   selected,
   onSelect,
+  enteredByLabel,
   labels,
 }: FractureMarkerProps) {
   const position = useMemo(
@@ -219,7 +222,7 @@ function FractureMarker({
               {line}
             </span>
           ))}
-          {marker.enteredByPatient && <em>Entered by you</em>}
+          {marker.enteredByPatient && <em>{enteredByLabel}</em>}
         </button>
       </Html>
     </group>,

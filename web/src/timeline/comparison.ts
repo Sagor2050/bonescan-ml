@@ -9,6 +9,7 @@ import {
 } from '../viewer/markers.ts'
 import { formatExamDate } from '../workspace/examDate.ts'
 import { healingLines } from '../workspace/healingStatus.ts'
+import { PATIENT_WORDING, type Wording } from '../workspace/readOnly.ts'
 import type { SavedFinding, SavedReport } from '../workspace/reportStore.ts'
 import { sameInjury } from './sameInjury.ts'
 
@@ -116,7 +117,11 @@ export function comparedReports(
 // spot share a marker, while one at another spot on the bone gets its own, so no
 // finding is hidden. The marker carries the later report's certainty, and the
 // list beside the model gives each report's.
-export function comparisonMarkers(comparison: Comparison, bones: Bone[]) {
+export function comparisonMarkers(
+  comparison: Comparison,
+  bones: Bone[],
+  wording: Wording = PATIENT_WORDING,
+) {
   const examDates = new Map<string, string>()
   for (const report of [comparison.earlier, comparison.later]) {
     for (const finding of report.findings) {
@@ -128,7 +133,7 @@ export function comparisonMarkers(comparison: Comparison, bones: Bone[]) {
   for (const injury of comparison.injuries) {
     const findings = [...injury.earlier, ...injury.later]
     const atSpots = new Map<string, MarkerSpec[]>()
-    for (const marker of markersFor(findings, bones)) {
+    for (const marker of markersFor(findings, bones, wording)) {
       const spot = marker.point?.join(',') ?? 'whole'
       atSpots.set(spot, [...(atSpots.get(spot) ?? []), marker])
     }

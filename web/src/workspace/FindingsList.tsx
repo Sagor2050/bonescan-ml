@@ -1,6 +1,7 @@
 import { ChevronLeftIcon, ChevronRightIcon } from '../ui/icons.tsx'
 import { useBones } from '../viewer/bones.ts'
 import { findingSummary } from './findingSummary.ts'
+import { useWording } from './readOnly.ts'
 import styles from './FindingsList.module.css'
 import type { SavedFinding } from './reportStore.ts'
 import { steppedFinding, useWorkspace } from './workspaceState.ts'
@@ -16,6 +17,7 @@ function FindingsList({
   showHeading?: boolean
 }) {
   const bones = useBones()
+  const wording = useWording()
   const { selectedFindingId, selectFinding } = useWorkspace()
   const ids = findings.map((finding) => finding.id)
   const previous = steppedFinding(ids, selectedFindingId, -1)
@@ -63,7 +65,7 @@ function FindingsList({
       ) : (
         <ol>
           {findings.map((finding) => {
-            const summary = findingSummary(finding, bones)
+            const summary = findingSummary(finding, bones, wording)
             const selected = finding.id === selectedFindingId
             const showDetails = selected || findings.length === 1
             return (
@@ -117,7 +119,7 @@ function FindingsList({
                   {summary.noMarkerReason && (
                     <em>{summary.noMarkerReason}</em>
                   )}
-                  {summary.enteredByPatient && <em>Entered by you</em>}
+                  {summary.enteredByPatient && <em>{wording.enteredByPatient}</em>}
                 </button>
               </li>
             )
@@ -125,9 +127,7 @@ function FindingsList({
         </ol>
       )}
 
-      <p className={styles.careTeam}>
-        Questions about what this means? Ask your care team.
-      </p>
+      <p className={styles.careTeam}>{wording.careTeam}</p>
     </section>
   )
 }
