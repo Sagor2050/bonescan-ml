@@ -178,7 +178,8 @@ function ExposeForTests({ controls }: { controls: CameraControls | null }) {
 
 function SkeletonViewer({ markers }: { markers: MarkerSpec[] }) {
   const bones = useBones()
-  const { selectedFindingId, selectionCount, selectFinding } = useWorkspace()
+  const { selectedFindingId, selectionCount, selectFinding, clearSelection } =
+    useWorkspace()
   const controlsRef = useRef<CameraControls | null>(null)
   const [controls, setControls] = useState<CameraControls | null>(null)
   const [selectedBone, setSelectedBone] = useState<Bone | null>(null)
@@ -202,6 +203,11 @@ function SkeletonViewer({ markers }: { markers: MarkerSpec[] }) {
     instance.setLookAt(...START_POSITION, ...START_TARGET, false)
     setControls(instance)
   }, [])
+
+  function selectBone(bone: Bone | null) {
+    setSelectedBone(bone)
+    clearSelection()
+  }
 
   function goToView(azimuth: number) {
     const current = controlsRef.current
@@ -266,7 +272,7 @@ function SkeletonViewer({ markers }: { markers: MarkerSpec[] }) {
                 selectedFindingId={selectedFindingId}
                 selectionCount={selectionCount}
                 shownAloneId={shownAloneId}
-                onSelectBone={setSelectedBone}
+                onSelectBone={selectBone}
                 onSelectFinding={selectFinding}
               />
               <CameraControls
