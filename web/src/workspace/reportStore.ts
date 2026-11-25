@@ -1,6 +1,7 @@
 import type { SupabaseClient } from '@supabase/supabase-js'
 import { REPORTS_BUCKET, supabase } from '../account/supabase.ts'
 import type { DraftFinding } from '../add-report/draftReport.ts'
+import { sameFracture } from '../add-report/findingEdits.ts'
 import type { Finding } from '../findings/types.ts'
 
 // A confirmed report and its findings as the database holds them (Plan B.1).
@@ -170,8 +171,10 @@ export type ReportChanges = { examDate: string; findings: DraftFinding[] }
 
 // Saves a patient's corrections to a confirmed report (S1.2, S2.3). The original
 // report isn't touched (NFR4). Removing comes last, so a failure partway can't lose
-// a finding. Row-level security reports no error when it stops a write, so each
-// write counts the rows it changed.
+// a finding. The database holds each fracture once (#111), so a removed finding the
+// patient entered again is removed first, and changes come before additions, since
+// a change can free a fracture. Row-level security reports no error when it stops a
+// write, so each write counts the rows it changed.
 export async function saveReportChanges(
   report: SavedReport,
   changes: ReportChanges,
@@ -193,10 +196,23 @@ export async function saveReportChanges(
     changes.findings,
   )
 
-  if (added.length > 0) {
-    const { error } = await client.from('findings').insert(added)
-    if (error) throw failed
+  async function remove(ids: string[]) {
+    if (ids.length === 0) return
+    const { data, error } = await client!
+      .from('findings')
+      .delete()
+      .in('id', ids)
+      .select('id')
+    if (error || data.length !== ids.length) throw failed
   }
+
+  const reentered = new Set(
+    report.findings
+      .filter(({ id }) => removed.includes(id))
+      .filter((was) => changes.findings.some((now) => sameFracture(now, was)))
+      .map(({ id }) => id),
+  )
+  await remove([...reentered])
   for (const { id, fields } of updated) {
     const { data, error } = await client
       .from('findings')
@@ -205,14 +221,11 @@ export async function saveReportChanges(
       .select('id')
     if (error || data.length === 0) throw failed
   }
-  if (removed.length > 0) {
-    const { data, error } = await client
-      .from('findings')
-      .delete()
-      .in('id', removed)
-      .select('id')
-    if (error || data.length !== removed.length) throw failed
+  if (added.length > 0) {
+    const { error } = await client.from('findings').insert(added)
+    if (error) throw failed
   }
+  await remove(removed.filter((id) => !reentered.has(id)))
   if (changes.examDate !== report.exam_date) {
     const { data, error } = await client
       .from('reports')

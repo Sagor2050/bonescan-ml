@@ -152,6 +152,13 @@
   font-size: 0.9375rem;
 }
 
+.repeated {
+  margin: 0.75rem 0 0;
+  color: var(--danger);
+  font-size: 0.9375rem;
+  font-weight: 600;
+}
+
 .emptyReason {
   composes: reason;
   margin: 0 0 0.75rem;

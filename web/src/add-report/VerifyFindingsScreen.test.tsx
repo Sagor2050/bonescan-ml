@@ -174,6 +174,31 @@ test('a missed finding can be added, and is marked once it has a bone and side',
   expect(card().getByText('Will be marked on the skeleton')).toBeDefined()
 })
 
+test('the same fracture can not be entered twice', async () => {
+  showDraft()
+  await renderScreen()
+  fireEvent.click(screen.getByRole('button', { name: 'Add a finding we missed' }))
+  fireEvent.change(card(2).getByLabelText('Bone for finding 2'), {
+    target: { value: 'radius' },
+  })
+  fireEvent.change(card(2).getByLabelText('Side for finding 2'), {
+    target: { value: 'left' },
+  })
+  fireEvent.click(card(2).getByLabelText('distal'))
+  fireEvent.click(card(2).getByLabelText('metaphysis'))
+
+  expect(card(2).getByRole('alert').textContent).toMatch(
+    /same fracture as finding 1/,
+  )
+  expect(card(1).queryByRole('alert')).toBeNull()
+  expect(confirmButton()).toHaveProperty('disabled', true)
+  expect(screen.getByText(/Change or remove one to save/)).toBeDefined()
+
+  fireEvent.click(card(2).getByLabelText('metaphysis'))
+  expect(card(2).queryByRole('alert')).toBeNull()
+  expect(confirmButton()).toHaveProperty('disabled', false)
+})
+
 test('a finding with no side gets no marker until the side is set', async () => {
   showDraft(withFinding({ side: '', status: 'side_not_stated' }))
   await renderScreen()

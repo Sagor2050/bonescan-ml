@@ -9,7 +9,12 @@ import {
   useDraftReport,
   type DraftReport,
 } from './draftReport.ts'
-import { examDateProblem, localToday } from './findingEdits.ts'
+import {
+  examDateProblem,
+  localToday,
+  REPEATED_FINDINGS,
+  repeatedFindings,
+} from './findingEdits.ts'
 import FindingsEditor from './FindingsEditor.tsx'
 import { saveReport } from './saveReport.ts'
 import styles from './VerifyFindingsScreen.module.css'
@@ -94,6 +99,7 @@ function VerifyFindingsScreen() {
 
   const current = draft
   const problem = examDateProblem(examDate, today)
+  const repeated = repeatedFindings(current.findings).size > 0
   const fromReport =
     examDate === current.readerExamDate ||
     current.candidateDates.includes(examDate)
@@ -154,12 +160,13 @@ function VerifyFindingsScreen() {
           <button
             type="button"
             className="btn-primary btn-large"
-            disabled={Boolean(problem) || saving}
+            disabled={Boolean(problem) || repeated || saving}
             onClick={confirm}
           >
             {saving ? 'Saving…' : 'Confirm and see the skeleton'}
           </button>
         </div>
+        {repeated && <p className={styles.saveError}>{REPEATED_FINDINGS}</p>}
         {saveError && (
           <p className={styles.saveError} role="alert">
             {saveError}

@@ -90,5 +90,6 @@ These still need a person, because they need an inbox:
   change its exam date.
 - A finding's `wording` is never edited. Patients can correct everything else, and
   a corrected finding is marked `entered_by_patient`.
+- A report lists each fracture once: one finding per bone, side, and part.
 - Every new table turns on row-level security and gets a test in
   `tests/access.sql`.

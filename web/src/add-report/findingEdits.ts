@@ -42,6 +42,36 @@ export function newFinding(): DraftFinding {
   }
 }
 
+/**
+ * Whether two findings name the same fracture: the same bone, side, and part. The
+ * reader already makes these one finding (S2.1), so a report can't list one twice
+ * (#111). Findings with no bone chosen can't be compared, so they never match.
+ */
+export function sameFracture(a: Finding, b: Finding) {
+  const parts = (finding: Finding) => [...finding.part].sort().join()
+  return (
+    a.bone !== '' &&
+    a.bone === b.bone &&
+    a.side === b.side &&
+    parts(a) === parts(b)
+  )
+}
+
+/** Each finding that repeats an earlier one, by key, with the earlier one's number. */
+export function repeatedFindings(findings: DraftFinding[]) {
+  const repeats = new Map<string, number>()
+  findings.forEach((finding, index) => {
+    const first = findings
+      .slice(0, index)
+      .findIndex((other) => sameFracture(other, finding))
+    if (first !== -1) repeats.set(finding.key, first + 1)
+  })
+  return repeats
+}
+
+export const REPEATED_FINDINGS =
+  'Two findings are the same fracture. Change or remove one to save.'
+
 // The reason a finding gets no marker (S2.4). Written in advance, never generated.
 const STATUS_REASONS: Partial<Record<Status, string>> = {
   outside_coverage:
