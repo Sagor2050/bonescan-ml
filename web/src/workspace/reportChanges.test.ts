@@ -131,7 +131,7 @@ function fakeClient({ rows = 1, failOn = '' } = {}) {
 
 describe('saveReportChanges', () => {
   const a = saved('a', 0)
-  const b = saved('b', 1)
+  const b = saved('b', 1, { bone: 'femur', side: 'left' })
 
   test('changing the date marks it as the patient’s, and writes nothing else', async () => {
     const { client, writes } = fakeClient()
@@ -175,7 +175,7 @@ describe('saveReportChanges', () => {
     expect(text).not.toContain('wording')
   })
 
-  test('adds and changes before removing, so a failure can’t lose a finding', async () => {
+  test('changes and adds before removing, so a failure can’t lose a finding', async () => {
     const { client, writes } = fakeClient()
     await saveReportChanges(
       report([a, b]),
@@ -183,9 +183,25 @@ describe('saveReportChanges', () => {
       client,
     )
     expect(writes.map((write) => write.kind)).toEqual([
-      'insert',
       'update',
+      'insert',
       'delete',
+    ])
+  })
+
+  test('a removed fracture entered again is removed first, so the two never clash', async () => {
+    const { client, writes } = fakeClient()
+    const c = saved('c', 1, { bone: 'femur', side: 'right' })
+    const again = { ...newFinding(), bone: a.bone, side: a.side, part: a.part }
+    await saveReportChanges(
+      report([a, c]),
+      { examDate: '2026-09-14', findings: [again] },
+      client,
+    )
+    expect(writes).toEqual([
+      { table: 'findings', kind: 'delete', ids: ['a'] },
+      expect.objectContaining({ table: 'findings', kind: 'insert' }),
+      { table: 'findings', kind: 'delete', ids: ['c'] },
     ])
   })
 

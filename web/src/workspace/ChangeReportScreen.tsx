@@ -1,6 +1,11 @@
 import { Suspense, useState } from 'react'
 import type { DraftFinding } from '../add-report/draftReport.ts'
-import { examDateProblem, localToday } from '../add-report/findingEdits.ts'
+import {
+  examDateProblem,
+  localToday,
+  REPEATED_FINDINGS,
+  repeatedFindings,
+} from '../add-report/findingEdits.ts'
 import FindingsEditor from '../add-report/FindingsEditor.tsx'
 import verifyStyles from '../add-report/VerifyFindingsScreen.module.css'
 import Link from '../routing/Link.tsx'
@@ -23,6 +28,7 @@ function ChangeForm({ report }: { report: SavedReport }) {
   const [saving, setSaving] = useState(false)
   const [saveError, setSaveError] = useState<string | null>(null)
   const problem = examDateProblem(examDate, today)
+  const repeated = repeatedFindings(findings).size > 0
 
   async function save() {
     setSaving(true)
@@ -88,12 +94,15 @@ function ChangeForm({ report }: { report: SavedReport }) {
           <button
             type="button"
             className="btn-primary btn-large"
-            disabled={Boolean(problem) || saving}
+            disabled={Boolean(problem) || repeated || saving}
             onClick={save}
           >
             {saving ? 'Saving…' : 'Save my changes'}
           </button>
         </div>
+        {repeated && (
+          <p className={verifyStyles.saveError}>{REPEATED_FINDINGS}</p>
+        )}
         {saveError && (
           <p className={verifyStyles.saveError} role="alert">
             {saveError}

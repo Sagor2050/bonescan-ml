@@ -122,6 +122,24 @@ test('removing every finding says so, without claiming none were found', async (
   expect(screen.queryByText(/didn't find any fractures/)).toBeNull()
 })
 
+test('a fracture already listed can not be saved again', async () => {
+  await open()
+  fireEvent.click(screen.getByRole('button', { name: 'Add a finding we missed' }))
+  const card = within(screen.getByRole('listitem', { name: 'Finding 2' }))
+  fireEvent.change(card.getByLabelText('Bone for finding 2'), {
+    target: { value: 'radius' },
+  })
+  fireEvent.change(card.getByLabelText('Side for finding 2'), {
+    target: { value: 'left' },
+  })
+  fireEvent.click(card.getByLabelText('distal'))
+
+  expect(card.getByRole('alert').textContent).toMatch(/same fracture as finding 1/)
+  expect((saveButton() as HTMLButtonElement).disabled).toBe(true)
+  fireEvent.click(saveButton())
+  expect(saveReportChanges).not.toHaveBeenCalled()
+})
+
 test('stays on the screen and says so when saving fails', async () => {
   vi.mocked(saveReportChanges).mockRejectedValueOnce(
     new Error('Your changes could not all be saved.'),

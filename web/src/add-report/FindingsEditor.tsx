@@ -7,6 +7,7 @@ import {
   editFinding,
   newFinding,
   noMarkerReason,
+  repeatedFindings,
   unplacedTitle,
 } from './findingEdits.ts'
 import styles from './VerifyFindingsScreen.module.css'
@@ -32,6 +33,8 @@ type FindingCardProps = {
   finding: DraftFinding
   number: number
   bones: Bone[]
+  /** The number of an earlier finding this one repeats, if it does. */
+  repeats?: number
   onChange: (next: DraftFinding) => void
   onRemove: () => void
 }
@@ -40,6 +43,7 @@ function FindingCard({
   finding,
   number,
   bones,
+  repeats,
   onChange,
   onRemove,
 }: FindingCardProps) {
@@ -130,6 +134,12 @@ function FindingCard({
       </ul>
 
       {reason && <p className={styles.reason}>{reason}</p>}
+      {repeats && (
+        <p className={styles.repeated} role="alert">
+          This is the same fracture as finding {repeats}: the same bone, side,
+          and part. Change this one or remove it.
+        </p>
+      )}
 
       {finding.wording.length > 0 && (
         <div className={styles.source}>
@@ -231,6 +241,7 @@ function FindingsEditor({
   onChange: (findings: DraftFinding[]) => void
 }) {
   const bones = useBones()
+  const repeats = repeatedFindings(findings)
 
   return (
     <>
@@ -244,6 +255,7 @@ function FindingsEditor({
             finding={finding}
             number={index + 1}
             bones={bones}
+            repeats={repeats.get(finding.key)}
             onChange={(next) =>
               onChange(
                 findings.map((item) => (item.key === next.key ? next : item)),

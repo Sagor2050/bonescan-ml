@@ -22,7 +22,8 @@ begin
   execute statement;
   raise exception 'NOT REFUSED: %', label using errcode = 'P0001';
 exception
-  when insufficient_privilege or check_violation or foreign_key_violation then
+  when insufficient_privilege or check_violation or foreign_key_violation
+    or unique_violation then
     raise notice 'refused: %', label;
 end $$;
 
@@ -62,6 +63,33 @@ select testkit.must_affect(
 select testkit.must_affect(
   $$update public.findings set side = 'right', entered_by_patient = true$$,
   1, 'A corrects a finding');
+
+-- A report lists each fracture once: the same bone, side, and part (#111).
+select testkit.must_fail(
+  $$insert into public.findings (report_id, bone, side, certainty, status)
+    values ('11111111-0000-0000-0000-000000000001', 'radius', 'right', 'certain', 'placed')$$,
+  'A repeats a fracture with no part');
+insert into public.findings (id, report_id, bone, side, part, certainty, status) values
+  ('22222222-0000-0000-0000-000000000002', '11111111-0000-0000-0000-000000000001',
+   'radius', 'right', '{shaft,distal}', 'certain', 'placed');
+select testkit.must_fail(
+  $$insert into public.findings (report_id, bone, side, part, certainty, status)
+    values ('11111111-0000-0000-0000-000000000001', 'radius', 'right', '{distal,shaft}',
+            'certain', 'placed')$$,
+  'A repeats a fracture with its parts in another order');
+select testkit.must_fail(
+  $$update public.findings set part = '{}'
+    where id = '22222222-0000-0000-0000-000000000002'$$,
+  'A changes a finding into a repeat');
+select testkit.must_affect(
+  $$insert into public.findings (report_id, certainty, status) values
+      ('11111111-0000-0000-0000-000000000001', 'certain', 'outside_coverage'),
+      ('11111111-0000-0000-0000-000000000001', 'certain', 'outside_coverage')$$,
+  2, 'A lists two findings with no bone');
+select testkit.must_affect(
+  $$delete from public.findings
+    where id <> '22222222-0000-0000-0000-000000000001'$$,
+  3, 'A removes the extra findings');
 
 -- The report and the wording it came from are never edited (NFR4).
 select testkit.must_fail($$update public.reports set raw_text = 'edited'$$, 'A edits report text');
