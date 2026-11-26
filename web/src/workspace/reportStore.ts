@@ -20,6 +20,15 @@ export type SavedReport = {
   exam_date_source: 'report' | 'patient'
   added_at: string
   findings: SavedFinding[]
+  // Only on a report someone shared (S10.3). Its file comes from the share link,
+  // and its file_path is left empty, because that path names the owner's account.
+  shared?: SharedFiles
+}
+
+export type SharedFiles = {
+  confirmed: boolean
+  fileUrl: string | null
+  scanImageUrls: string[]
 }
 
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
@@ -79,6 +88,16 @@ export async function loadReports(): Promise<SavedReport[]> {
 
 // The original PDF, exactly as it was added (NFR4).
 export async function loadReportPdf(report: SavedReport): Promise<ArrayBuffer> {
+  if (report.shared) {
+    if (!report.shared.fileUrl) throw new Error('The report could not be loaded.')
+    const response = await fetch(report.shared.fileUrl, {
+      credentials: 'omit',
+      cache: 'no-store',
+      referrerPolicy: 'no-referrer',
+    })
+    if (!response.ok) throw new Error('The report could not be loaded.')
+    return response.arrayBuffer()
+  }
   if (isSample(report.id)) {
     const { loadSamplePdf } = await import('./sampleReports.ts')
     return loadSamplePdf(report.file_path)

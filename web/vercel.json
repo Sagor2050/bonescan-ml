@@ -1,6 +1,24 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "rewrites": [
-    { "source": "/((?!shared/|assets/).*)", "destination": "/index.html" }
+    { "source": "/((?!api/|shared/|assets/).*)", "destination": "/index.html" }
+  ],
+  "headers": [
+    {
+      "source": "/s/(.*)",
+      "headers": [
+        { "key": "X-Robots-Tag", "value": "noindex, nofollow" },
+        { "key": "Referrer-Policy", "value": "no-referrer" },
+        { "key": "Cache-Control", "value": "no-store" }
+      ]
+    },
+    {
+      "source": "/api/shared/(.*)",
+      "headers": [
+        { "key": "X-Robots-Tag", "value": "noindex, nofollow" },
+        { "key": "Referrer-Policy", "value": "no-referrer" },
+        { "key": "Cache-Control", "value": "no-store" }
+      ]
+    }
   ]
 }

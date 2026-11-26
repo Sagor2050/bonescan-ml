@@ -25,6 +25,13 @@ are in [`migrations/`](migrations/). Run these steps once per Supabase project.
    Don't name the web file `web/.env`. Vite loads that file in every mode, so
    `npm test` and `npm run test:e2e` would run against the real project.
 
+7. In the Vercel project, under **Settings > Environment Variables**, add
+   `SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY` for Production and Preview.
+   Only the shared-link routes in `web/api/` use them (S10.3). They read a link's
+   reports for someone without an account, after the database checks that the
+   link is still active. The service-role key passes row-level security, so it
+   lives only there: never in a local env file, never with a `VITE_` prefix.
+
 ## Run the app against the project
 
 From `web/`, then from `reader/`:
@@ -40,6 +47,10 @@ this and names the missing settings. On a host, the settings are `SUPABASE_URL` 
 `SUPABASE_ANON_KEY`, without the web app's `VITE_` prefix.
 
 Only use fictional reports here, like the ones in `tests/fixtures/`.
+
+`npm run dev` doesn't run the `web/api/` routes, so a share link (`/s/...`)
+can't load there. Their tests run with `npm test`, and `e2e/shared.spec.ts`
+answers for them in the browser.
 
 ## Test the access rules
 

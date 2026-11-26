@@ -9,6 +9,7 @@ import SignInPage from './pages/SignInPage.tsx'
 import NotFoundScreen from './routing/NotFoundScreen.tsx'
 import { paths } from './routing/paths.ts'
 import Routes, { type Route } from './routing/Routes.tsx'
+import SharedReportsScreen from './share/SharedReportsScreen.tsx'
 import ChangeReportScreen from './workspace/ChangeReportScreen.tsx'
 import Footer from './ui/Footer.tsx'
 import ReportScreen from './workspace/ReportScreen.tsx'
@@ -82,6 +83,12 @@ const routes: Route[] = [
         <AccountScreen />
       </WorkspaceLayout>
     ),
+  },
+  // Outside WorkspaceLayout: a share link needs no account and shows no
+  // account navigation (S10.3).
+  {
+    path: paths.shared,
+    render: ({ token }) => <SharedReportsScreen key={token} token={token} />,
   },
   ...(MarkerPointsPage
     ? [

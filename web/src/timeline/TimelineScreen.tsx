@@ -6,7 +6,9 @@ import { useBones } from '../viewer/bones.ts'
 import { markersFor } from '../viewer/markers.ts'
 import { formatExamDate } from '../workspace/examDate.ts'
 import FindingsList from '../workspace/FindingsList.tsx'
+import { useReadOnly, useWording } from '../workspace/readOnly.ts'
 import type { SavedReport } from '../workspace/reportStore.ts'
+import UnconfirmedBadge from '../workspace/UnconfirmedBadge.tsx'
 import { useReports } from '../workspace/useReports.ts'
 import { useWorkspace } from '../workspace/workspaceState.ts'
 import { comparedReports, comparisonMarkers, type Comparison } from './comparison.ts'
@@ -49,6 +51,7 @@ function ReportHistory({
               <strong>
                 {formatExamDate(report.exam_date)}
                 {tag && <span className={styles.tag}>{tag}</span>}
+                <UnconfirmedBadge report={report} />
               </strong>
               <span className={styles.bones}>
                 {names.length > 0 ? names.join(', ') : 'No bones listed'}
@@ -97,14 +100,21 @@ function ReportPicker({
   )
 }
 
-function Timeline({
+// Opening a report shows it beside the original. For a shared report that
+// stays on the shared page, so onOpenReport is given and the patient's own
+// report screen is never linked.
+export function Timeline({
   reports,
   heading,
+  onOpenReport,
 }: {
   reports: SavedReport[]
   heading: ReactNode
+  onOpenReport?: (reportId: string) => void
 }) {
   const bones = useBones()
+  const readOnly = useReadOnly()
+  const wording = useWording()
   const {
     timelineReportId,
     comparison: chosenPair,
@@ -132,9 +142,9 @@ function Timeline({
   const markers = useMemo(
     () =>
       comparison
-        ? comparisonMarkers(comparison, bones)
-        : markersFor(shown.findings, bones),
-    [comparison, shown, bones],
+        ? comparisonMarkers(comparison, bones, wording)
+        : markersFor(shown.findings, bones, wording),
+    [comparison, shown, bones, wording],
   )
 
   return (
@@ -155,7 +165,13 @@ function Timeline({
             >
               Compare reports
             </button>
-            {!comparePartner && <p>Add another report to compare.</p>}
+            {!comparePartner && (
+              <p>
+                {readOnly
+                  ? 'Only one report was shared.'
+                  : 'Add another report to compare.'}
+              </p>
+            )}
           </div>
         )}
         <div className={styles.findings}>
@@ -199,6 +215,7 @@ function Timeline({
         ) : (
           <div className={styles.shownHeading}>
             <h2>{formatExamDate(shown.exam_date)}</h2>
+            <UnconfirmedBadge report={shown} />
             <span className={styles.position}>
               Report {shownIndex + 1} of {reports.length}
             </span>
@@ -212,12 +229,21 @@ function Timeline({
                 <ChevronRightIcon />
               </button>
             </div>
-            <Link
-              className={`btn ${styles.open}`}
-              href={reportPath(shown.id)}
-            >
-              Open with the original report
-            </Link>
+            {onOpenReport ? (
+              <button
+                className={`btn ${styles.open}`}
+                onClick={() => onOpenReport(shown.id)}
+              >
+                Open with the original report
+              </button>
+            ) : (
+              <Link
+                className={`btn ${styles.open}`}
+                href={reportPath(shown.id)}
+              >
+                Open with the original report
+              </Link>
+            )}
           </div>
         )}
         {/* One skeleton for both reports, so they are always seen from the same

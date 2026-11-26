@@ -1,5 +1,5 @@
-// Where each screen lives. The screens are the six in Plan Appendix A, plus the
-// Account page that their header links to.
+// Where each screen lives. The screens are the six in Plan Appendix A, the
+// Account page that their header links to, and the page a share link opens.
 export const paths = {
   home: '/', // A.1
   signIn: '/sign-in', // A.2
@@ -11,6 +11,7 @@ export const paths = {
   changeReport: '/reports/:reportId/change',
   reports: '/reports', // A.6
   account: '/account',
+  shared: '/s/:token', // S10.3
 } as const
 
 export function reportPath(reportId: string) {

@@ -147,7 +147,7 @@ function PdfReport({ report }: { report: SavedReport }) {
   if (failed) {
     return (
       <p className={styles.message}>
-        We couldn't show your original report. Please try again.
+        We couldn't show the original report. Please try again.
       </p>
     )
   }
@@ -164,7 +164,7 @@ function PdfReport({ report }: { report: SavedReport }) {
               highlights={pageHighlights(report.findings, index + 1)}
             />
           ))
-        : <p className={styles.message}>Loading your report…</p>}
+        : <p className={styles.message}>Loading the report…</p>}
     </div>
   )
 }

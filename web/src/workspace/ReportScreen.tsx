@@ -14,6 +14,7 @@ import { markersFor } from '../viewer/markers.ts'
 import DeleteReport from './DeleteReport.tsx'
 import { formatExamDate } from './examDate.ts'
 import FindingsList from './FindingsList.tsx'
+import { useWording } from './readOnly.ts'
 import styles from './ReportScreen.module.css'
 import type { SavedFinding, SavedReport } from './reportStore.ts'
 import { useReport } from './useReport.ts'
@@ -23,7 +24,11 @@ const SkeletonViewer = lazy(() => import('../viewer/SkeletonViewer.tsx'))
 
 function ReportModel({ findings }: { findings: SavedFinding[] }) {
   const bones = useBones()
-  const markers = useMemo(() => markersFor(findings, bones), [findings, bones])
+  const wording = useWording()
+  const markers = useMemo(
+    () => markersFor(findings, bones, wording),
+    [findings, bones, wording],
+  )
   return <SkeletonViewer markers={markers} />
 }
 
@@ -42,11 +47,12 @@ function firstTab(findings: SavedFinding[]): Tab {
 // The panel beside the model holds the report or the findings, and the model takes
 // the rest of the width (Plan A.5). Both stay mounted, so the place in the report
 // isn't lost when switching.
-function ReportWorkspace({ report }: { report: SavedReport }) {
+export function ReportWorkspace({ report }: { report: SavedReport }) {
+  const wording = useWording()
   const [tab, setTab] = useState<Tab>(() => firstTab(report.findings))
   const buttons = useRef<Partial<Record<Tab, HTMLButtonElement | null>>>({})
   const labels: Record<Tab, string> = {
-    report: 'Your original report',
+    report: wording.originalReport,
     findings: `Findings (${report.findings.length})`,
   }
 

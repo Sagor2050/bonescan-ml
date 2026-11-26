@@ -1,0 +1,21 @@
+.heading p {
+  margin: -0.5rem 0 0.75rem;
+  color: var(--ink-soft);
+  font-size: 0.9375rem;
+}
+
+/* Looks like the patient's "← My reports" link, but stays on this page. */
+.back {
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--ink-soft);
+  font: inherit;
+  font-size: 0.875rem;
+  cursor: pointer;
+}
+
+.back:hover {
+  color: var(--brand);
+  text-decoration: underline;
+}

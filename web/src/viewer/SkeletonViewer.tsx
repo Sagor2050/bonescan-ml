@@ -3,6 +3,7 @@ import { Canvas, useThree, type ThreeEvent } from '@react-three/fiber'
 import { Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Sphere, Vector3, type Object3D } from 'three'
 import { InfoIcon, MinusIcon, PlusIcon, ResetViewIcon } from '../ui/icons.tsx'
+import { useWording, type Wording } from '../workspace/readOnly.ts'
 import { useWorkspace } from '../workspace/workspaceState.ts'
 import { boneLabel, useBones, type Bone } from './bones.ts'
 import {
@@ -13,6 +14,7 @@ import {
   nearestAzimuth,
   START_POSITION,
   START_TARGET,
+  viewLabel,
   VIEWS,
   ZOOM_STEP,
 } from './cameraViews.ts'
@@ -55,6 +57,7 @@ function Skeleton({
   selectedFindingId,
   selectionCount,
   shownAloneId,
+  wording,
   onSelectBone,
   onSelectFinding,
 }: {
@@ -64,6 +67,7 @@ function Skeleton({
   selectedFindingId: string | null
   selectionCount: number
   shownAloneId: string | null
+  wording: Wording
   onSelectBone: (bone: Bone | null) => void
   onSelectFinding: (findingId: string) => void
 }) {
@@ -151,6 +155,7 @@ function Skeleton({
             bone={bone}
             selected={marker.findingId === selectedFindingId}
             onSelect={onSelectFinding}
+            enteredByLabel={wording.enteredByPatient}
             labels={labels}
           />
         ) : null
@@ -178,6 +183,7 @@ function ExposeForTests({ controls }: { controls: CameraControls | null }) {
 
 function SkeletonViewer({ markers }: { markers: MarkerSpec[] }) {
   const bones = useBones()
+  const wording = useWording()
   const { selectedFindingId, selectionCount, selectFinding } = useWorkspace()
   const controlsRef = useRef<CameraControls | null>(null)
   const [controls, setControls] = useState<CameraControls | null>(null)
@@ -233,7 +239,7 @@ function SkeletonViewer({ markers }: { markers: MarkerSpec[] }) {
         <p className={styles.notice}>
           <InfoIcon />
           <span>
-            This is a standard adult skeleton, not a model of your own bones.
+            This is a standard adult skeleton, not a model of {wording.ownBones}.
           </span>
         </p>
         <ViewerErrorBoundary
@@ -266,6 +272,7 @@ function SkeletonViewer({ markers }: { markers: MarkerSpec[] }) {
                 selectedFindingId={selectedFindingId}
                 selectionCount={selectionCount}
                 shownAloneId={shownAloneId}
+                wording={wording}
                 onSelectBone={setSelectedBone}
                 onSelectFinding={selectFinding}
               />
@@ -286,7 +293,7 @@ function SkeletonViewer({ markers }: { markers: MarkerSpec[] }) {
         <div className={styles.views} role="group" aria-label="Views">
           {VIEWS.map((view) => (
             <button key={view.name} onClick={() => goToView(view.azimuth)}>
-              {view.label}
+              {viewLabel(view.name, wording.owner)}
             </button>
           ))}
         </div>
@@ -311,7 +318,7 @@ function SkeletonViewer({ markers }: { markers: MarkerSpec[] }) {
         <p className={styles.help}>
           <strong aria-live="polite">
             {selectedBone
-              ? `Your ${selectedBone.side} ${boneLabel(selectedBone)}`
+              ? `${wording.owner} ${selectedBone.side} ${boneLabel(selectedBone)}`
               : 'Click a bone to see its name.'}
           </strong>{' '}
           Drag to turn. Scroll to zoom. Right-drag to move sideways.

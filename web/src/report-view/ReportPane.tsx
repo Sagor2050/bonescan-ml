@@ -1,4 +1,5 @@
 import { lazy, Suspense, useEffect, useRef } from 'react'
+import { useWording } from '../workspace/readOnly.ts'
 import type { SavedReport } from '../workspace/reportStore.ts'
 import { useWorkspace } from '../workspace/workspaceState.ts'
 import PastedReport from './PastedReport.tsx'
@@ -24,6 +25,7 @@ function ReportPane({
   visible?: boolean
 }) {
   const { selectedFindingId, selectionCount } = useWorkspace()
+  const wording = useWording()
   const pageRef = useRef<HTMLDivElement>(null)
 
   const selected = report.findings.find(
@@ -47,24 +49,23 @@ function ReportPane({
   }, [selectedFindingId, selectionCount, visible])
 
   return (
-    <section className={styles.pane} aria-label="Your original report">
+    <section className={styles.pane} aria-label={wording.originalReport}>
       {enteredWithNoWording && (
         <p className={styles.note}>
-          Entered by you. This finding has no wording in the report.
+          {wording.enteredByPatient}. This finding has no wording in the
+          report.
         </p>
       )}
       <div ref={pageRef} className={styles.page} tabIndex={0}>
         {report.source === 'pdf' ? (
-          <Suspense fallback={<p>Loading your report…</p>}>
+          <Suspense fallback={<p>Loading the report…</p>}>
             <PdfReport report={report} />
           </Suspense>
         ) : (
           <PastedReport report={report} />
         )}
       </div>
-      <p className={styles.careTeam}>
-        Questions about what this means? Ask your care team.
-      </p>
+      <p className={styles.careTeam}>{wording.careTeam}</p>
     </section>
   )
 }

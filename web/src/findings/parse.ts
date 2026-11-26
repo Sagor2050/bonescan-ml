@@ -16,7 +16,7 @@ const STATUSES = [
 ]
 const REFUSALS = ['not_pdf', 'too_large', 'too_many_pages', 'no_text']
 
-const FINDING_FIELDS = [
+export const FINDING_FIELDS = [
   'bone',
   'certainty',
   'entered_by_patient',
@@ -67,7 +67,7 @@ function isWording(value: unknown): value is Wording {
   )
 }
 
-function isFinding(value: unknown): value is Finding {
+export function isFinding(value: unknown): value is Finding {
   return (
     isObject(value) &&
     hasOnly(value, [...FINDING_FIELDS]) &&
